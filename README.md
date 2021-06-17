@@ -12,3 +12,6 @@
 </h4>
 <br/>
 
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/bernadette-eu/Bernadette/workflows/R-CMD-check/badge.svg)](https://github.com/bernadette-eu/Bernadette/actions)
+  <!-- badges: end -->
