@@ -16,7 +16,7 @@
 #' Flaxman et al (2020). Estimating the effects of non-pharmaceutical interventions on COVID-19 in Europe.
 #' Nature, 584, 257–261.
 #'
-#' @return  A vector of length \emph{ts_length}.
+#' @return A vector of length \emph{ts_length}.
 #'
 #' @examples
 #'
