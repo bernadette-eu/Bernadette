@@ -30,6 +30,8 @@ You can install the development version of *Bernadette* from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("bernadette-eu/Bernadette")
+if (!require("devtools")) {
+  install.packages("devtools")
+}
+devtools::install_github("bernadette-eu/Bernadette", dependencies = TRUE, build_vignettes = FALSE)
 ```
