@@ -1,7 +1,7 @@
 #' Country-specific COVID-19 daily time series summary table
 #'
 #' Function to extract COVID-19 daily time series summary information, based on the
-#' href{https://github.com/CSSEGISandData/COVID-19}{COVID-19 Data Repository} of the Johns
+#' \href{https://github.com/CSSEGISandData/COVID-19}{COVID-19 Data Repository} of the Johns
 #' Hopkins University Center for Systems Science and Engineering (CSSE).
 #'
 #' @param country character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}.

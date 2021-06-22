@@ -13,7 +13,7 @@
 #'
 #' \dontrun{
 #'country_population <- extract_country_pop(country = "Greece",
-#'                                          year    = 2020)
+#'                                           year    = 2020)
 #'}
 #'
 #' @export
