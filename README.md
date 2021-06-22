@@ -14,18 +14,12 @@ Coronavirus Disease 2019 (COVID-19). It allows for evaluation of
 probabilistic forecasts with proper scoring rules, for the purpose of
 model comparison.
 
-<h4 align="center">
-Website: <https://bernadette-eu.github.io/>
-</h4>
-
-<br/>
-
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/bernadette-eu/Bernadette/workflows/R-CMD-check/badge.svg)](https://github.com/bernadette-eu/Bernadette/actions)
 <!-- badges: end -->
 
-\#\# Installation
+## Installation
 
 You can install the development version of *Bernadette* from
 [GitHub](https://github.com/) with:
