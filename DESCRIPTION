@@ -9,7 +9,14 @@ Maintainer: Lampros Bouranis <bernadette.aueb@gmail.com>
 Description: Bayesian analysis for stochastic extensions of non-linear dynamic systems using advanced computational algorithms.
 License: GPL (>= 2)
 Depends: R (>= 3.6)
-Imports: tidyverse, rvest, vroom, rstan, bayesplot, scoringRules
+Imports: 
+    readr (>= 1.4.0),
+    lubridate (>= 1.7.0),
+    vroom (>= 1.5.0), 
+    rstan (>= 2.21.0), 
+    bayesplot (>= 1.8.0),
+    ggplot2 (>= 3.3.0),
+    scoringRules (>= 1.0.0)
 URL: https://bernadette-eu.github.io/
 Encoding: UTF-8
 LazyData: true

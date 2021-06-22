@@ -1,0 +1,44 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
+
+
+# Bayesian inference and model selection for stochastic epidemics
+
+<p align="center">
+<img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/c75adc6b3d0fb2cbdfba1b693a12a7846685fbf8/images/Picture1.png">
+</p>
+
+**Bernadette** provides a framework for Bayesian analysis of infectious disease transmission dynamics via diffusion driven multi-type epidemic models with time-varying coefficients, with a particular focus on Coronavirus Disease 2019 (COVID-19). It allows for evaluation of probabilistic forecasts with proper scoring rules, for the purpose of model comparison.
+
+<h4 align="center">
+  Website: https://bernadette-eu.github.io/
+</h4>
+<br/>
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/bernadette-eu/Bernadette/workflows/R-CMD-check/badge.svg)](https://github.com/bernadette-eu/Bernadette/actions)
+<!-- badges: end -->
+  
+ ## Installation
+
+You can install the development version of *Bernadette* from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("bernadette-eu/Bernadette")
+``` 
+
+
+
+
