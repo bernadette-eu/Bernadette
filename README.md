@@ -19,6 +19,11 @@ model comparison.
 [![R-CMD-check](https://github.com/bernadette-eu/Bernadette/workflows/R-CMD-check/badge.svg)](https://github.com/bernadette-eu/Bernadette/actions)
 <!-- badges: end -->
 
+## Website
+
+The website for the BERNADETTE Marie Sklodowska-Curie Action (MSCA) is
+available at: <https://bernadette-eu.github.io/>
+
 ## Installation
 
 You can install the development version of *Bernadette* from
