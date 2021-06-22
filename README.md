@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Bernadette <img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/c75adc6b3d0fb2cbdfba1b693a12a7846685fbf8/images/Picture1.png" align="right" height="150px" width="180px"/>
+# Bernadette <img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/9588dba70edb87adc5b026ec0ae1912c290bfeb0/images/abc.png" align="right" height="150px" width="180px"/>
 
 <!-- badges: start -->
 
