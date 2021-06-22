@@ -60,12 +60,12 @@ discretize_itd <- function(ts_length,
   if (rate  <= 0 ) stop("The rate parameter is not positive.")
 
   infection_death    <- rep(0, ts_length)
-  infection_death[1] <- pgamma(1.5, shape = shape, rate = rate) -
-                        pgamma(0,   shape = shape, rate = rate)
+  infection_death[1] <- stats::pgamma(1.5, shape = shape, rate = rate) -
+                        stats::pgamma(0,   shape = shape, rate = rate)
 
   for(i in 2:ts_length) {
-    infection_death[i] <- pgamma(i+.5, shape = shape, rate = rate) -
-                          pgamma(i-.5, shape = shape, rate = rate)
+    infection_death[i] <- stats::pgamma(i+.5, shape = shape, rate = rate) -
+                          stats::pgamma(i-.5, shape = shape, rate = rate)
   }
 
   return(infection_death)

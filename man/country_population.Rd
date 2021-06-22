@@ -22,7 +22,7 @@ the United Nations 2019 Revision of World Population Prospects.
 
 \dontrun{
 country_population <- extract_country_pop(country = "Greece",
-                                         year    = 2020)
+                                          year    = 2020)
 }
 
 }

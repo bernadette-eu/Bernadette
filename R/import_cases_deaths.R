@@ -16,9 +16,9 @@
 #'
 #' @return  A list with components
 #' \describe{
-#'   \item{Cases_deaths}{A data frame at daily level, containing a date index, the date in format "yyy-mm-dd",
+#'   \item{Cases_deaths}{A data frame at daily level, containing a date index, the date in format "yyyy-mm-dd",
 #'                       the COVID-19 confirmed cumulative cases and cumulative deaths, the daily confirmed cases and the daily deaths.}
-#'   \item{Date_range}{A vector of dates in the format "yyy-mm-dd", from the selected time series.}
+#'   \item{Date_range}{A vector of dates in the format "yyyy-mm-dd", from the selected time series.}
 #' }
 #'
 #' @examples

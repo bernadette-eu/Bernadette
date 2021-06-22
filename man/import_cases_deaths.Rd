@@ -16,20 +16,20 @@ import_cases_deaths(country, start_date = NULL, end_date = NULL)
 \value{
 A list with components
 \describe{
-  \item{Cases_deaths}{A data frame at daily level, containing a date index, the date in format yyy-mm-dd",
+  \item{Cases_deaths}{A data frame at daily level, containing a date index, the date in format "yyyy-mm-dd",
                       the COVID-19 confirmed cumulative cases and cumulative deaths, the daily confirmed cases and the daily deaths.}
-  \item{Date_range}{A vector of dates in the format "yyy-mm-dd", from the selected time series.}
+  \item{Date_range}{A vector of dates in the format "yyyy-mm-dd", from the selected time series.}
 }
 }
 \description{
 Function to extract COVID-19 daily time series summary information, based on the
-href{https://github.com/CSSEGISandData/COVID-19}{COVID-19 Data Repository} of the Johns
+\href{https://github.com/CSSEGISandData/COVID-19}{COVID-19 Data Repository} of the Johns
 Hopkins University Center for Systems Science and Engineering (CSSE).
 }
 \examples{
 
 \dontrun{
-cd <- import_cases_deaths(country = "Greece",
+cd <- import_cases_deaths(country    = "Greece",
                           start_date = "2020-03-05",
                           end_date   = "2020-10-07"
                           )
