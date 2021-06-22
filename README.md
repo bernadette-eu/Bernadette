@@ -4,7 +4,7 @@
 # Bayesian inference and model selection for stochastic epidemics
 
 <p align="center">
-<img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/c75adc6b3d0fb2cbdfba1b693a12a7846685fbf8/images/Picture1.png" height="250px" width="250px"/>
+<img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/c75adc6b3d0fb2cbdfba1b693a12a7846685fbf8/images/Picture1.png" height="300px" width="250px"/>
 </p>
 
 **Bernadette** provides a framework for Bayesian analysis of infectious
