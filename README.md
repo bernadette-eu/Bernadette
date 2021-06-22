@@ -26,7 +26,8 @@ available at: <https://bernadette-eu.github.io/>
 
 ## Installation
 
-You can install the development version of *Bernadette* from
+You can install the latest development version of *Bernadette* (requires
+the [devtools](https://github.com/r-lib/devtools) package) from
 [GitHub](https://github.com/) with:
 
 ``` r
