@@ -5,12 +5,12 @@
 #' @docType package
 #' @name Bernadette-package
 #' @aliases Bernadette
+#' @useDynLib bernadette, .registration=TRUE
 #' @import ggplot2
 #' @import lubridate
 #' @import methods
 #' @import readr
 #' @import scoringRules
-#' import(Rcpp)
-#' importFrom(rstan, sampling)
-#' useDynLib(bernadette, .registration = TRUE)
+#' @import Rcpp
+#' @importFrom rstan sampling vb
 NULL
