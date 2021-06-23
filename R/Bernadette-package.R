@@ -5,15 +5,9 @@
 #' @docType package
 #' @name Bernadette-package
 #' @aliases Bernadette
-#' @useDynLib bernadette, .registration = TRUE
-#' @import bayesplot
 #' @import ggplot2
 #' @import lubridate
 #' @import methods
-#' @import Rcpp
-#' @import RcppParallel
 #' @import readr
-#' @import rstan
 #' @import scoringRules
-#' @import vroom
 NULL

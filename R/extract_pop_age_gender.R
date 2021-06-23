@@ -32,7 +32,7 @@ extract_pop_age_gender <- function(country,
                       "WPP2019_PopulationByAgeSex_OtherVariants",
                       ".csv" )
 
-  dt_pop    <- vroom::vroom(data_path, col_types = readr::cols() )
+  dt_pop    <- readr::read_csv(data_path, col_types = readr::cols() )
 
   keep_cols <- c("Location",
                  "Time",
