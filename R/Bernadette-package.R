@@ -10,4 +10,7 @@
 #' @import methods
 #' @import readr
 #' @import scoringRules
+#' import(Rcpp)
+#' importFrom(rstan, sampling)
+#' useDynLib(bernadette, .registration = TRUE)
 NULL
