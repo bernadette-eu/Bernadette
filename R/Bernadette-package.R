@@ -5,7 +5,7 @@
 #' @docType package
 #' @name Bernadette-package
 #' @aliases Bernadette
-#' @useDynLib bernadette, .registration=TRUE
+#' @useDynLib Bernadette, .registration=TRUE
 #' @import ggplot2
 #' @import lubridate
 #' @import methods
