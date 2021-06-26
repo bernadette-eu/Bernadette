@@ -8,3 +8,7 @@
 \description{
 \code{Bernadette} provides Bayesian analysis for stochastic extensions of non-linear dynamic systems using advanced computational algorithms.
 }
+\references{
+Stan Development Team (2020). RStan: the R interface to Stan. R
+package version 2.21.2. https://mc-stan.org
+}
