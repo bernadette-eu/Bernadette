@@ -5,12 +5,15 @@
 #' @docType package
 #' @name Bernadette-package
 #' @aliases Bernadette
-#' @useDynLib bernadette, .registration=TRUE
+#' @useDynLib Bernadette, .registration=TRUE
 #' @import ggplot2
 #' @import lubridate
 #' @import methods
 #' @import readr
 #' @import scoringRules
 #' @import Rcpp
-#' @importFrom rstan sampling vb
+#' @importFrom rstan sampling
+#'
+#' @references Stan Development Team (2020). RStan: the R interface to Stan. R
+#' package version 2.21.2. https://mc-stan.org
 NULL
