@@ -21,8 +21,8 @@ the United Nations 2019 Revision of World Population Prospects.
 \examples{
 
 \dontrun{
-country_population <- extract_country_pop(country = "Greece",
-                                          year    = 2020)
+country_pop <- country_population(country = "Greece",
+                                 year    = 2020)
 }
 
 }

@@ -10,7 +10,7 @@ Description: Bayesian analysis for stochastic extensions of non-linear dynamic s
 License: GPL (>= 3)
 URL: https://bernadette-eu.github.io/
 BugReports: https://github.com/bernadette-eu/Bernadette/issues/
-Depends: R (>= 3.6)
+Depends: R (>= 4.1)
 Imports: 
     ggplot2 (>= 3.3.0),
     lubridate (>= 1.7.0),
