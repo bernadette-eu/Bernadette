@@ -63,24 +63,8 @@ import_cases_deaths <- function(country,
 
   if ( nrow(cumul_deaths) != nrow(cumul_cases) ) stop("The time series for the cumulative cases and deaths are not of the same length.")
 
-  if (is.character(start_date) & is.character(end_date) ){
-
-    dt_cd  <- dt_cd[dt_cd$Date >= start_date & dt_cd$Date <= end_date,]
-
-  } else if( is.null(start_date) & is.character(end_date) ){
-
-    dt_cd  <- dt_cd[dt_cd$Date <= end_date,]
-
-  } else if( is.character(start_date) & is.null(end_date) ){
-
-    dt_cd  <- dt_cd[dt_cd$Date >= start_date,]
-
-  }
-
   ts_len <- nrow(dt_cd)
-  dt_cd$Ts_index <- 1:ts_len
-
-  cases <- deaths <- rep(0, ts_len)
+  cases  <- deaths <- rep(0, ts_len)
 
   cases[1] <- dt_cd$Cumulative_Cases[1]
   for (t in 2:ts_len){
@@ -98,7 +82,25 @@ import_cases_deaths <- function(country,
   dt_cd$New_Deaths <- deaths
   rownames(dt_cd)  <- NULL
 
-  dt_cd <- dt_cd[c("Ts_index",
+  if (is.character(start_date) & is.character(end_date) ){
+
+    dt_cd  <- dt_cd[dt_cd$Date >= start_date & dt_cd$Date <= end_date,]
+
+  } else if( is.null(start_date) & is.character(end_date) ){
+
+    dt_cd  <- dt_cd[dt_cd$Date <= end_date,]
+
+  } else if( is.character(start_date) & is.null(end_date) ){
+
+    dt_cd  <- dt_cd[dt_cd$Date >= start_date,]
+
+  }
+
+  dt_cd$Index <- 1:dim(dt_cd)[1]
+
+  rownames(dt_cd) <- NULL
+
+  dt_cd <- dt_cd[c("Index",
                    "Date",
                    "Cumulative_Cases",
                    "New_Cases",
