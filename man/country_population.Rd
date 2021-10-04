@@ -7,7 +7,7 @@
 country_population(country, year = NULL)
 }
 \arguments{
-\item{country}{character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}.}
+\item{country}{character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}. See \link[Bernadette]{countries_un}.}
 
 \item{year}{numeric; calendar year}
 }
@@ -25,4 +25,7 @@ country_pop <- country_population(country = "Greece",
                                  year    = 2020)
 }
 
+}
+\references{
+United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, Online Edition. Rev. 1.
 }
