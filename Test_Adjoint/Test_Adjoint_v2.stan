@@ -74,9 +74,9 @@ data {
 
   // Adjoint ODE solver parameters:
   real rel_tol_forward;
-  vector abs_tol_forward;
+  vector[n_difeq] abs_tol_forward;
   real rel_tol_backward; 
-  vector abs_tol_backward; 
+  vector[n_difeq] abs_tol_backward; 
   real rel_tol_quadrature;
   real abs_tol_quadrature;
   int max_num_steps; 
