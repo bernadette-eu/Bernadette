@@ -1,0 +1,219 @@
+---
+title: "Model description"
+author: "Lampros Bouranis"
+date: "8/10/2021"
+output: 
+  html_document: 
+    toc_depth: 4
+    highlight: espresso
+    toc: yes
+    number_sections: yes
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+# Case Study: COVID-19 in Greece
+
+As a case study we consider data of confirmed COVID-19 deaths in Greece from March 3, 2020 to March 31, 2021.
+Death records are ordered by epidemiological date and are provided by the COVID-19 Data Repository of the Johns Hopkins University Center for Systems Science and Engineering (CSSE).
+
+## Data: 
+
+* Country population: obtained by the function 
+```{r , eval=FALSE}
+Bernadette::country_population()
+```
+* New confirmed deaths at daily level: obtained by the function 
+```{r , eval=FALSE}
+Bernadette::import_cases_deaths(). 
+```
+See object 
+```{r , eval=FALSE}
+cd$Cases_deaths$New_Deaths
+```
+in the file Test_Adjoint_cmdstan.R.
+
+## Initial values
+
+* A vector of length 4 for the four states (S,I,R, dummy state reporting the incidence rate). See line 85 of the file Test_Adjoint_cmdstan.R.
+
+```{r preamble, include=FALSE}
+Sys.setlocale("LC_ALL", "English")
+
+#---- Libraries:
+lib <- c("ggplot2",
+         "tidyverse",
+         "rvest",
+         "vroom",
+         "rstan",
+         "bayesplot",
+         "gridExtra",
+         "mgcv"
+)
+lapply(lib, require, character.only = TRUE)
+
+options(scipen = 999)
+
+#--- Paths:
+#project_path     <- "C:/Users/lbour/OneDrive - aueb.gr/BERNADETTE/"
+project_path     <- "C:/Users/lbour/Desktop/Academic/Post_Doctoral_Researcher/1_Marie_Curie_PostDoc/8_BERNADETTE/"
+lib_path         <- paste0(project_path,
+                           "10_Stan_Project_code/R_package_files/")
+experiments_path <- "10_Stan_Project_code/5_SIR_GBM_NBD_GR_model3"
+
+#---- Experiment ID:
+mode_no        <- 3
+experiment_name<- "SIR_GBM_NBD_GR"
+
+#---- Stan file path:
+stan_file_path  <- paste0(project_path, experiments_path)
+model_id        <- paste0(experiment_name, "_model", mode_no)
+store_model_out <- paste0(stan_file_path, "/Output/", model_id, ".RData")
+load(file = store_model_out)
+```
+
+```{r observed_deaths, echo = FALSE, fig.align = 'center', fig.height = 3.5, fig.width = 7}
+ggplot(cd$Cases_deaths, 
+       aes(Date       = Date, 
+           New_Deaths = New_Deaths)) +
+  geom_col(aes(x   = cd$Cases_deaths$Date, 
+               y   = cd$Cases_deaths$New_Deaths,
+               fill="Reported deaths"),
+           width = 0.4) +
+  scale_fill_manual(values = c('Reported deaths' = "black"), guide = "none") +
+  labs(x = "Epidemiological Date", 
+       y = "Number of new deaths") +
+  scale_x_date(date_labels = paste(c(rep(" ",11), "%b"), collapse = ""), 
+               date_breaks = "month", 
+               expand      = c(0,0) ) +
+  scale_y_continuous(
+    limits = c(0,   ceiling(max(cd$Cases_deaths$New_Deaths)/50)*50), 
+    breaks = seq(0, ceiling(max(cd$Cases_deaths$New_Deaths)/50)*50, 50)
+  ) +
+  facet_grid(~ lubridate::year(cd$Cases_deaths$Date), 
+             space  = "free_x", 
+             scales = "free_x", 
+             switch = "x") +
+  theme_bw() +
+  theme(strip.placement  = "outside",
+        strip.background = element_rect(fill=NA,colour="grey50"),
+        panel.spacing    = unit(0,"cm"),
+        legend.position  = "bottom",
+        legend.title     = element_blank() )
+```
+
+# Model setup
+
+## Transmission model
+
+We adopt a deterministic SIR (Susceptible-Infected-Removed) model in this work; $S$ accounts for susceptible, $I$ for infective, and $R$ for removed individuals.
+New infections occur at a rate $\lambda S_{t}\frac{I_{t}}{N},\;\;t \in \{1,\ldots, n\}$, implying that the susceptible individuals make effective contacts at rate $\lambda$ (the effective contact rate), and only a fraction $\frac{I_{t}}{N}$ of these contacts are made with infective individuals:
+
+$$
+\begin{equation}
+\frac{dS_{t}}{dt} = -\lambda S_{t}\frac{I_{t}}{N},\;\;\;\;\frac{dI_{t}}{dt} = \lambda S_{t}\frac{I_{t}}{N}-\gamma I_{t},\;\;\;\; \frac{dR_{t}}{dt} =\gamma I_{t}.
+\end{equation}
+$$
+
+The period spent in compartment $I$ (termed "infectious period") is follows an Exponential distribution with  mean given by $\gamma^{-1}$.
+
+Aiming to capture unknown influences (changing behaviors, public interventions, seasonal effects, etc.), we adopt the stochastic extension proposed in Dureau et al. (2013); the additional dynamic error is likely to contain structural mis-specifications and it allows one to attribute the model limitations mainly to the time varying nature of the effective contact rate, henceforth denoted as $\lambda_t$.
+
+Of interest is to infer $\lambda_t$; the transmission model is formulated by the following system of non-linear ordinary differential equations (ODEs) and the stochastic differential equation (SDE) related to $\lambda_t$,
+$$
+\begin{equation}
+\begin{cases}
+\frac{dS_{t}}{dt} & =-\lambda_{t}S_{t}\frac{I_{t}}{N},\;\;\;\;\frac{dI_{t}}{dt} = \lambda_{t}S_{t}\frac{I_{t}}{N} - \gamma I_{t},\;\;\;\; \frac{dR_{t}}{dt} =\gamma I_{t},\\
+dx_{t} & = \sigma_{x}dW_{t}, \;\;\;\;x_t=h(\lambda_t).
+\end{cases}
+\end{equation}
+$$ 
+Here $\sigma_{x}(\cdot)$ denotes the volatility of the diffusion process, $h(\cdot)$ is a positive-valued function, $W_{t}$ is the Wiener process (also called "Brownian motion") and $dW_{t}\sim \operatorname{N}(0,dt)$ is the increment to the Wiener process. The stochastic diffusion process $x_t$ is said to follow a geometric Brownian motion (GBM) if it satisfies the above SDE.
+The assigned diffusion process may capture features such as behavior changes, preventive measures, seasonal effects, holidays etc.
+Intuitively, the higher the values of $\sigma_{x}$ the larger the changes in $\lambda_t$. 
+The volatility of the diffusion process will also be estimated.
+A logarithmic transformation $h(\cdot)\equiv\log(\cdot)$ avoids negative values, which have no biological meaning.
+
+Let $c_{1:n} = \{c_{t_1}, \dots, c_{t_n}\}$ denote the daily incidence count of COVID-19 in the population. The number of COVID-19 cases in the population at time $t$ is expressed by
+$$
+c_t = \int_{t-1}^{t} \lambda_{s}S_{s}\frac{I_{s}}{N}ds,
+$$ 
+and will be utilized in the observation model as a link to the number of deaths at time $t$, $y_t$.
+The transmission dynamics that result to the generated true COVID-19 infections are expressed as the solution of the aforementioned system of non-linear ODEs and the SDE.
+The integral above cannot be solved analytically, rendering the likelihood function of the incidence data intractable.
+To tackle this, we employ the data augmentation framework of Dureau et al. (2013), under the following approach.
+
+We denote the path of the ODE states vector $V_t = \{S_{t},I_{t},R_{t}\}$ between observation times $t_{i}$ and $t_{j}$ by $V_{i:j}$. The distribution of the incidence data is denoted with $\mathbb{P}_{c}$ with density $p(c_{1:n}\mid V_{0:n},\theta_c)$ and $\theta_c = \gamma$. 
+The ODE states vector $V_t$ can be written as a deterministic function, $g(\cdot)$, of $x_t$ and the parameters $\theta_v = (V_0, \theta_c)$. This function is the solution of the ODE and can be written as an intractable time integral involving $x_{t}$. 
+
+Further, we denote with $\mathbb{P}_{x}$ the distribution of the diffusion $x_t$ defined from the SDE above and $\theta_x = \sigma$. Dureau et al. (2013) discretize the path of $x_t$, and therefore $\lambda_t$ and $V_t$, by introducing $m$ points between each pair of successive observation times $t_i$ and $t_{i+1}$ ($i=0,1,\dots,n-1$). Evaluation of $d\mathbb{P}_{x}$ is performed with the Euler-Maruyama scheme and a Euler discretization time-step $\delta = \frac{1}{m+1}$.
+
+Aiming to compromise between the computational cost and the approximation error of the scheme, we assume $\lambda_t$
+to be constant between each pair of successive observation times $t_i$ and $t_{i+1}$, leading to $m = 0$ and $\delta = 1$. This yields the approximation
+$$
+\begin{equation}
+\begin{cases}
+p(x_{1:n}\mid x_0,\theta_x) = \prod_{t=1}^{n}p(x_t\mid x_{t-1}, \theta_x),\\
+x_t\mid x_{t-1}, \theta_x \sim \operatorname{N}(x_{t-1}, \sigma^2_x).
+\end{cases}
+\end{equation}
+$$ 
+The approximation error can be made arbitrarily small by increasing the user-specified parameter $m$.
+
+Given $x_{0:n}$, the ODE can be solved numerically to obtain $V_{0:n}$ and evaluate $p(c_{1:n}\mid V_{0:n},\theta_c)$. The second source of approximation error stems from the employment of the trapezoidal rule (or any other approach under the umbrella of Runge–Kutta methods) to approximate the solution of the ODE.
+
+## Observation model
+
+The observed COVID-19 deaths $y_{1:n} = \{y_{t_1}, \dots, y_{t_n} \}$ are linked to the number of new daily infections via the probability of death given infection (infection-fatality ratio, "IFR"): deaths at time $t$ occur from infections that were acquired in the previous time points according to their probability of death given infection. 
+Following Flaxman et al. (2020), the expected number of deaths $d_t$ is expressed by
+$$
+d_t = IFR\times \sum_{\tau = 1}^{t-1}c_{\tau}f_{t-\tau},
+$$
+which is a function of: (i) the latent true infections that have occurred in the days before; (ii) the distribution of the time between infection and death, $f$, which is assumed known; (iii) the IFR.
+
+For this analysis we assume that the IFR is fixed at 1%. The distribution of the time between infection and death is assumed to be Gamma distributed with mean 24.2 days and coefficient of variation 0.39 and it is given by
+\begin{equation}
+f \sim \operatorname{Gamma}(6.29, 0.26).
+\end{equation}
+
+\(c_{\tau}\) is the solution of the system of ODEs and \(f\) is discretized via  \(f_1 = \int_{0}^{1.5} f(\tau) d\tau\) and \(f_s = \int_{s-0.5}^{s+0.5} f(\tau) d\tau\) for \(s=2,3,\ldots\), where \(f(\tau)\) is the density of \(f\).
+
+The reported deaths at time $t$, $y_t$, are assumed to follow a Negative-Binomial distribution, 
+$$
+y_t \sim \operatorname{NB}\left(d_t, d_t + \frac{d^2_t}{\phi}\right),
+$$ 
+where $\mathbb{E}[y_t] = d_t$, $\mathbb{V}[y_t] = d_t +\frac{d^2_t}{\phi}$, $\frac{1}{\phi}$ controls the over-dispersion and $\theta_y = \phi^{-1}$. The distribution of the mortality data is denoted by $\mathbb{P}_{y}$ with density $p(y_{1:n}\mid c_{0:n},\theta_y)$.
+
+# Bayesian analysis
+
+## Prior specification
+
+The model is defined by $\mathbb{P}_{y}$, $\mathbb{P}_{c}$, $\mathbb{P}_{x}$:
+
+$$
+\begin{cases}
+x_{1:n}\mid x_0, \theta_x
+&
+\sim 
+\mathbb{P}_{x}(x_{1:n}\mid x_0, \theta_x),
+\\
+c_{1:n}\mid V_{0:n},\theta_c 
+& \sim \mathbb{P}_{c}(c_{1:n}\mid V_{0:n},\theta_c),\;\;\;\;V_{0:n} = g(x_{0:n},\theta_c), \\
+y_{1:n}\mid c_{1:n}, \theta_y
+&\sim 
+\mathbb{P}_{y}(y_{1:n}\mid c_{1:n}, \theta_y)
+\end{cases}
+$$
+and the assigned prior distributions on the model parameters $\theta = \{\theta_c, \theta_x, \theta_y\}$ are expressed through the prior distribution $\pi(\theta)$. 
+
+In order to fit this model to the data, we assumed a Gaussian distribution for $x_0$, $x_0 \sim \operatorname{Normal}(0, 1)$, a Gamma prior distribution for the recovery rate with small variance, reflecting a 7-days infectious period, $\gamma \sim \operatorname{Gamma}(204, 1428)$. 
+
+We relax the assumption of a constant volatility parameter of the Brownian motion, $\theta_x$, by introducing data-driven change-points across the time series to capture potential different responses resulting from adaptive human behavior: the first change-point was assumed on the date "2020-08-01" and the second change-point was assumed on the date "2021-01-10", splitting the time series into three periods. For each period $w$, a half-Gaussian prior for the volatility of the Brownian motion was assumed, $\theta_{x,w} \sim \operatorname{N}^{+}(0, 5), w = 1,2,3$.
+
+For the over-dispersion parameter of the Negative-Binomial distribution we propose a half-Cauchy prior distribution, $\theta_y \sim \operatorname{Cauchy}^{+}(0, 5)$ which is quite heavy-tailed and could allow for a better exploration of the tails of the posterior distribution.
