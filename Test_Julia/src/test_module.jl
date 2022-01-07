@@ -17,8 +17,6 @@ end # End function
 
 function sir_ode(u, p, t)
 		
-    # See https://stackoverflow.com/questions/30626713/creating-an-array-of-arrays-in-julia
-	# https://diffeq.sciml.ai/stable/tutorials/ode_example/
 	n_obs   = p[1]
     n_pop   = p[2]
 	n_difeq = p[3]
@@ -32,16 +30,13 @@ function sir_ode(u, p, t)
     dy_dt = Vector{Float64}(undef, n_difeq)
 	
 	# Time-dependent incidence rate:
-	beta  = 0.1 # Assign an arbitrary floating number, instead of Vector(float64, 1) 
+	beta  = 0.1  
 
-    # Source: 
-	# https://discourse.julialang.org/t/quick-for-and-if-one-line-loop/43199
-	# https://discourse.julialang.org/t/if-elseif-else-performance/24622/8
     for i in 1:n_obs 
         if t >= 0 && t < 1 
 			beta = beta0
         elseif t >= left_t[i] && t <= right_t[i]
-			beta = beta_N[i] #beta[1]
+			beta = beta_N[i]
 		end
     end
 
@@ -82,6 +77,7 @@ end # End function
 				 sigmaBM_cp2,
 				 I_D_rev) = begin
 				 
+  # Initiate the vector of etas:
   eta = Vector(undef, n_obs)
   
   # Initiate the vector of E_cases & E_deaths:
@@ -96,10 +92,9 @@ end # End function
   sigmaBM1 ~ TruncatedNormal(0, sigmaBM_sd, 0, 10) 
   sigmaBM2 ~ TruncatedNormal(0, sigmaBM_sd, 0, 10) 
   sigmaBM3 ~ TruncatedNormal(0, sigmaBM_sd, 0, 10) 
-  
   reciprocal_phiD ~ truncated(Cauchy(0, reciprocal_phi_scale), 0, 10)
   
-  eta[1] ~ TruncatedNormal(0, eta1_sd, 0, 10) 
+  eta[1] ~ TruncatedNormal(0, eta1_sd, 0, 10) # using 10 instead of Inf because numerical issues arose
 
   for i in 2:n_obs
    if i < sigmaBM_cp1 
@@ -129,26 +124,31 @@ end # End function
   push!(p, left_t)
   push!(p, right_t)
   
-  prob = ODEProblem(sir_ode, y_init, ts, p)
-  sol = solve(prob,
-			  Midpoint(),     # Solvers: https://diffeq.sciml.ai/stable/solvers/ode_solve/
-			  saveat = 1.0)   # Obtain the solution at an even grid of 1 time units (Daily data points)
+  ts = Vector{Float64}(ts)
   
-  # Access the solutions
-  y_hat  = Array(sol)[4, :]   # Daily cumulative cases
+  prob = ODEProblem(sir_ode, y_init, ts, p)
+  sol  = solve(prob,
+			   Midpoint(),     # Solvers: https://diffeq.sciml.ai/stable/solvers/ode_solve/
+			   saveat = 1.0)   # Obtain the solution at an even grid of 1 time units (Daily data points)
+  y_hat  = Array(sol)[4, :]    # Daily cumulative cases
 
   for i in 1:n_obs
 
    # Expected new cases by calendar day:
-   E_cases[i] = ifelse(i == 1, y_hat[i], ifelse(y_hat[i] > y_hat[i-1], y_hat[i] - y_hat[i-1], y_hat[i]) )
+   E_cases[i] = y_hat[i] - (i==1 ? 0 : (y_hat[i] > y_hat[i-1] ? y_hat[i-1] : 0) )
 
    # Expected deaths by calendar day:
-   E_deaths[i] = ifelse(i == 1, 1e-010, ifr * dot(front(E_cases,i-1), tail(I_D_rev, i-1)) )
+   if(i == 1) 
+	   E_deaths[i] = 1e-010
+   else 
+	   E_deaths[i] =  ifr * sum(first(E_cases,i-1) .* last(I_D_rev, i-1))
+   end # End if
    
+   # Likelihood:
+   y_deaths[i] ~ NegativeBinomial2(E_deaths[i], phiD)
+
   end # End for
 
-  # Likelihood:
-  y_deaths ~ arraydist(LazyArray(@~ NegativeBinomial2.(E_deaths, phiD)))
 end # End model
 
-end # End module Test_module
+end # End module Single_type_sir
