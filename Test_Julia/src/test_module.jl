@@ -15,42 +15,59 @@ function NegativeBinomial2(mu, phi)
  return NegativeBinomial(r, p)
 end # End function
 
-function sir_ode!(du, u, p, t)
-	
-	# Design of vector p: [nobs, n_pop, gamma, beta0, beta1, ..., betaN, left_t1, ..., left_tN, right_t1,..., right_tN]
+function sir_ode(u, p, t)
+		
+    # See https://stackoverflow.com/questions/30626713/creating-an-array-of-arrays-in-julia
+	# https://diffeq.sciml.ai/stable/tutorials/ode_example/
 	n_obs   = p[1]
     n_pop   = p[2]
-	gamma   = p[3]
-    beta0   = p[4]
-	beta_N  = p[5:(5 + nobs - 1)]
-	left_t  = p[(5 + nobs):(5 + 2*nobs - 1)]
-	right_t = p[(5 + 2*nobs):(5 + 3*nobs - 1)]
+	n_difeq = p[3]
+	gamma   = p[4]
+    beta0   = p[5]
+	beta_N  = p[6]
+	left_t  = p[7]
+	right_t = p[8]
+  
+  	# NOTE: Initialize the vector which returns the solution to the system:
+    dy_dt = Vector{Float64}(undef, n_difeq)
+	
+	# Time-dependent incidence rate:
+	beta  = 0.1 # Assign an arbitrary floating number, instead of Vector(float64, 1) 
 
+    # Source: 
+	# https://discourse.julialang.org/t/quick-for-and-if-one-line-loop/43199
+	# https://discourse.julialang.org/t/if-elseif-else-performance/24622/8
     for i in 1:n_obs 
-	    #beta = ifelse(t >= 0 && t < 1, beta0, ifelse(t >= left_t[i] && t <= right_t[i], beta_N[i]) )
         if t >= 0 && t < 1 
 			beta = beta0
         elseif t >= left_t[i] && t <= right_t[i]
-			beta = beta_N[i]
+			beta = beta_N[i] #beta[1]
 		end
     end
 
     infection = beta * u[1] * u[2] / n_pop 
     recovery = gamma * u[2]
 	
-    @inbounds begin
-	    du[4] = infection
-        du[1] = -infection
-		du[3] = recovery
-        du[2] = du[4] - du[3]
-    end
-    nothing
+	# Dummy compartment to record the cumulative incidence:
+	dy_dt[n_difeq] = infection
+		
+    # S compartment:
+    dy_dt[1] = -infection
+		
+    # R compartment:
+	dy_dt[3] = recovery
+		
+	# I compartment:
+	dy_dt[2] = dy_dt[n_difeq] - dy_dt[3]
+
+     return dy_dt
 end # End function
 
 #---- Model:
 @model bayes_sir(y_deaths, 
 				 n_obs,
 				 n_pop,
+				 n_difeq,
 				 y_init,
 				 ts,
 				 left_t,
@@ -102,14 +119,19 @@ end # End function
   beta_N = exp.(eta)
   
   # ODE solutions:
-  p = [n_obs, n_pop, gamma, beta0, beta_N, left_t, right_t]
- 
-  prob = ODEProblem(sir_ode!,
-	                y_init,
-		            ts,
-		            p)
+  p = Any[]
+  push!(p, n_obs)
+  push!(p, n_pop)
+  push!(p, n_difeq)
+  push!(p, gamma)
+  push!(p, beta0)
+  push!(p, beta_N)
+  push!(p, left_t)
+  push!(p, right_t)
+  
+  prob = ODEProblem(sir_ode, y_init, ts, p)
   sol = solve(prob,
-			  Euler(),        # Solvers: https://diffeq.sciml.ai/stable/solvers/ode_solve/
+			  Midpoint(),     # Solvers: https://diffeq.sciml.ai/stable/solvers/ode_solve/
 			  saveat = 1.0)   # Obtain the solution at an even grid of 1 time units (Daily data points)
   
   # Access the solutions
