@@ -20,5 +20,5 @@
 #' @importFrom utils unstack data
 #'
 #' @references Stan Development Team (2020). RStan: the R interface to Stan. R
-#' package version 2.21.2. https://mc-stan.org
+#' package version 2.21.3. https://mc-stan.org
 NULL
