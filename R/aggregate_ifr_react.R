@@ -57,7 +57,7 @@ aggregate_ifr_react <- function(x,
     else select_indx <- (temp_x$AgeGrpStart >= ifr_react$AgeGrpStart[i]) &
                         (temp_x$AgeGrpEnd   <= ifr_react$AgeGrpEnd[i])
 
-    ifr_react$PopN[i] <- sum(temp_x$PopTotal[select_indx])#/sum(temp_x$PopTotal)
+    ifr_react$PopN[i] <- sum(temp_x$PopTotal[select_indx])
 
   }# End for
 
@@ -69,7 +69,7 @@ aggregate_ifr_react <- function(x,
 
   output[[2]] <- ifr_react %>% as.data.frame() %>%
                  dplyr::left_join(user_AgeGrp,
-                                  by = c("AgeGrp" = "REACT")) %>%  # merge(x = ifr_react, y = user_AgeGrp, by = c("AgeGrp" = "REACT"), all.x = TRUE)
+                                  by = c("AgeGrp" = "REACT")) %>%
                  dplyr::group_by(User) %>%
                  dplyr::mutate(PopPerc = prop.table(PopN),
                                AgrIFR = sum(IFR*PopPerc)) %>%
