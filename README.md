@@ -25,9 +25,23 @@ available at: <https://bernadette-eu.github.io/>
 
 ## Installation
 
-You can install the latest development version of **Bernadette**
-(requires the [devtools](https://github.com/r-lib/devtools) package)
-from [GitHub](https://github.com/) with:
+Installation of the package requires you to have a working C++
+toolchain. To ensure that this is working, please first install
+**rstan** by following these [installation
+instructions](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started)
+from the Rstan wiki.
+
+The following must return `TRUE` before continuing:
+
+    if (!require("pkgbuild")) {
+      install.packages("pkgbuild")
+    }
+    pkgbuild::has_build_tools(debug = TRUE)
+
+Having installed **rstan**, you can then install the latest development
+version of **Bernadette** (requires the
+[devtools](https://github.com/r-lib/devtools) package) from
+[GitHub](https://github.com/) with:
 
 ``` r
 if (!require("devtools")) {
