@@ -3,6 +3,7 @@
 export(age_distribution)
 export(aggregate_age_distribution)
 export(aggregate_contact_matrix)
+export(aggregate_ifr_react)
 export(contact_matrix)
 export(countries_un)
 export(country_contact_matrices)
