@@ -36,7 +36,7 @@ aggregate_ifr_react <- function(x,
   options(dplyr.summarise.inform = FALSE)
 
   #react_AgeGrp <- c("15-44", "45-64", "65-74", "75+")
-  react_AgeGrp <- c("0-9","10-14","15-44", "45-64", "65-74", "75+")
+  react_AgeGrp <- c("0-14", "15-44", "45-64", "65-74", "75+")
 
   if( length(user_AgeGrp$REACT) == length(react_AgeGrp) &
       isTRUE(all.equal(user_AgeGrp$REACT, react_AgeGrp)) == FALSE ) stop("Provide mapping for the REACT study age groups [15-44, 45-64, 65-74, 75+].")
@@ -47,9 +47,8 @@ aggregate_ifr_react <- function(x,
 
   #ifr_react <- data.frame(AgeGrp = c("15-44", "45-64", "65-74", "75-100"),
   #                        IFR    = c(0.03, 0.52, 3.13, 11.64)/100)
-  ifr_react <- data.frame(AgeGrp = c("0-9","10-14","15-44", "45-64", 
-                                     "65-74", "75-100"), 
-                          IFR = c(0.0026, 0.0148, 0.03, 0.52, 3.13, 11.64)/100)						  
+  ifr_react <- data.frame(AgeGrp = c("0-14","15-44", "45-64", "65-74", "75-100"), 
+                          IFR    = c(0, 0.03, 0.52, 3.13, 11.64)/100)			  
 						  
   ifr_react$AgeGrpStart <- sapply(1:nrow(ifr_react), function(x){min(as.numeric(strsplit(ifr_react$AgeGrp, "-")[[x]]))})
   ifr_react$AgeGrpEnd   <- sapply(1:nrow(ifr_react), function(x){max(as.numeric(strsplit(ifr_react$AgeGrp, "-")[[x]]))})
