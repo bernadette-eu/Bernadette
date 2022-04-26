@@ -19,13 +19,12 @@
 #'                              year    = 2020)
 #'
 # Lookup table:
-#'analysis_AgeGrp <- data.frame(REACT = c("15-44", "45-64", "65-74", "75+"),
-#'                              User  = c(rep("0-44", 1),
-#'                                       rep("45-64", 2),
-#'                                       rep("65+",   1)))
+#'age_mapping <- c(rep("0-39",  8),
+#'                 rep("40-64", 5),
+#'                 rep("65+",   3))
 #'
 #'# Aggregate the IFR:
-#'aggr_age <- aggregate_ifr_react(age_distr, analysis_AgeGrp)
+#'aggr_age <- aggregate_ifr_react(age_distr, age_mapping)
 #'
 #'}
 #'
@@ -35,53 +34,40 @@ aggregate_ifr_react <- function(x,
 
   options(dplyr.summarise.inform = FALSE)
 
-  #react_AgeGrp <- c("15-44", "45-64", "65-74", "75+")
-  react_AgeGrp <- c("0-14", "15-44", "45-64", "65-74", "75+")
-
-  if( length(user_AgeGrp$REACT) == length(react_AgeGrp) &
-      isTRUE(all.equal(user_AgeGrp$REACT, react_AgeGrp)) == FALSE ) stop("Provide mapping for the REACT study age groups [15-44, 45-64, 65-74, 75+].")
+  if( length(user_AgeGrp) != nrow(x) ) stop("The mapped age group labels do not correspond to the age group labels of the aggregated age distribution matrix.\n")
 
   temp_x <- x
-  temp_x$AgeGrp    <- gsub("\\+", "-100", temp_x$AgeGrp)
-  temp_x$AgeGrpEnd <- sapply(1:nrow(temp_x), function(x){max(as.numeric(strsplit(temp_x$AgeGrp, "-")[[x]]))})
+  temp_x$AgeGrp        <- gsub("\\+", "-100", temp_x$AgeGrp)
+  temp_x$AgeGrpEnd     <- sapply(1:nrow(temp_x), function(x){max(as.numeric(strsplit(temp_x$AgeGrp, "-")[[x]]))})
+  temp_x$IFR           <- rep(0,nrow(temp_x))
+  temp_x$Group_mapping <- user_AgeGrp
 
-  #ifr_react <- data.frame(AgeGrp = c("15-44", "45-64", "65-74", "75-100"),
-  #                        IFR    = c(0.03, 0.52, 3.13, 11.64)/100)
-  ifr_react <- data.frame(AgeGrp = c("0-14","15-44", "45-64", "65-74", "75-100"), 
-                          IFR    = c(0, 0.03, 0.52, 3.13, 11.64)/100)			  
-						  
+  ifr_react <- data.frame(AgeGrp = c("0-14","15-44", "45-64", "65-74", "75-100"),
+                          IFR    = c(0, 0.03, 0.52, 3.13, 11.64)/100)
+
   ifr_react$AgeGrpStart <- sapply(1:nrow(ifr_react), function(x){min(as.numeric(strsplit(ifr_react$AgeGrp, "-")[[x]]))})
   ifr_react$AgeGrpEnd   <- sapply(1:nrow(ifr_react), function(x){max(as.numeric(strsplit(ifr_react$AgeGrp, "-")[[x]]))})
 
-  #ifr_react$PopPerc <- 0
-
-  for (i in 1:nrow(ifr_react)){
-
-    if (i == 1) select_indx <- temp_x$AgeGrpEnd <= ifr_react$AgeGrpEnd[i]
-    else select_indx <- (temp_x$AgeGrpStart >= ifr_react$AgeGrpStart[i]) &
-                        (temp_x$AgeGrpEnd   <= ifr_react$AgeGrpEnd[i])
-
-    ifr_react$PopN[i] <- sum(temp_x$PopTotal[select_indx])
-
+  for (i in 1:nrow(temp_x)){
+    for (j in 1:nrow(ifr_react)) {
+      if ( (temp_x$AgeGrpStart[i] >= ifr_react$AgeGrpStart[j]) &
+           (temp_x$AgeGrpEnd[i] <= ifr_react$AgeGrpEnd[j]) ) temp_x$IFR[i] <- ifr_react$IFR[j]
+    }# End for
   }# End for
-
-  ifr_react$AgeGrp <- gsub("\\-100", "+", ifr_react$AgeGrp)
 
   output <- list()
 
-  output[[1]] <- ifr_react
+  output[[1]] <- temp_x %>%
+                 as.data.frame() %>%
+                 dplyr::group_by(Group_mapping) %>%
+                 dplyr::mutate(PopPerc = prop.table(PopTotal),
+                               AgrIFR  = sum(IFR*PopPerc))
 
-  output[[2]] <- ifr_react %>% as.data.frame() %>%
-                 dplyr::left_join(user_AgeGrp,
-                                  by = c("AgeGrp" = "REACT")) %>%
-                 dplyr::group_by(User) %>%
-                 dplyr::mutate(PopPerc = prop.table(PopN),
-                               AgrIFR = sum(IFR*PopPerc)) %>%
-                 dplyr::rename(REACT_AgeGrp = AgeGrp,
-                               User_AgeGrp  = User) %>%
-                 dplyr::select(dplyr::one_of(c("User_AgeGrp", "AgrIFR")) ) %>%
-                 dplyr::group_by(User_AgeGrp, AgrIFR) %>%
-                 dplyr::slice(1) %>% as.data.frame()
+  output[[2]] <- output[[1]] %>%
+                 dplyr::select(dplyr::one_of(c("Group_mapping", "AgrIFR")) ) %>%
+                 dplyr::group_by(Group_mapping, AgrIFR) %>%
+                 dplyr::slice(1) %>%
+                 as.data.frame()
 
   return(output)
 }
