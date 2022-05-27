@@ -24,13 +24,12 @@ Function to aggregate the Infection Fatality Ratio (IFR) by age from REACT accor
 age_distr <- age_distribution(country = "Greece",
                              year    = 2020)
 
-analysis_AgeGrp <- data.frame(REACT = c("15-44", "45-64", "65-74", "75+"),
-                             User  = c(rep("0-44", 1),
-                                      rep("45-64", 2),
-                                      rep("65+",   1)))
+age_mapping <- c(rep("0-39",  8),
+                rep("40-64", 5),
+                rep("65+",   3))
 
 # Aggregate the IFR:
-aggr_age <- aggregate_ifr_react(age_distr, analysis_AgeGrp)
+aggr_age <- aggregate_ifr_react(age_distr, age_mapping)
 
 }
 

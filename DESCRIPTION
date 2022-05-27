@@ -1,7 +1,7 @@
 Package: Bernadette
 Type: Package
 Title: Bayesian inference and model selection for stochastic epidemics
-Version: 0.4.3
+Version: 0.4.4
 Author: Lampros Bouranis [aut, cre]
         Nikolaos Demiris [ctb]
         Ioannis Ntzoufras [ctb]
