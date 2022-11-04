@@ -12,10 +12,14 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4dummy_lm_model_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4seeiir_mbm_cp_halfnormal_volatilities_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4seeiir_mbm_ncp_gamma_volatilities_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4seeiir_sbm_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4dummy_lm_model_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dummy_lm_model_mod, 0},
+    {"_rcpp_module_boot_stan_fit4seeiir_mbm_cp_halfnormal_volatilities_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4seeiir_mbm_cp_halfnormal_volatilities_mod, 0},
+    {"_rcpp_module_boot_stan_fit4seeiir_mbm_ncp_gamma_volatilities_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4seeiir_mbm_ncp_gamma_volatilities_mod, 0},
+    {"_rcpp_module_boot_stan_fit4seeiir_sbm_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4seeiir_sbm_mod, 0},
     {NULL, NULL, 0}
 };
 

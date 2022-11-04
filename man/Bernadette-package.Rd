@@ -6,7 +6,7 @@
 \alias{Bernadette}
 \title{Bayesian inference and model selection for stochastic epidemics}
 \description{
-\code{Bernadette} provides Bayesian analysis for stochastic extensions of non-linear dynamic systems using advanced computational algorithms.
+\code{Bernadette} provides Bayesian analysis for stochastic extensions of dynamic non-linear systems using advanced computational algorithms.
 }
 \references{
 Stan Development Team (2020). RStan: the R interface to Stan. R

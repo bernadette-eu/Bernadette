@@ -4,12 +4,14 @@
 \alias{aggregate_ifr_react}
 \title{Aggregate the Infection Fatality Ratio}
 \usage{
-aggregate_ifr_react(x, user_AgeGrp)
+aggregate_ifr_react(x, user_AgeGrp, data_cases)
 }
 \arguments{
 \item{x}{data.frame; an age distribution matrix. See \link[Bernadette]{age_distribution}.}
 
 \item{user_AgeGrp}{data.frame; a user-defined dataframe which maps the four age groups to a new set of age groups.}
+
+\item{data_cases}{data.frame; time series dataset containing the age-stratified infection counts.}
 }
 \value{
 A list of two data frames that contains the aggregated IFR estimates.

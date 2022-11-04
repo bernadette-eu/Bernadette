@@ -6,6 +6,8 @@
 #'
 #' @param user_AgeGrp data.frame; a user-defined dataframe which maps the four age groups to a new set of age groups.
 #'
+#' @param data_cases data.frame; time series dataset containing the age-stratified infection counts.
+#'
 #' @return A list of two data frames that contains the aggregated IFR estimates.
 #'
 #' @references
@@ -37,6 +39,8 @@ aggregate_ifr_react <- function(x,
 
   if( length(user_AgeGrp) != nrow(x) ) stop("The mapped age group labels do not correspond to the age group labels of the aggregated age distribution matrix.\n")
 
+  `%nin%` <- Negate(`%in%`)
+
   ifr_react <- data.frame(AgeGrp = c("0-14","15-44", "45-64", "65-74", "75-100"),
                           IFR    = c(0, 0.03, 0.52, 3.13, 11.64)/100)
 
@@ -67,7 +71,7 @@ aggregate_ifr_react <- function(x,
   output[[1]] <- temp_x %>%
                   as.data.frame() %>%
                   dplyr::group_by(Group_mapping) %>%
-                  dplyr::mutate(PopPerc = prop.table(PopTotal),
+                  dplyr::mutate(PopPerc = base::prop.table(PopTotal),
                                 AgrIFR  = sum(IFR*PopPerc))
 
   #---- Time-independent IFR:
@@ -91,9 +95,9 @@ aggregate_ifr_react <- function(x,
                         dplyr::select(-dplyr::one_of(c("Weight", "AgrIFR")) )
 
   output[[3]] <- reshape(data_cases_weights,
-                         idvar     = "Date",
-                         timevar   = "Group",
-                         direction = "wide")
+                                idvar     = "Date",
+                                timevar   = "Group",
+                                direction = "wide")
   colnames(output[[3]]) <- gsub("Weighted_IFR.", "",
                                 colnames(output[[3]]))
 
