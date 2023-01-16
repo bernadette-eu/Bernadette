@@ -21,18 +21,18 @@
 #' @examples
 #'
 #' \dontrun{
-#' ditd <- discretize_itd(ts_length  = 100,
-#'                        gamma_mean = 24.19231,
-#'                        gamma_cv   = 0.3987261
+#' ditd <- itd_distribution(ts_length  = 100,
+#'                          gamma_mean = 24.19231,
+#'                          gamma_cv   = 0.3987261
 #'}
 #'
 #' @export
 #'
-discretize_itd <- function(ts_length,
-                           gamma_mean = 24.19231,
-                           gamma_cv   = 0.3987261,
-                           gamma_shape= 6.29,
-                           gamma_rate = 0.26
+itd_distribution <- function(ts_length,
+                             gamma_mean = 24.19231,
+                             gamma_cv   = 0.3987261,
+                             gamma_shape= 6.29,
+                             gamma_rate = 0.26
 ){
 
   if ( ( is.numeric(gamma_mean)  & is.numeric(gamma_cv) &
