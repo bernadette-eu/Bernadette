@@ -13,7 +13,7 @@ output: github_document
 
 ## Overview
 
-The **Bernadette** ("Bayesian inference and model selection for stochastic epidemics") R package provides a framework for Bayesian analysis of infectious disease transmission dynamics via diffusion driven multi-type epidemic models with time-varying coefficients, with a particular focus on Coronavirus Disease 2019 (COVID-19). It allows for evaluation of probabilistic forecasts with proper scoring rules, for the purpose of model comparison.
+The **Bernadette** ("Bayesian inference and model selection for stochastic epidemics") R package provides a framework for Bayesian analysis of infectious disease transmission dynamics via diffusion driven multi-type epidemic models with time-varying coefficients, with a particular focus on Coronavirus Disease 2019 (COVID-19). For models fit using Markov chain Monte Carlo, it allows for computation of approximate leave-one-out cross-validation (LOO, LOOIC) or the Widely Applicable Information Criterion (WAIC) using the **loo** package for the purpose of model comparison.
 
 ## Website
 
@@ -43,5 +43,15 @@ devtools::install_github("bernadette-eu/Bernadette", dependencies = TRUE, build_
 library("Bernadette")
 ``` 
 
+## Example - COVID-19 in Greece
+
+## Plotting the posterior estimates of epidemiological quantities
+
 ## License
 This R package is provided for use under the GPL-3.0 License by the author.
+
+## Contributing
+
+File an issue [here](https://github.com/bernadette-eu/Bernadette/issues) if you have identified an issue with the package. 
+We welcome all contributions, in particular those that improve the approach or the robustness of the code base. We also welcome 
+additions and extensions to the underlying model either in the form of options or improvements.

@@ -38,23 +38,22 @@ aggregate_age_distribution <- function(x,
                                        lookup_table
 ){
 
-  options(dplyr.summarise.inform = FALSE)
+  dt <- base::merge(x,
+            			  lookup_table,
+            			  by.x = "AgeGrp",
+            			  by.y = "Initial",
+            			  all.x = TRUE) %>%
+        base::subset(select = !grepl("^AgeGrpStart$", names(.))) %>%
+        stats::aggregate(cbind(PopMale, PopFemale, PopTotal) ~ Mapping,
+                			   data = .,
+                			   FUN = sum) %>%
+        stats::setNames(c("AgeGrp", "PopMale", "PopFemale", "PopTotal"))
 
-  dt <- x %>%
-        as.data.frame() %>%
-        dplyr::left_join(lookup_table,
-                         by = c("AgeGrp" = "Initial")) %>%
-        dplyr::select(-dplyr::one_of(c("AgeGrpStart"))) %>%
-        dplyr::group_by(Mapping) %>%
-        dplyr::summarise(PopMale   = sum(PopMale),
-                         PopFemale = sum(PopFemale),
-                         PopTotal  = sum(PopTotal)) %>%
-        dplyr::rename(AgeGrp = Mapping)
+  dt$Location <- rep(unique(x$Location), dim(dt)[1])
+  dt$Time     <- rep(unique(x$Time),     dim(dt)[1])
 
-   dt$Location <- rep(unique(x$Location), dim(dt)[1])
-   dt$Time     <- rep(unique(x$Time),     dim(dt)[1])
-
-   dt <- dt[c("Location", "Time", "AgeGrp", "PopMale", "PopFemale", "PopTotal")]
+  dt <- dt[c("Location", "Time", "AgeGrp", "PopMale", "PopFemale", "PopTotal")]
 
   return(dt)
+
 }

@@ -6,22 +6,21 @@
 #' @name Bernadette-package
 #' @aliases Bernadette
 #' @useDynLib Bernadette, .registration=TRUE
-#' @rawNamespace import(stats, except = c(recode, lag, filter))
-#' @import dplyr
 #' @import ggplot2
-#' @import lubridate
+#' @importFrom grid unit.c
+#' @importFrom gridExtra grid.arrange arrangeGrob
+#' @importFrom magrittr `%>%`
 #' @import methods
-#' @importFrom readr read_csv cols
+#' @rawNamespace import(Rcpp, except = c(LdFlags,.DollarNames,prompt))
 #' @import RcppParallel
-#' @rawNamespace import(Rcpp, except = c(LdFlags))
 #' @import rstantools
-#' @importFrom rstan sampling
-#' @importFrom scales percent
-#' @import scoringRules
-#' @import tibble
-#' @import tidyr
-#' @importFrom utils unstack data
+#' @importFrom rstan optimizing sampling vb extract
+#' @importFrom scales percent pretty_breaks
+#' @rawNamespace import(stats, except = c(recode, lag, filter))
+#' @import utils
 #'
-#' @references Stan Development Team (2020). RStan: the R interface to Stan. R
-#' package version 2.21.3. https://mc-stan.org
+#' @references
+#' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
+#'
+#' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.21.3. \url{https://mc-stan.org}
 NULL

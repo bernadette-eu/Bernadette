@@ -12,5 +12,5 @@ load(url(giturl))
 
 contact_matrices <- contact_all
 
-# EXport:
+# Export:
 usethis::use_data(contact_matrices, overwrite = TRUE)

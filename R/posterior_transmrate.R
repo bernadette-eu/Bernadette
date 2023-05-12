@@ -1,0 +1,188 @@
+#' Estimate the age-specific transmission rate
+#'
+#' @param object An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.
+#'
+#' @return A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_transmrate}}.
+#'
+#' @examples
+#' \dontrun{
+#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' # Age-specific mortality/incidence count time series:
+#' data(age_specific_mortality_counts)
+#' data(age_specific_infection_counts)
+#'
+#' # Import the age distribution for a country in a given year:
+#' age_distr <- age_distribution(country = "Greece", year = 2020)
+#'
+#' # Lookup table:
+#' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
+#'                           Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
+#'                                       "18-39", "18-39", "18-39", "18-39",
+#'                                       "40-64", "40-64", "40-64", "40-64", "40-64",
+#'                                       "65+", "65+", "65+"))
+#'
+#' # Aggregate the age distribution table:
+#' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
+#'
+#' # Aggregate the contact matrix:
+#' aggr_cm <- aggregate_contact_matrix(cm,
+#'                                     lookup_table,
+#'                                     age.distr = aggr_age)
+#'
+#' # Lookup table:
+#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+#'
+#' # Aggregate the IFR:
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
+#'
+#' # Posterior sampling:
+#' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
+#'                       contact_matrix              = aggr_cm,
+#'                       age_distribution_population = aggr_age,
+#'                       age_specific_ifr            = aggr_age_ifr[[3]],
+#'                       prior_volatility            = normal(location = 0, scale = 1),
+#'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
+#'                       algorithm_inference         = "sampling")
+#'
+#' post_transmrate_summary <- posterior_transmrate(igbm_fit)
+#'
+#' # Visualise the posterior distribution of the age-specific transmission rate:
+#' plot_posterior_transmrate(post_transmrate_summary)
+#' }
+#'}
+#' @export
+posterior_transmrate <- function(object){
+
+  if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
+
+  posterior_draws <- rstan::extract(object$stanfit)
+  cov_data        <- object$standata
+
+  if(ncol(posterior_draws$cm_sample) != cov_data$A) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+
+  beta_draws   <- posterior_draws$beta_trajectory
+  age_grps     <- cov_data$A
+  chain_length <- nrow(beta_draws)
+  ts_length    <- dim(beta_draws)[2]
+  dates        <- cov_data$Date
+
+  data_transmission_rate_cols      <- c("Date", "Group", "median", "low0025", "low25", "high75", "high975")
+  data_transmission_rate           <- data.frame(matrix(ncol = length(data_transmission_rate_cols), nrow = 0))
+  colnames(data_transmission_rate) <- data_transmission_rate_cols
+
+  for (k in 1:age_grps){
+
+    trans_rate_temp          <- matrix(0L, nrow = chain_length, ncol = ts_length)
+    data_trans_rate_age_grp  <- data.frame(Date  = dates,
+                                           Group = rep( colnames(cov_data$y_data)[k], length(dates)
+                                           ))
+
+    for (j in 1:ts_length) trans_rate_temp[,j] <- beta_draws[,j,k] * posterior_draws$cm_sample[,k,k]
+
+    data_trans_rate_age_grp$median  <- apply(trans_rate_temp, 2, median)
+    data_trans_rate_age_grp$low0025 <- apply(trans_rate_temp, 2, quantile, probs = c(0.025)) # c(0.025)
+    data_trans_rate_age_grp$low25   <- apply(trans_rate_temp, 2, quantile, probs = c(0.25))  # c(0.025)
+    data_trans_rate_age_grp$high75  <- apply(trans_rate_temp, 2, quantile, probs = c(0.75))  # c(0.975)
+    data_trans_rate_age_grp$high975 <- apply(trans_rate_temp, 2, quantile, probs = c(0.975)) # c(0.975)
+
+    data_transmission_rate <- rbind(data_transmission_rate,  data_trans_rate_age_grp)
+
+  }# End for
+
+  return(data_transmission_rate)
+}
+
+#' Plot the estimated age-specific transmission rate
+#'
+#' @param object A dataframe from \code{\link[Bernadette]{posterior_transmrate}}.
+#'
+#' @param xlab character; Title of x-axis.
+#'
+#' @param ylab character; Title of y-axis.
+#'
+#' @param ... Optional arguments passed to \code{\link[ggplot2]{facet_wrap}}, \code{\link[ggplot2]{scale_x_date}} and \code{\link[ggplot2]{theme}}.
+#'
+#' @return A \code{ggplot} object which can be further customised using the \pkg{ggplot2} package.
+#'
+#' @seealso \code{\link{posterior_transmrate}}.
+#'
+#' @examples
+#' \dontrun{
+#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' # Age-specific mortality/incidence count time series:
+#' data(age_specific_mortality_counts)
+#' data(age_specific_infection_counts)
+#'
+#' # Import the age distribution for a country in a given year:
+#' age_distr <- age_distribution(country = "Greece", year = 2020)
+#'
+#' # Lookup table:
+#' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
+#'                           Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
+#'                                       "18-39", "18-39", "18-39", "18-39",
+#'                                       "40-64", "40-64", "40-64", "40-64", "40-64",
+#'                                       "65+", "65+", "65+"))
+#'
+#' # Aggregate the age distribution table:
+#' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
+#'
+#' # Aggregate the contact matrix:
+#' aggr_cm <- aggregate_contact_matrix(cm,
+#'                                     lookup_table,
+#'                                     age.distr = aggr_age)
+#'
+#' # Lookup table:
+#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+#'
+#' # Aggregate the IFR:
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
+#'
+#' # Posterior sampling:
+#' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
+#'                       contact_matrix              = aggr_cm,
+#'                       age_distribution_population = aggr_age,
+#'                       age_specific_ifr            = aggr_age_ifr[[3]],
+#'                       prior_volatility            = normal(location = 0, scale = 1),
+#'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
+#'                       algorithm_inference         = "sampling")
+#'
+#' post_transmrate_summary <- posterior_transmrate(igbm_fit)
+#'
+#' # Visualise the posterior distribution of the age-specific transmission rate:
+#' plot_posterior_transmrate(post_transmrate_summary)
+#' }
+#'}
+#' @export
+plot_posterior_transmrate <- function(object,
+                                      xlab = NULL,
+                                      ylab = NULL,
+                                      ...
+){
+
+
+  if (is.null(xlab)) xlab <- "Epidemiological Date"
+  if (is.null(ylab)) ylab <- "Transmission rate"
+
+  ret <-
+    ggplot2::ggplot(object) +
+    ggplot2::facet_wrap(. ~ Group, ...) +
+    ggplot2::geom_line(ggplot2::aes(x     = Date,
+                                    y     = median,
+                                    color = "Median"),
+                                size  = 1.3) +
+    ggplot2::geom_ribbon(ggplot2::aes(x    = Date,
+                                      ymin = low25,
+                                      ymax = high75,
+                                      fill = "50% CrI"),
+                                   alpha = 0.6) +
+    ggplot2::labs(x = xlab, y = ylab) +
+    ggplot2::scale_x_date(...) +
+    ggplot2::scale_fill_manual(values = c("50% CrI" = "gray40")) +
+    ggplot2::scale_colour_manual(name = '', values = c('Median' = "black")) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "bottom",
+                   legend.title    = ggplot2::element_blank(),
+                   ...)
+
+  ret
+}

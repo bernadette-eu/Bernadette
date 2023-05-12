@@ -2,6 +2,8 @@
 #'
 #' @param x data.frame; the age distribution matrix. See \link[Bernadette]{age_distribution} and \link[Bernadette]{aggregate_age_distribution}.
 #'
+#' @return Bar plot of the age distribution
+#'
 #' @references
 #' United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, Online Edition. Rev. 1.
 #'
@@ -22,8 +24,7 @@
 #'                                       " 65+", "65+", "65+"))
 #'
 #'# Aggregate the age distribution table:
-#'aggr_age <- aggregate_age_distribution(age_distr,
-#'                                       lookup_table)
+#'aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
 #'# Plot the aggregated age distribution matrix:
 #'plot_age_distribution(aggr_age)
@@ -34,23 +35,23 @@
 #'
 plot_age_distribution <- function(x) {
 
-  percentage_data <- x %>%
-                     dplyr::select(one_of(c("AgeGrp", "PopTotal"))) %>%
-                     dplyr::summarise(proportion = PopTotal/sum(PopTotal))
+  percentage_data <- x[c("AgeGrp", "PopTotal")]
+  percentage_data$proportion = percentage_data$PopTotal/sum(percentage_data$PopTotal)
+
   percentage_data$AgeGrp <- x$AgeGrp
 
   levs <- as.factor( percentage_data$AgeGrp )
   levs <- factor(levs, levels = percentage_data$AgeGrp)
 
   out <- percentage_data %>%
-         ggplot2::ggplot(aes(x = AgeGrp,
-                             y = proportion)) +
-         ggplot2::geom_bar(stat = "identity", fill = "steelblue4") +
-         ggplot2::xlim(levs) +
-         ggplot2::xlab("Age group (years)") +
-         ggplot2::ylab("Proportion of the population") +
-         ggplot2::scale_y_continuous(labels = scales::percent) +
-         ggplot2::theme_bw()
+    ggplot2::ggplot(aes(x = AgeGrp,
+                        y = proportion)) +
+    ggplot2::geom_bar(stat = "identity", fill = "steelblue4") +
+    ggplot2::xlim(levs) +
+    ggplot2::labs(x = "Age group (years)",
+                  y = "Proportion of the population") +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::theme_bw()
 
   return(out)
 }

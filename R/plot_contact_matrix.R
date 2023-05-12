@@ -4,6 +4,8 @@
 #'
 #' @return A heatmap of a contact matrix for a particular country.
 #'
+#' @return Heatmap of a contact matrix
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -18,11 +20,18 @@ plot_contact_matrix <- function(x) {
 
   levs <- as.factor( colnames(x) )
   levs <- factor(levs, levels = colnames(x))
+  x$indiv_age <- rownames(x)
 
-  plot_data <- x %>%
-               as.data.frame() %>%
-               tibble::rownames_to_column("indiv_age") %>%
-               tidyr::pivot_longer(-c(indiv_age), names_to = "contact_age", values_to = "contact")
+  plot_data <- stats::reshape(x,
+                              idvar     = "indiv_age",
+                              timevar   = "contact_age",
+                              v.names   = "contact",
+                              varying   = list(names(x)[1:(ncol(x)-1)]),
+                              times     = colnames(x)[-ncol(x)],
+                              direction = "long")
+  rownames(plot_data) <- NULL
+
+  plot_data <- plot_data[order(plot_data$indiv_age, plot_data$contact_age), ]
 
   out <- ggplot2::ggplot(plot_data,
                          ggplot2::aes(y    = contact_age,
@@ -30,8 +39,8 @@ plot_contact_matrix <- function(x) {
          ggplot2::geom_tile(ggplot2::aes(fill = contact)) +
          ggplot2::xlim(levs) +
          ggplot2::ylim(levs) +
-         ggplot2::xlab("Age of individual") +
-         ggplot2::ylab("Age of contact") +
+         ggplot2::labs(x = "Age of individual",
+                       y = "Age of contact") +
          ggplot2::coord_cartesian(expand = FALSE) +
          ggplot2::scale_fill_continuous(guide = ggplot2::guide_legend(), type ="viridis") +
          ggplot2::guides(fill = ggplot2::guide_colourbar(barwidth = 0.5, title = "Contact rate") ) +

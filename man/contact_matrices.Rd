@@ -8,7 +8,7 @@
 An object of class \code{list} of length 177.
 }
 \usage{
-contact_matrices
+data(contact_matrices)
 }
 \description{
 A list of 16 by 16 contact matrices for 177 countries.

@@ -11,6 +11,8 @@ plot_contact_matrix(x)
 }
 \value{
 A heatmap of a contact matrix for a particular country.
+
+Heatmap of a contact matrix
 }
 \description{
 Contact matrix heatmap

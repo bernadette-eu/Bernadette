@@ -9,7 +9,7 @@ aggregate_contact_matrix(x, lookup_table, age.distr)
 \arguments{
 \item{x}{data.frame; a contact matrix. See \link[Bernadette]{contact_matrix}.}
 
-\item{lookup_table}{data.frame; a user-defined dataframe which maps the sixteen 5-year age bands to a new set of age bands.}
+\item{lookup_table}{data.frame; a user-defined data.frame which maps the sixteen 5-year age bands to a new set of age bands.}
 
 \item{age.distr}{data.frame; the aggregated age distribution. See \link[Bernadette]{aggregate_contact_matrix}.}
 }

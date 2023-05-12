@@ -9,6 +9,9 @@ plot_age_distribution(x)
 \arguments{
 \item{x}{data.frame; the age distribution matrix. See \link[Bernadette]{age_distribution} and \link[Bernadette]{aggregate_age_distribution}.}
 }
+\value{
+Bar plot of the age distribution
+}
 \description{
 Plot the age distribution
 }
@@ -28,8 +31,7 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
                                       " 65+", "65+", "65+"))
 
 # Aggregate the age distribution table:
-aggr_age <- aggregate_age_distribution(age_distr,
-                                      lookup_table)
+aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
 # Plot the aggregated age distribution matrix:
 plot_age_distribution(aggr_age)

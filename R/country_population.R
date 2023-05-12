@@ -5,7 +5,7 @@
 #'
 #' @param country character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}. See \link[Bernadette]{countries_un}.
 #'
-#' @param year numeric; calendar year
+#' @param year numeric; calendar year.
 #'
 #' @return An object of type "numeric", containing the population figure for a given country and calendar year.
 #'

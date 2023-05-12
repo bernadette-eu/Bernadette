@@ -20,7 +20,7 @@ A data frame with 1,164,891 rows and 7 variables:
 \url{https://population.un.org/}
 }
 \usage{
-demographics_un
+data(demographics_un)
 }
 \description{
 A dataset containing the age distribution per country and per year. Information is broken

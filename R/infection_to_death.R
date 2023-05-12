@@ -2,7 +2,7 @@
 #'
 #' Function to discretize the infection-to-death distribution
 #'
-#' @param ts_length numeric; time from infection to death (days).
+#' @param ts_length integer; time from infection to death in days.
 #'
 #' @param gamma_mean numeric; mean of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.
 #'
@@ -14,7 +14,7 @@
 #'
 #' @references
 #' Flaxman et al (2020). Estimating the effects of non-pharmaceutical interventions on COVID-19 in Europe.
-#' Nature, 584, 257–261.
+#' Nature, 584, 257-261.
 #'
 #' @return A vector of length \emph{ts_length}.
 #'

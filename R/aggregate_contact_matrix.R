@@ -4,7 +4,7 @@
 #'
 #' @param x data.frame; a contact matrix. See \link[Bernadette]{contact_matrix}.
 #'
-#' @param lookup_table data.frame; a user-defined dataframe which maps the sixteen 5-year age bands to a new set of age bands.
+#' @param lookup_table data.frame; a user-defined data.frame which maps the sixteen 5-year age bands to a new set of age bands.
 #'
 #' @param age.distr data.frame; the aggregated age distribution. See \link[Bernadette]{aggregate_contact_matrix}.
 #'
@@ -46,38 +46,52 @@ aggregate_contact_matrix <- function(x,
                                      age.distr
 ){
 
-  if( !identical( unique(lookup_table$Mapping), age.distr$AgeGrp) ) stop("The mapped age group labels do not correspond to the age group labels of the aggregated age distribution matrix.\n")
+  if(!identical(unique(lookup_table$Mapping), age.distr$AgeGrp)) {
+    stop("The mapped age group labels do not correspond to the age group labels of the aggregated age distribution matrix.\n")
+  }
 
-  options(dplyr.summarise.inform = FALSE)
+  long_dt           <- as.data.frame(x)
+  long_dt$indiv_age <- rownames(x)
 
-  long_dt <- x %>%
-             as.data.frame() %>%
-             tibble::rownames_to_column("indiv_age") %>%
-             tidyr::pivot_longer(-c(indiv_age),
-                                 names_to  = "contact_age",
-                                 values_to = "contact")
+  long_dt <- stats::reshape(long_dt,
+                            varying   = list(names(long_dt)[-ncol(long_dt)]),
+                            direction = "long",
+                            sep       = "_",
+                            timevar   = "contact_age",
+                            times     = colnames(long_dt)[-ncol(long_dt)],
+                            v.names   = "contact")
+  long_dt$id <- NULL
 
   long_dt$indiv_age   <- as.factor(long_dt$indiv_age)
   long_dt$contact_age <- as.factor(long_dt$contact_age)
 
-  long_dt <- long_dt %>%
-              dplyr::left_join(lookup_table,
-                               by = c("indiv_age" = "Initial")) %>%
-              dplyr::rename(indiv_age_agr = Mapping) %>%
-              dplyr::left_join(lookup_table,
-                               by = c("contact_age" = "Initial")) %>%
-              dplyr::mutate(diag_element = ifelse(indiv_age == contact_age, TRUE, FALSE)) %>%
-              dplyr::rename(contact_age_agr = Mapping) %>%
-              dplyr::group_by(indiv_age_agr, contact_age_agr, diag_element) %>%
-              dplyr::summarise(mean_cm   = mean(contact)) %>%
-              dplyr::group_by(indiv_age_agr, contact_age_agr) %>%
-              dplyr::summarise(mean_cm   = sum(mean_cm))
+  names(lookup_table) <- c("indiv_age", "indiv_age_agr")
+  long_dt <- base::merge(long_dt, lookup_table, by = "indiv_age", all.x = TRUE)
 
-  cm_to_rescale <- utils::unstack(long_dt[,c(1,2,3)], mean_cm ~ contact_age_agr)
-  age_bands     <- length( unique(age.distr$AgeGrp) )
-  out           <- matrix(0, age_bands, age_bands)
+  names(lookup_table) <- c("contact_age", "contact_age_agr")
+  long_dt <- base::merge(long_dt, lookup_table, by = "contact_age", all.x = TRUE)
 
-  for (i in 1:age_bands) for (j in 1:age_bands) out[i,j] <- 0.5*(1/age.distr$PopTotal[i])*(cm_to_rescale[i,j]*age.distr$PopTotal[i] + cm_to_rescale[j,i]*age.distr$PopTotal[j] )
+  long_dt$diag_element <- ifelse(long_dt$indiv_age == long_dt$contact_age, TRUE, FALSE)
+
+  dt <- stats::aggregate(long_dt$contact, by = list(long_dt$indiv_age_agr, long_dt$contact_age_agr, long_dt$diag_element), mean)
+  names(dt) <- c("indiv_age_agr", "contact_age_agr", "diag_element", "mean_cm")
+
+  dt <- stats:aggregate(dt$mean_cm, by = list(dt$indiv_age_agr, dt$contact_age_agr), sum)
+  names(dt) <- c("indiv_age_agr", "contact_age_agr", "mean_cm")
+
+  cm_to_rescale <- as.matrix(reshape(dt, idvar = "indiv_age_agr", timevar = "contact_age_agr", direction = "wide"))
+
+  cm_to_rescale <- cm_to_rescale[,2:ncol(cm_to_rescale)]
+  class(cm_to_rescale) <- "numeric"
+
+  age_bands <- length(unique(age.distr$AgeGrp))
+  out <- matrix(0, age_bands, age_bands)
+
+  for (i in seq(1, age_bands, 1)) {
+    for (j in seq(1, age_bands, 1)) {
+      out[i,j] <- 0.5*(1/age.distr$PopTotal[i])*(cm_to_rescale[i,j]*age.distr$PopTotal[i] + cm_to_rescale[j,i]*age.distr$PopTotal[j])
+    }
+  }
 
   rownames(out) <- colnames(out) <- unique(long_dt$indiv_age_agr)
 

@@ -1,51 +1,48 @@
-Package: Bernadette
 Type: Package
+Package: Bernadette
 Title: Bayesian inference and model selection for stochastic epidemics
-Version: 1.0.1
-Author: Lampros Bouranis [aut, cre]
-        Nikolaos Demiris [ctb]
-        Konstantinos Kalogeropoulos [ctb]
+Version: 1.1.1
+Authors@R: 
+    person("Lampros", "Bouranis", , "bernadette.aueb@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1291-2192"))
 Maintainer: Lampros Bouranis <bernadette.aueb@gmail.com>
-Description: Bayesian analysis for stochastic extensions of non-linear dynamic systems using advanced computational algorithms.
+Description: Bayesian analysis for stochastic extensions of non-linear
+    dynamic systems using advanced computational algorithms.
 License: GPL (>= 3)
 URL: https://bernadette-eu.github.io/
 BugReports: https://github.com/bernadette-eu/Bernadette/issues/
-Depends: R (>= 4.1)
 Imports: 
-    dplyr (>= 1.0.7),
-    ggplot2 (>= 3.3.5),
-    lubridate (>= 1.7.0),
+    ggplot2,
+    grid,
+    gridExtra,
+    magrittr,
     methods,
-    Rcpp (>= 0.12.0),
+    Rcpp (>= 1.0.8.3),
+    RcppParallel,
+    rstantools,
+    rstan (>= 2.21.3),
+    scales,
+    stats,
+    utils
+Suggests: 
+    knitr,
+    markdown,
+    rmarkdown,
+    roxygen2,
+    StanHeaders (>= 2.21.0),
+LinkingTo: 
+    BH (>= 1.78.0-0),
+    Rcpp (>= 1.0.8.3),
+    RcppEigen (>= 0.3.3.9.1),
     RcppParallel (>= 5.0.1),
-    readr (>= 1.4.0),
-    rstan (>= 2.18.1),
-    rstantools (>= 2.1.1),
-    scales (>= 1.1.1),
-    scoringRules (>= 1.0.0),
-    tibble (>= 3.1.2),
-    tidyr (>= 1.1.3),
-    utils (>= 4.1.0)
+    rstan (>= 2.21.3),
+    StanHeaders (>= 2.21.0)
+VignetteBuilder: 
+    knitr
+Biarch: true
+Encoding: UTF-8
+Language: en-US
 LazyData: true
 LazyDataCompression: xz
-Encoding: UTF-8
-RoxygenNote: 7.2.1
-Suggests: 
-    testthat (>= 3.0.0),
-    covr,
-    markdown,
-    spelling,
-    knitr,
-    rmarkdown
-Config/testthat/edition: 3
-Language: en-US
-VignetteBuilder: knitr
-Biarch: true
-LinkingTo: 
-    BH (>= 1.66.0),
-    Rcpp (>= 0.12.0),
-    RcppEigen (>= 0.3.3.3.0),
-    RcppParallel (>= 5.0.1),
-    rstan (>= 2.18.1),
-    StanHeaders (>= 2.18.0)
+RoxygenNote: 7.2.3
 SystemRequirements: GNU make
