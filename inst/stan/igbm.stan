@@ -7,7 +7,7 @@ data {
 }
 
 transformed data {
-#include /priors/tdata_igbm.stan
+#include /model/tdata_igbm.stan
 }
 
 parameters {
