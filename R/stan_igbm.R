@@ -135,7 +135,7 @@
 #'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-#'                       algorithm_inference         = "sampling")
+#'                       algorithm_inference         = "optimizing")
 #' }
 #'}
 #' @export

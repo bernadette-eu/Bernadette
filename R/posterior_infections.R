@@ -51,7 +51,7 @@
 #'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-#'                       algorithm_inference         = "sampling")
+#'                       algorithm_inference         = "optimizing")
 #'
 #' post_inf_summary <- plot_posterior_infections(igbm_fit)
 #'
@@ -169,7 +169,7 @@ posterior_infections <- function(object){
 #'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-#'                       algorithm_inference         = "sampling")
+#'                       algorithm_inference         = "optimizing")
 #'
 #' post_inf_summary <- plot_posterior_infections(igbm_fit)
 #'
