@@ -17,7 +17,7 @@
 #' @param age_distribution_population data.frame;
 #' the age distribution of a given population. See \code{aggregate_age_distribution}.
 #'
-#' @param itd_distr;
+#' @param itd_distr vector;
 #' Infection-to-death distribution. A vector of length \emph{ts_length}.
 #'
 #' @param age_specific_ifr data.frame;

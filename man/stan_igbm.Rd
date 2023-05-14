@@ -56,6 +56,9 @@ the age distribution of a given population. See \code{aggregate_age_distribution
 \item{age_specific_ifr}{data.frame;
 time-varying age-specific infection-fatality ratio. See \code{aggregate_ifr_react}.}
 
+\item{itd_distr}{vector;
+Infection-to-death distribution. A vector of length \emph{ts_length}.}
+
 \item{incubation_period}{integer;
 length of incubation period in days. Must be >=1.}
 
@@ -110,8 +113,6 @@ seed for the random number generator. See \code{set.seed}.}
 \item{standata_preprocessed}{A named list providing the data for the model. See \code{\link[rstan]{sampling}}.}
 
 \item{algorithm}{See \code{algorithm} in \link[Bernadette]{stan_igbm}.}
-
-\item{itd_distr;}{Infection-to-death distribution. A vector of length \emph{ts_length}.}
 }
 \description{
 A Bayesian evidence synthesis approach to model the age-specific transmission
