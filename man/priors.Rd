@@ -107,7 +107,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       age_specific_ifr            = aggr_age_ifr[[3]],
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "sampling")
+                      algorithm_inference         = "optimizing")
 }
 }
 
@@ -155,7 +155,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       likelihood_variance_type    = "quadratic",
                       prior_volatility            = N05,
                       prior_nb_dispersion         = Gamma22,
-                      algorithm_inference         = "sampling")
+                      algorithm_inference         = "optimizing")
 }
 }
 \seealso{

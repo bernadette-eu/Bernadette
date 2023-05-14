@@ -61,7 +61,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       likelihood_variance_type    = "quadratic",
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "sampling")
+                      algorithm_inference         = "optimizing")
 
 # Visualise the posterior distribution of the random contact matrix:
 plot_posterior_cm(igbm_fit)
