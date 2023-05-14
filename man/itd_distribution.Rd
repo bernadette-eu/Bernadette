@@ -13,15 +13,20 @@ itd_distribution(
 )
 }
 \arguments{
-\item{ts_length}{integer; time from infection to death in days.}
+\item{ts_length}{integer;
+time from infection to death in days.}
 
-\item{gamma_mean}{numeric; mean of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.}
+\item{gamma_mean}{numeric;
+mean of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.}
 
-\item{gamma_cv}{numeric; coefficient of variation of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.}
+\item{gamma_cv}{numeric;
+coefficient of variation of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.}
 
-\item{gamma_shape}{numeric; shape parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.}
+\item{gamma_shape}{numeric;
+shape parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.}
 
-\item{gamma_rate}{numeric; rate parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.}
+\item{gamma_rate}{numeric;
+rate parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.}
 }
 \value{
 A vector of length \emph{ts_length}.
@@ -34,7 +39,7 @@ Function to discretize the infection-to-death distribution
 \dontrun{
 ditd <- itd_distribution(ts_length  = 100,
                          gamma_mean = 24.19231,
-                         gamma_cv   = 0.3987261
+                         gamma_cv   = 0.3987261)
 }
 
 }

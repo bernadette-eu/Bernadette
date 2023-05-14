@@ -119,6 +119,11 @@
 #'
 #' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 #'
+#' # Infection-to-death distribution:
+#' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
+#'                          gamma_mean = 24.19231,
+#'                          gamma_cv   = 0.3987261)
+#'
 #' # Can assign priors to names:
 #' N05      <- normal(0, 5)
 #' Gamma22  <- gamma(2,2)
@@ -126,7 +131,8 @@
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
-#'                       likelihood_variance_type    = 0,
+#'                       itd_distr                   = ditd,
+#'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = N05,
 #'                       prior_nb_dispersion         = Gamma22,
 #'                       algorithm_inference         = "sampling")

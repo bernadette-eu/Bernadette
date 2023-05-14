@@ -17,6 +17,9 @@
 #' @param age_distribution_population data.frame;
 #' the age distribution of a given population. See \code{aggregate_age_distribution}.
 #'
+#' @param itd_distr;
+#' Infection-to-death distribution. A vector of length \emph{ts_length}.
+#'
 #' @param age_specific_ifr data.frame;
 #' time-varying age-specific infection-fatality ratio. See \code{aggregate_ifr_react}.
 #'
@@ -118,12 +121,18 @@
 #'
 #' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 #'
+#' # Infection-to-death distribution:
+#' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
+#'                          gamma_mean = 24.19231,
+#'                          gamma_cv   = 0.3987261)
+#'
 #' # Posterior sampling:
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
-#'                       likelihood_variance_type    = 0,
+#'                       itd_distr                   = ditd,
+#'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "sampling")
@@ -135,6 +144,7 @@ stan_igbm <-
            contact_matrix,
            age_distribution_population,
            age_specific_ifr,
+           itd_distr,
            incubation_period         = 3,
            infectious_period         = 4,
            likelihood_variance_type  = c("quadratic", "linear"),
@@ -171,6 +181,9 @@ stan_igbm <-
     if( !identical(y_data$Date, age_specific_ifr$Date ) )
       stop("The ordering of the dates between the dataset 'y_data' and the dataset 'age_specific_ifr' must be identical.")
 
+    if( length(itd_distr) != nrow(y_data) )
+      stop("The length of 'itd_distr' must be equal to the number of rows of 'y_data'.")
+
     if( incubation_period  == 0)
       stop("'incubation_period' must be set to a positive integer number.")
 
@@ -203,6 +216,7 @@ stan_igbm <-
             n_difeq            = length(c("S", "E", "E", "I", "I", "C")),
             L_cm               = t( base::chol( base::diag(age_distribution_population$PopTotal) %*% as.matrix(contact_matrix) ) ),
             age_specific_ifr   = age_specific_ifr[,-1], # Remove the Date column
+            I_D                = itd_distr,
             t0                 = 0,
             ts                 = y_data$Index,
             left_t             = y_data$Index,

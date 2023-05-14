@@ -2,15 +2,20 @@
 #'
 #' Function to discretize the infection-to-death distribution
 #'
-#' @param ts_length integer; time from infection to death in days.
+#' @param ts_length integer;
+#' time from infection to death in days.
 #'
-#' @param gamma_mean numeric; mean of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.
+#' @param gamma_mean numeric;
+#' mean of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.
 #'
-#' @param gamma_cv numeric; coefficient of variation of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.
+#' @param gamma_cv numeric;
+#' coefficient of variation of a gamma distribution, for a given shape and rate. See also \code{\link[stats]{GammaDist}}.
 #'
-#' @param gamma_shape numeric; shape parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.
+#' @param gamma_shape numeric;
+#' shape parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.
 #'
-#' @param gamma_rate numeric; rate parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.
+#' @param gamma_rate numeric;
+#' rate parameter of a gamma distribution. See also \code{\link[stats]{GammaDist}}.
 #'
 #' @references
 #' Flaxman et al (2020). Estimating the effects of non-pharmaceutical interventions on COVID-19 in Europe.
@@ -23,7 +28,7 @@
 #' \dontrun{
 #' ditd <- itd_distribution(ts_length  = 100,
 #'                          gamma_mean = 24.19231,
-#'                          gamma_cv   = 0.3987261
+#'                          gamma_cv   = 0.3987261)
 #'}
 #'
 #' @export

@@ -36,11 +36,18 @@
 #' # Aggregate the IFR:
 #' aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
 #'
+#' # Infection-to-death distribution:
+#' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
+#'                          gamma_mean = 24.19231,
+#'                          gamma_cv   = 0.3987261)
+#'
 #' # Posterior sampling:
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
+#'                       itd_distr                   = ditd,
+#'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "sampling")
@@ -137,12 +144,18 @@ posterior_transmrate <- function(object){
 #'
 #' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 #'
+#' # Infection-to-death distribution:
+#' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
+#'                          gamma_mean = 24.19231,
+#'                          gamma_cv   = 0.3987261)
+#'
 #' # Posterior sampling:
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
-#'                       likelihood_variance_type    = 0,
+#'                       itd_distr                   = ditd,
+#'                       likelihood_variance_type    = "quadratic",
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "sampling")
