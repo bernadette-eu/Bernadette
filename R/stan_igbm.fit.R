@@ -1,6 +1,13 @@
 # Part of the Bernadette package for estimating model parameters
 #
 #' @rdname stan_igbm
+#'
+#' @param standata_preprocessed
+#' A named list providing the data for the model. See \code{\link[rstan]{sampling}}.
+#'
+#' @param algorithm
+#' See \code{algorithm} in \link[Bernadette]{stan_igbm}.
+#'
 #' @export
 #'
 stan_igbm.fit <-
@@ -8,19 +15,17 @@ stan_igbm.fit <-
            prior_volatility,
            prior_nb_dispersion,
            algorithm,
-           nChains,
            nBurn,
            nPost,
            nThin,
            adapt_delta   = NULL,
            max_treedepth = NULL,
            seed,
-           ....
+           ...
           ) {
 
-    algorithm_inference <- match.arg(algorithm)
-    nIter               <- nBurn + nPost
-    nBurnin             <- nBurn
+    nIter   <- nBurn + nPost
+    nBurnin <- nBurn
 
     #---- Useless assignments to pass R CMD check
     prior_dist_volatility       <- prior_dist_nb_dispersion <-
@@ -84,7 +89,7 @@ stan_igbm.fit <-
     stanfit <- stanmodels$igbm
 
     #---- Optimizing:
-    if (algorithm_inference == "optimizing") {
+    if (algorithm == "optimizing") {
 
       optimizing_args <- list(...)
 
@@ -105,7 +110,7 @@ stan_igbm.fit <-
     #---- Sampling:
     } else {
 
-      if (algorithm_inference == "sampling") {
+      if (algorithm == "sampling") {
 
          optimizing_args <- list(...)
 
@@ -166,15 +171,14 @@ stan_igbm.fit <-
           )
         }
 
-        # algorithm either "meanfield" or "fullrank"
+        # Algorithm either "meanfield" or "fullrank"
         stanfit <- rstan::vb(stanfit,
                              data      = standata,
                              pars      = parameters,
                              seed      = seed,
                              init      = sampler_init,
-                             algorithm = algorithm_inference,
+                             algorithm = algorithm,
                              ...)
-
       }
 
       #---- Production of output:

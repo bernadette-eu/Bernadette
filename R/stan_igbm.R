@@ -9,16 +9,16 @@
 #' in transmission influenced by phenomena like public health interventions and changes in human behaviour.
 #'
 #' @param y_data data.frame;
-#' age-specific mortality counts in time. See \code{\link[Bernadette]{data(age_specific_mortality_counts)}}.
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
 #'
 #' @param contact_matrix matrix;
 #' a squared matrix representing the the number of contacts between age groups.
 #'
 #' @param age_distribution_population data.frame;
-#' the age distribution of a given population. See \code{\link[Bernadette]{aggregate_age_distribution}}.
+#' the age distribution of a given population. See \code{aggregate_age_distribution}.
 #'
 #' @param age_specific_ifr data.frame;
-#' time-varying age-specific infection-fatality ratio. See \code{\link[Bernadette]{aggregate_ifr_react}}.
+#' time-varying age-specific infection-fatality ratio. See \code{aggregate_ifr_react}.
 #'
 #' @param incubation_period integer;
 #' length of incubation period in days. Must be >=1.
@@ -48,10 +48,10 @@
 #'
 #' @param prior_nb_dispersion
 #' Prior distribution for the dispersion parameter \code{phi} of the over-dispersed count model.
-#' Same options as for \code{prior}.
+#' Same options as for \code{prior_volatility}.
 #'
 #' @param algorithm_inference
-#' One of the sampling algorithms that are implemented in Stan. . See \code{\link[rstan]{stan}}.
+#' One of the sampling algorithms that are implemented in Stan. See \code{\link[rstan]{stan}}.
 #'
 #' @param nBurn integer;
 #' number of burn-in iterations at the beginning of an MCMC run. See \code{\link[rstan]{sampling}}.
@@ -100,37 +100,36 @@
 #'
 #' # Lookup table:
 #' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
-#'                           Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-#'                                       "18-39", "18-39", "18-39", "18-39",
-#'                                       "40-64", "40-64", "40-64", "40-64", "40-64",
-#'                                       "65+", "65+", "65+"))
+#'                           Mapping = c(rep("0-39",  8),
+#'                                       rep("40-64", 5),
+#'                                       rep("65+"  , 3)))
 #'
 #' # Aggregate the age distribution table:
 #' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
-#' # Aggregate the contact matrix:
-#' aggr_cm <- aggregate_contact_matrix(cm,
-#'                                     lookup_table,
-#'                                     age.distr = aggr_age)
+#' # Import the projected contact matrix for a country (i.e. Greece):
+#' conmat <- contact_matrix(country = "GRC")
 #'
-#' # Lookup table:
-#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+#' # Aggregate the contact matrix:
+#' aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 #'
 #' # Aggregate the IFR:
-#' aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
+#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+#'
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 #'
 #' # Posterior sampling:
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
+#'                       likelihood_variance_type    = 0,
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "sampling")
 #' }
 #'}
 #' @export
-
 stan_igbm <-
   function(y_data,
            contact_matrix,
@@ -138,7 +137,7 @@ stan_igbm <-
            age_specific_ifr,
            incubation_period         = 3,
            infectious_period         = 4,
-           likelihood_variance_type  = c(0,1),
+           likelihood_variance_type  = c("quadratic", "linear"),
            prior_scale_x0            = 1,
            prior_scale_contactmatrix = 0.05,
            pi_perc             = 0.1,   # Assume that 10% of each age group are Exposed, rest 90% are Susceptible
@@ -160,14 +159,17 @@ stan_igbm <-
     if( nrow(age_distribution_population) != ncol(contact_matrix) )
      stop("Incorrect dimensions - The age distribution of the population and the contact matrix must refer to the same number of age groups.")
 
-    if( length(age_specific_ifr) != nrow(y_data) )
+    if( nrow(age_specific_ifr) != nrow(y_data) )
      stop("The number of rows of 'age_specific_ifr' must be equal to the number of rows of 'y_data'.")
 
-    if( !identical(colnames(y_data), age_distribution_population$AgeGrp))
+    if( !identical(colnames(y_data[,-c(1:5)]), age_distribution_population$AgeGrp))
       stop("The mortality counts dataset 'y_data' and the age distribution of the population 'age_distribution_population' must refer to the same age group labels.")
 
-    if( !identical(colnames(y_data), colnames(age_specific_ifr) ) )
+    if( !identical(colnames(y_data[,-c(1:5)]), colnames(age_specific_ifr[,-1]) ) )
       stop("The mortality counts dataset 'y_data' and the age-specific IFR dataset 'age_specific_ifr' must refer to the same age group labels.")
+
+    if( !identical(y_data$Date, age_specific_ifr$Date ) )
+      stop("The ordering of the dates between the dataset 'y_data' and the dataset 'age_specific_ifr' must be identical.")
 
     if( incubation_period  == 0)
       stop("'incubation_period' must be set to a positive integer number.")
@@ -175,14 +177,20 @@ stan_igbm <-
     if( infectious_period  == 0)
       stop("'infectious_period' must be set to a positive integer number.")
 
-    if( likelihood_variance_type %nin% c(0,1) )
-      stop("'likelihood_variance_type' must be set to either 0 or 1.")
+    if( likelihood_variance_type %nin% c("quadratic", "linear") )
+      stop("'likelihood_variance_type' must be set to one of 'quadratic' or 'linear'.")
+
+    if( algorithm_inference %nin% c("sampling", "optimizing", "meanfield", "fullrank") )
+      stop("'algorithm_inference' must be set to one of 'sampling', 'optimizing', 'meanfield', 'fullrank'.")
 
     if( pi_perc > 1 )
       stop("'pi_perc' must be between 0 and 1.")
 
-    pi_prior_params  <- lapply(pi_perc, function(x) estBetaParams(x, (0.05*x)) )
-    algorithm        <- match.arg(algorithm)
+    pi_prior_params          <- lapply(pi_perc, function(x) estBetaParams(x, (0.05*x)) )
+    algorithm_inference      <- match.arg(algorithm_inference)
+    likelihood_variance_type <- match.arg(likelihood_variance_type)
+
+    if( likelihood_variance_type == "quadratic") l_variance_type <- 0 else if(likelihood_variance_type == "linear") l_variance_type <- 1
 
     standata_preproc <-
       nlist(Dates              = y_data$Date,
@@ -204,7 +212,7 @@ stan_igbm <-
             infectious_period  = infectious_period,
             prior_scale_x0     = prior_scale_x0,
             prior_dist_pi      = data.frame(do.call(rbind, pi_prior_params)),
-            likelihood_variance_type  = likelihood_variance_type,
+            likelihood_variance_type  = l_variance_type,
             prior_scale_contactmatrix = prior_scale_contactmatrix
             )
 
@@ -219,7 +227,7 @@ stan_igbm <-
                           adapt_delta           = adapt_delta,
                           max_treedepth         = max_treedepth,
                           seed                  = seed,
-                          ....)
+                          ...)
 
     structure(stanfit, class = c("stanigbm"))
   }

@@ -12,7 +12,7 @@ stan_igbm(
   age_specific_ifr,
   incubation_period = 3,
   infectious_period = 4,
-  likelihood_variance_type = c(0, 1),
+  likelihood_variance_type = c("quadratic", "linear"),
   prior_scale_x0 = 1,
   prior_scale_contactmatrix = 0.05,
   pi_perc = 0.1,
@@ -33,28 +33,27 @@ stan_igbm.fit(
   prior_volatility,
   prior_nb_dispersion,
   algorithm,
-  nChains,
   nBurn,
   nPost,
   nThin,
   adapt_delta = NULL,
   max_treedepth = NULL,
   seed,
-  ....
+  ...
 )
 }
 \arguments{
 \item{y_data}{data.frame;
-age-specific mortality counts in time. See \code{\link[Bernadette]{data(age_specific_mortality_counts)}}.}
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 
 \item{contact_matrix}{matrix;
 a squared matrix representing the the number of contacts between age groups.}
 
 \item{age_distribution_population}{data.frame;
-the age distribution of a given population. See \code{\link[Bernadette]{aggregate_age_distribution}}.}
+the age distribution of a given population. See \code{aggregate_age_distribution}.}
 
 \item{age_specific_ifr}{data.frame;
-time-varying age-specific infection-fatality ratio. See \code{\link[Bernadette]{aggregate_ifr_react}}.}
+time-varying age-specific infection-fatality ratio. See \code{aggregate_ifr_react}.}
 
 \item{incubation_period}{integer;
 length of incubation period in days. Must be >=1.}
@@ -82,9 +81,9 @@ to use a Gamma distribution or one of \code{normal}, \code{student_t} or \code{c
 half-t, or half-Cauchy prior. See \code{priors} for details on these functions.}
 
 \item{prior_nb_dispersion}{Prior distribution for the dispersion parameter \code{phi} of the over-dispersed count model.
-Same options as for \code{prior}.}
+Same options as for \code{prior_volatility}.}
 
-\item{algorithm_inference}{One of the sampling algorithms that are implemented in Stan. . See \code{\link[rstan]{stan}}.}
+\item{algorithm_inference}{One of the sampling algorithms that are implemented in Stan. See \code{\link[rstan]{stan}}.}
 
 \item{nBurn}{integer;
 number of burn-in iterations at the beginning of an MCMC run. See \code{\link[rstan]{sampling}}.}
@@ -106,6 +105,10 @@ defaults to 14. See \code{\link[rstan]{stan}}.}
 seed for the random number generator. See \code{set.seed}.}
 
 \item{...}{additional arguments, to be passed to lower-level functions.}
+
+\item{standata_preprocessed}{A named list providing the data for the model. See \code{\link[rstan]{sampling}}.}
+
+\item{algorithm}{See \code{algorithm} in \link[Bernadette]{stan_igbm}.}
 }
 \description{
 A Bayesian evidence synthesis approach to model the age-specific transmission
@@ -139,30 +142,30 @@ age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
 lookup_table <- data.frame(Initial = age_distr$AgeGrp,
-                          Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-                                      "18-39", "18-39", "18-39", "18-39",
-                                      "40-64", "40-64", "40-64", "40-64", "40-64",
-                                      "65+", "65+", "65+"))
+                          Mapping = c(rep("0-39",  8),
+                                      rep("40-64", 5),
+                                      rep("65+"  , 3)))
 
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Aggregate the contact matrix:
-aggr_cm <- aggregate_contact_matrix(cm,
-                                    lookup_table,
-                                    age.distr = aggr_age)
+# Import the projected contact matrix for a country (i.e. Greece):
+conmat <- contact_matrix(country = "GRC")
 
-# Lookup table:
-ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+# Aggregate the contact matrix:
+aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 
 # Aggregate the IFR:
-aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
+ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+
+aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 
 # Posterior sampling:
 igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
                       contact_matrix              = aggr_cm,
                       age_distribution_population = aggr_age,
                       age_specific_ifr            = aggr_age_ifr[[3]],
+                      likelihood_variance_type    = 0,
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "sampling")

@@ -47,6 +47,7 @@ age_distribution <- function(country,
   dem_table_75plus$AgeGrp <- "75+"
 
   out <- rbind(dem_table_pre70, dem_table_75plus)
+  out <- as.data.frame(out)
 
   return(out)
 

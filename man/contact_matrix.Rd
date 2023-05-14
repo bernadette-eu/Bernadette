@@ -19,7 +19,7 @@ made by an individual in group i with an individual in group j.
 \examples{
 
 \dontrun{
-cm <- contact_matrix(country = "GRC")
+conmat <- contact_matrix(country = "GRC")
 }
 
 }

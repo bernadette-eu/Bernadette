@@ -4,7 +4,7 @@
 stanmodels <- c("igbm")
 
 # load each stan module
-Rcpp::loadModule("igbm_mod", what = TRUE)
+Rcpp::loadModule("stan_fit4igbm_mod", what = TRUE)
 
 # instantiate each stanmodel object
 stanmodels <- sapply(stanmodels, function(model_name) {
@@ -21,5 +21,5 @@ stanmodels <- sapply(stanmodels, function(model_name) {
                model_name = stanfit$model_name,
                model_code = stanfit$model_code,
                model_cpp = stanfit$model_cpp,
-               mk_cppmodule = function(x) get(paste0("model_", model_name)))
+               mk_cppmodule = function(x) get(paste0("rstantools_model_", model_name)))
 })

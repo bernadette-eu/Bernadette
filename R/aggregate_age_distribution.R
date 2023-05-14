@@ -26,8 +26,7 @@
 #'                                       "65+", "65+", "65+"))
 #'
 #'# Aggregate the age distribution table:
-#'aggr_age <- aggregate_age_distribution(age_distr,
-#'                                       lookup_table)
+#'aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
 #'# Plot the aggregated age distribution matrix:
 #'plot_age_distribution(aggr_age)

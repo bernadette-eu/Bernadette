@@ -35,10 +35,11 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
+# Import the projected contact matrix for a country (i.e. Greece):
+conmat <- contact_matrix(country = "GRC")
+
 # Aggregate the contact matrix:
-aggr_cm <- aggregate_contact_matrix(cm,
-                                    lookup_table,
-                                    age.distr = aggr_age)
+aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 
 # Lookup table:
 ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))

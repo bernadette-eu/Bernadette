@@ -14,16 +14,21 @@
 #'   non-informative, giving the same probability mass to implausible values as
 #'   plausible ones.
 #'
-#' @param location Prior location. In most cases, this is the prior mean, but
+#' @param location
+#' Prior location. In most cases, this is the prior mean, but
 #'   for \code{cauchy} (which is equivalent to \code{student_t} with
 #'   \code{df=1}), the mean does not exist and \code{location} is the prior
 #'   median. The default value is \eqn{0}.
-#' @param scale Prior scale. The default depends on the family (see
-#'   \strong{Details}).
-#' @param shape Prior shape for the Gamma distribution.
-#'   Defaults to \code{2}.
-#' @param rate Prior rate for the Gamma or the Exponential distribution.
-#'   Defaults to \code{1}.
+#' @param scale
+#' Prior scale. The default depends on the family (see \strong{Details}).
+#'
+#' @param df
+#' Degrees of freedom.
+#'
+#' @param shape
+#' Prior shape for the Gamma distribution. Defaults to \code{2}.
+#' @param rate
+#' Prior rate for the Gamma or the Exponential distribution. Defaults to \code{1}.
 #'
 #' @details The details depend on the family of the prior being used:
 #' \subsection{Student t family}{
@@ -67,7 +72,7 @@
 #' # Aggregate the contact matrix:
 #' aggr_cm <- aggregate_contact_matrix(cm,
 #'                                     lookup_table,
-#'                                     age.distr = aggr_age)
+#'                                     aggr_age)
 #'
 #' # Lookup table:
 #' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
@@ -87,15 +92,43 @@
 #'}
 #'
 #' \donttest{
-#' # Can assign priors to names
+#' # Age-specific mortality/incidence count time series:
+#' data(age_specific_mortality_counts)
+#' data(age_specific_infection_counts)
+#'
+#' # Import the age distribution for a country in a given year:
+#' age_distr <- age_distribution(country = "Greece", year = 2020)
+#'
+#' # Lookup table:
+#' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
+#'                           Mapping = c(rep("0-39",  8),
+#'                                       rep("40-64", 5),
+#'                                       rep("65+"  , 3)))
+#'
+#' # Aggregate the age distribution table:
+#' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
+#'
+#' # Import the projected contact matrix for a country (i.e. Greece):
+#' conmat <- contact_matrix(country = "GRC")
+#'
+#' # Aggregate the contact matrix:
+#' aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
+#'
+#' # Aggregate the IFR:
+#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
+#'
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
+#'
+#' # Can assign priors to names:
 #' N05      <- normal(0, 5)
 #' Gamma22  <- gamma(2,2)
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
 #'                       contact_matrix              = aggr_cm,
 #'                       age_distribution_population = aggr_age,
 #'                       age_specific_ifr            = aggr_age_ifr[[3]],
+#'                       likelihood_variance_type    = 0,
 #'                       prior_volatility            = N05,
-#'                       prior_nb_dispersion         = Gamma22),
+#'                       prior_nb_dispersion         = Gamma22,
 #'                       algorithm_inference         = "sampling")
 #' }
 NULL

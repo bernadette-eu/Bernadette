@@ -4,7 +4,7 @@
 #'
 #' @param object an \code{R} object of class \code{stanigbm}.
 #'
-#' @param ... Additional arguments, to be passed to lower-level functions. See \link[rstan]{summary-methods}.
+#' @param ... Additional arguments, to be passed to lower-level functions.
 #'
 #' @export
 #' @method summary stanigbm
@@ -29,7 +29,7 @@ summary.stanigbm <- function(object, ...) {
     c(parameters[1],
       parameters[2],
       paste0(parameters[3],"[", 1:object$standata$A,"]"),
-      parameters[5],
+      parameters[5]
       )
 
   cm_params <-

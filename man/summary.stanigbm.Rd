@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{an \code{R} object of class \code{stanigbm}.}
 
-\item{...}{Additional arguments, to be passed to lower-level functions. See \link[rstan]{summary-methods}.}
+\item{...}{Additional arguments, to be passed to lower-level functions.}
 }
 \description{
 This function summarizes the MCMC output for \code{stanigbm} objects.

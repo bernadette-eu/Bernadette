@@ -6,4 +6,4 @@
 ^\.github$
 ^LICENSE\.md$
 ^README.Rmd$
-^\.data-raw$
+^data-raw$

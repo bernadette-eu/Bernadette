@@ -3,7 +3,8 @@
 #' A 16 by 16 contact matrix whose row i of a column j corresponds to the number of contacts
 #' made by an individual in group i with an individual in group j.
 #'
-#' @param country A character indicating the country identifier. See \link[Bernadette]{country_contact_matrices}.
+#' @param country
+#' A character indicating the country identifier. See \link[Bernadette]{country_contact_matrices}.
 #'
 #' @return An object of class "data.frame".
 #'
@@ -13,11 +14,10 @@
 #' @examples
 #'
 #' \dontrun{
-#' cm <- contact_matrix(country = "GRC")
+#' conmat <- contact_matrix(country = "GRC")
 #'}
 #'
 #' @export
-#'
 contact_matrix <- function(country){
 
   if(country %in% country_contact_matrices() == FALSE) stop("The user-defined country name is not available. Please check country_contact_matrices().")

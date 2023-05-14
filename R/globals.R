@@ -12,4 +12,16 @@ utils::globalVariables(c("diag_element",
                          "demographics_un",
                          "indiv_age",
                          "indiv_age_agr",
-                         "proportion"))
+                         "proportion",
+                         "stats",
+                         "Group_mapping",
+                         "IFR",
+                         "PopPerc",
+                         "Posterior",
+                         "Date",
+                         "low25",
+                         "high75",
+                         "low",
+                         "high",
+                         "."
+                         ))
