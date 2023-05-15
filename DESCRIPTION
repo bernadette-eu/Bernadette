@@ -1,6 +1,6 @@
 Type: Package
 Package: Bernadette
-Title: Bayesian inference and model selection for stochastic epidemics
+Title: Bayesian Inference and Model Selection for Stochastic Epidemics
 Version: 1.1.1
 Authors@R: 
     person(given   = "Lampros", 
