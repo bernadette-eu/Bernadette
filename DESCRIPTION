@@ -3,11 +3,14 @@ Package: Bernadette
 Title: Bayesian Inference and Model Selection for Stochastic Epidemics
 Version: 1.1.1
 Authors@R: 
-    person(given   = "Lampros", 
-           family  = "Bouranis", 
-           email   = "bernadette.aueb@gmail.com", 
-           role    = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-1291-2192"))
+    c(person(given   = "Lampros", 
+             family  = "Bouranis", 
+             email   = "bernadette.aueb@gmail.com", 
+             role    = c("aut", "cre", "cph"),
+             comment = c(ORCID = "0000-0002-1291-2192")),
+      person(given   = "European Union", 
+             role    = "fnd", 
+             comment = "Funding by the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 101027218."))
 Description: Bayesian analysis for stochastic extensions of non-linear
     dynamic systems using advanced computational algorithms.
 License: GPL (>= 3)

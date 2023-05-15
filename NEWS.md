@@ -1,3 +1,3 @@
-# Bernadette 1.1.1
+### NEW FEATURES 
 
-* Added a `NEWS.md` file to track changes to the package.
+* released to CRAN
