@@ -17,7 +17,7 @@ A data frame with 1,164,891 rows and 7 variables:
 }
 }
 \source{
-\url{https://population.un.org/}
+\url{https://www.un.org/development/desa/pd/content/population-division}
 }
 \usage{
 data(demographics_un)

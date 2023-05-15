@@ -7,7 +7,7 @@
 country_population(country, year = NULL)
 }
 \arguments{
-\item{country}{character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}. See \link[Bernadette]{countries_un}.}
+\item{country}{character; country identifier, following the List of United Nations Member States. See \link[Bernadette]{countries_un}.}
 
 \item{year}{numeric; calendar year.}
 }
