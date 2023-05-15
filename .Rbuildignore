@@ -5,7 +5,9 @@
 ^codecov\.yml$
 ^\.github$
 ^LICENSE\.md$
+^README.md
 ^README.Rmd$
 ^data-raw$
 ^NEWS\.md$
 ^cran-comments\.md$
+^NULL$
