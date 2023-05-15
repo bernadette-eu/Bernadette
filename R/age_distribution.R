@@ -4,7 +4,7 @@
 #' down by 5-year age bands and gender, following the United Nations 2019 Revision of
 #' World Population Prospects.
 #'
-#' @param country character; country identifier, following the \href{https://www.un.org/en/about-us/member-states}{List of United Nations Member States}. See \link[Bernadette]{countries_un}.
+#' @param country character; country identifier, following the List of United Nations Member States. See \link[Bernadette]{countries_un}.
 #'
 #' @param year numeric; calendar year
 #'
