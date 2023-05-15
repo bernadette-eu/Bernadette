@@ -17,7 +17,6 @@
 #'
 #' @usage data(demographics_un)
 #'
-#' @source \url{https://www.un.org/development/desa/pd/content/population-division}
 "demographics_un"
 
 #' Contact matrices per country
@@ -53,6 +52,7 @@
 #'
 #' @section References:
 #' Sandbird (2022). Daily regional statistics for covid19 cases in Greece.
+#'
 #' @source \url{https://github.com/Sandbird/covid19-Greece/}
 "age_specific_mortality_counts"
 
