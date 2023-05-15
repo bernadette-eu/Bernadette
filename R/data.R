@@ -17,7 +17,7 @@
 #'
 #' @usage data(demographics_un)
 #'
-#' @source \url{https://population.un.org/}
+#' @source \url{https://www.un.org/development/desa/pd/content/population-division}
 "demographics_un"
 
 #' Contact matrices per country
