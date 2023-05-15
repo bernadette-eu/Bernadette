@@ -1,6 +1,7 @@
 #' Prior distributions and options
 #'
 #' @name priors
+#'
 #' @description The functions described on this page are used to specify the
 #'   prior-related arguments of the modeling functions in the
 #'   \pkg{Bernadette} package.
@@ -19,6 +20,7 @@
 #'   for \code{cauchy} (which is equivalent to \code{student_t} with
 #'   \code{df=1}), the mean does not exist and \code{location} is the prior
 #'   median. The default value is \eqn{0}.
+#'
 #' @param scale
 #' Prior scale. The default depends on the family (see \strong{Details}).
 #'
@@ -27,6 +29,7 @@
 #'
 #' @param shape
 #' Prior shape for the Gamma distribution. Defaults to \code{2}.
+#'
 #' @param rate
 #' Prior rate for the Gamma or the Exponential distribution. Defaults to \code{1}.
 #'
