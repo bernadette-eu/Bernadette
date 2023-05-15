@@ -3,7 +3,7 @@ Package: Bernadette
 Title: Bayesian inference and model selection for stochastic epidemics
 Version: 1.1.1
 Authors@R: 
-    person(given  = "Lampros", 
+    person(given   = "Lampros", 
            family  = "Bouranis", 
            email   = "bernadette.aueb@gmail.com", 
            role    = c("aut", "cre"),
