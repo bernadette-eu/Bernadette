@@ -4,6 +4,7 @@
 
 * Local:
   - Windows 10, R 4.2.2 (x86_64-w64-mingw32/x64 (64-bit))
+* macOS builder (https://mac.r-project.org/macbuilder/results/1684151644-59dd962bb20e410f/)
 * R-hub builder (https://builder.r-hub.io)
   - Windows Server 2022 R-devel, 64 bit
     - NOTE 1 - The Bernadette package uses the rstan and Rcpp packages to compile models.
@@ -21,7 +22,7 @@
       * checking HTML version of manual ... NOTE
       Skipping checking math rendering: package 'V8' unavailable
       ```
-    - NOTE 3 -  
+    - NOTE 3 - This is a Windows-related note.
       ```
       * checking for non-standard things in the check directory ... NOTE
       Found the following files/directories:
@@ -44,7 +45,7 @@
         data   6.7Mb
         libs  29.7Mb
       ```
-    - NOTE 2 - GNU make is needed for handling the Makevars files that rstantools uses to compile the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
+    - NOTE 2 - GNU make is needed for handling the Makevars files that rstantools uses to compile  the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
     
       ```
       * checking for GNU extensions in Makefiles ... NOTE
@@ -56,6 +57,10 @@
       Skipping checking HTML validation: no command 'tidy' found
       Skipping checking math rendering: package 'V8' unavailable
       ```
+  - Debian Linux, R-devel, GCC ASAN/UBSAN
+    - Identical notes to those from the Fedora Linux platform.
+  - Ubuntu Linux 20.04.1 LTS, R-release, GCC
+    - Identical notes to those from the Fedora Linux platform.
       
 ## R CMD check results
 
@@ -70,6 +75,10 @@
      libs   2.3Mb
   ```
 * This is a new release.
+
+## Reverse dependencies
+
+There are no reverse dependencies for v1.1.0 of the Bernadette package.
 
 Thanks!
 
