@@ -64,17 +64,19 @@ plot_posterior_cm <- function(object, ...){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
-  posterior_draws <- rstan::extract(object$stanfit)
-  cov_data        <- object$standata
+  posterior_draws <- rstan::extract(object)
+  cov_data        <- attributes(object)
+  cov_data        <- cov_data$standata
+  age_grps        <- cov_data$A
 
-  if(ncol(posterior_draws$cm_sample) != cov_data$A) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", age_grps) )
 
   niters       <- nrow(posterior_draws[["cm_sample"]])
   plot_cm_list <- list()
   plot_cm_indx <- 1
 
-  for (i in 1:cov_data$A){
-    for (j in 1:cov_data$A){
+  for (i in 1:age_grps){
+    for (j in 1:age_grps){
 
       dt_cm_post <- data.frame(Posterior = posterior_draws[["cm_sample"]][,i, j])
 
@@ -100,9 +102,9 @@ plot_posterior_cm <- function(object, ...){
   }# End for
 
 
-  plots_no_legend <- lapply(plot_cm_list[1:(cov_data$A^2)],
+  plots_no_legend <- lapply(plot_cm_list[1:(age_grps^2)],
                             function(x) x + ggplot2::theme(legend.position="none"))
 
-  gridExtra::grid.arrange( gridExtra::arrangeGrob(grobs = plots_no_legend, nrow = cov_data$A) )
+  gridExtra::grid.arrange( gridExtra::arrangeGrob(grobs = plots_no_legend, nrow = age_grps) )
 
 }

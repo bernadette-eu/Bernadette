@@ -65,9 +65,10 @@ posterior_infections <- function(object){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
-  posterior_draws <- rstan::extract(object$stanfit)
-  cov_data        <- object$standata
-  dates           <- cov_data$Date
+  posterior_draws <- rstan::extract(object)
+  cov_data        <- attributes(object)
+  cov_data        <- cov_data$standata
+  dates           <- cov_data$Dates
 
   #---- Age-specific:
   output_age_cols     <- c("Date", "Group", "median", "low", "high", "low25", "high75")

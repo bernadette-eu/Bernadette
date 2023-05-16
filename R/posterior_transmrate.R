@@ -63,13 +63,14 @@ posterior_transmrate <- function(object){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
-  posterior_draws <- rstan::extract(object$stanfit)
-  cov_data        <- object$standata
+  posterior_draws <- rstan::extract(object)
+  cov_data        <- attributes(object)
+  cov_data        <- cov_data$standata
+  age_grps        <- cov_data$A
 
-  if(ncol(posterior_draws$cm_sample) != cov_data$A) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
 
   beta_draws   <- posterior_draws$beta_trajectory
-  age_grps     <- cov_data$A
   chain_length <- nrow(beta_draws)
   ts_length    <- dim(beta_draws)[2]
   dates        <- cov_data$Date

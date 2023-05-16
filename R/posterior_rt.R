@@ -66,12 +66,13 @@ posterior_rt <- function(object){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
-  posterior_draws <- rstan::extract(object$stanfit)
-  cov_data        <- object$standata
+  posterior_draws <- rstan::extract(object)
+  cov_data        <- attributes(object)
+  cov_data        <- cov_data$standata
+  age_grps        <- cov_data$A
 
-  if(ncol(posterior_draws$cm_sample) != cov_data$A) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
 
-  age_grps             <- cov_data$A
   zero_mat             <- matrix(0L, nrow = age_grps, ncol = age_grps)
   identity_mat         <- diag(age_grps)
   reciprocal_age_distr <- matrix(rep(cov_data$pop_diag, age_grps),   ncol  = age_grps, nrow  = age_grps, byrow = TRUE)
@@ -189,7 +190,6 @@ plot_posterior_rt <- function(object,
                               ylab = NULL,
                               ...
 ){
-
 
   if (is.null(xlab)) xlab <- "Epidemiological Date"
   if (is.null(ylab)) ylab <- "Effective reproduction number"

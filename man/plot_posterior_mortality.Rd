@@ -80,7 +80,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
 
 post_mortality_summary <- posterior_mortality(igbm_fit)
 
-# Visualise the posterior distribution of the infection counts:
+# Visualise the posterior distribution of the mortality counts:
 plot_posterior_mortality(post_mortality_summary, type = "age-specific")
 plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
 }

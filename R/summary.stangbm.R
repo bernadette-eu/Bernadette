@@ -13,6 +13,8 @@ summary.stanigbm <- function(object, ...) {
 
   validate_stanigbm_object(object)
 
+  cov_data   <- attributes(object)
+  cov_data   <- cov_data$standata
   parameters <- c("pi",
                   "phiD",
                   "volatilities",
@@ -28,52 +30,52 @@ summary.stanigbm <- function(object, ...) {
   rest_params <-
     c(parameters[1],
       parameters[2],
-      paste0(parameters[3],"[", 1:object$standata$A,"]"),
+      paste0(parameters[3],"[", 1:cov_data$A,"]"),
       parameters[5]
       )
 
   cm_params <-
     paste0(parameters[4],
            "[",
-            apply(expand.grid(1:object$standata$A,
-                              1:object$standata$A), 1, paste, collapse = ","),
+            apply(expand.grid(1:cov_data$A,
+                              1:cov_data$A), 1, paste, collapse = ","),
             "]")
 
   beta_params <-
     paste0(parameters[6],
            "[",
-           apply(expand.grid(1:object$standata$n_obs,
-                             1:object$standata$A), 1, paste, collapse = ","),
+           apply(expand.grid(1:cov_data$n_obs,
+                             1:cov_data$A), 1, paste, collapse = ","),
            "]")
 
   E_casesAge_params <-
     paste0(parameters[7],
            "[",
-           apply(expand.grid(1:object$standata$n_obs,
-                             1:object$standata$A), 1, paste, collapse = ","),
+           apply(expand.grid(1:cov_data$n_obs,
+                             1:cov_data$A), 1, paste, collapse = ","),
            "]")
 
   E_deathsAge_params <-
     paste0(parameters[8],
            "[",
-            apply(expand.grid(1:object$standata$n_obs,
-                              1:object$standata$A), 1, paste, collapse = ","),
+            apply(expand.grid(1:cov_data$n_obs,
+                              1:cov_data$A), 1, paste, collapse = ","),
           "]")
 
   E_cases_params  <-
-    paste0(parameters[9], "[", 1:object$standata$n_obs, "]")
+    paste0(parameters[9], "[", 1:cov_data$n_obs, "]")
 
   E_deaths_params <-
-    paste0(parameters[10], "[", 1:object$standata$n_obs, "]")
+    paste0(parameters[10], "[", 1:cov_data$n_obs, "]")
 
   Susceptibles_params <-
     paste0(parameters[11],
            "[",
-           apply(expand.grid(1:object$standata$n_obs,
-                             1:object$standata$A), 1, paste, collapse = ","),
+           apply(expand.grid(1:cov_data$n_obs,
+                             1:cov_data$A), 1, paste, collapse = ","),
            "]")
 
-  out <- summary(object$stanfit,
+  out <- summary(object,
                  pars = c("lp__",
                           rest_params,
                           cm_params,
