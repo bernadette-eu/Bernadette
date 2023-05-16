@@ -5,6 +5,7 @@
 ^codecov\.yml$
 ^\.github$
 ^LICENSE\.md$
+^README_files$
 ^README.md
 ^README.Rmd$
 ^data-raw$
