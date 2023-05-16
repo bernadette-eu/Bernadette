@@ -13,6 +13,7 @@
 #' @import methods
 #' @rawNamespace import(Rcpp, except = c(LdFlags,.DollarNames,prompt))
 #' @import RcppParallel
+#' @importFrom readr read_csv cols
 #' @import rstantools
 #' @importFrom rstan optimizing sampling vb extract
 #' @importFrom scales percent pretty_breaks
