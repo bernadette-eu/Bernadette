@@ -7,16 +7,20 @@
 * macOS builder (https://mac.r-project.org/macbuilder/results/1684151644-59dd962bb20e410f/)
 * R-hub builder (https://builder.r-hub.io)
   - Windows Server 2022 R-devel, 64 bit
-    - NOTE 1 - The Bernadette package uses the rstan and Rcpp packages to compile models.
-    The libs/ directory is where the compiled model object is stored. See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
+    - NOTE 1 - A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".
       ```
-      * checking installed package size ... NOTE
-      installed size is  9.3Mb
-      sub-directories of 1Mb or more:
-        data   6.7Mb
-        libs   2.3Mb
+      * checking CRAN incoming feasibility ... [13s] NOTE
+      
+      New submission
+      
+      Possibly misspelled words in DESCRIPTION:
+        Bouranis (15:75)
+        Demiris (16:5)
+        Kalogeropoulos (16:17)
+        Ntzoufras (16:40)
+      Maintainer: 'Lampros Bouranis <bernadette.aueb@gmail.com>'
       ```
-    - NOTE 2 - This note is unrelated to my package:
+    - NOTE 2 - This note is unrelated to the Bernadette package:
     
       ```
       * checking HTML version of manual ... NOTE
@@ -35,50 +39,54 @@
       Found the following files/directories:
       'lastMiKTeXException'
       ```
-  - Fedora Linux, R-devel, clang, gfortran
-    - NOTE 1 - The Bernadette package uses the rstan and Rcpp packages to compile models.
-    The libs/ directory is where the compiled model object is stored. See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
+  - Ubuntu Linux 20.04.1 LTS, R-release, GCC 
+    - NOTE 1 - A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".
+      ```
+      * checking CRAN incoming feasibility ... [5s/15s] NOTE
+      Maintainer: ‘Lampros Bouranis <bernadette.aueb@gmail.com>’
+      
+      New submission
+      
+      Possibly misspelled words in DESCRIPTION:
+        Bouranis (15:75)
+        Demiris (16:5)
+        Kalogeropoulos (16:17)
+        Ntzoufras (16:40)
+      ```
+    - NOTE 2:
+      
       ```
       * checking installed package size ... NOTE
-      installed size is 36.9Mb
+      installed size is 59.6Mb
       sub-directories of 1Mb or more:
-        data   6.7Mb
-        libs  29.7Mb
+        libs  59.0Mb
       ```
-    - NOTE 2 - GNU make is needed for handling the Makevars files that rstantools uses to compile  the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
+    - NOTE 3 - GNU make is needed for handling the Makevars files that rstantools uses to compile the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
     
       ```
       * checking for GNU extensions in Makefiles ... NOTE
       GNU make is a SystemRequirements.
       ```
-    - NOTE 3 - This note is unrelated to my package:
+    - NOTE 4 - This note is unrelated to the Bernadette package:
       ```
       * checking HTML version of manual ... NOTE
       Skipping checking HTML validation: no command 'tidy' found
       Skipping checking math rendering: package 'V8' unavailable
       ```
   - Debian Linux, R-devel, GCC ASAN/UBSAN
-    - Identical notes to those from the Fedora Linux platform.
-  - Ubuntu Linux 20.04.1 LTS, R-release, GCC
-    - Identical notes to those from the Fedora Linux platform.
+    - Identical notes to those from the Ubuntu Linux platform.
+  - Fedora Linux, R-devel, clang, gfortran
+    - Identical notes to those from the Ubuntu Linux platform.
       
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-* NOTE 1 - The Bernadette package uses the rstan and Rcpp packages to compile models. The libs/ directory is where the compiled model object is stored. See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
-  ```
-  * checking installed package size ... NOTE
-  installed size is  9.3Mb
-   sub-directories of 1Mb or more:
-     data   6.7Mb
-     libs   2.3Mb
-  ```
 * This is a new release.
 
 ## Reverse dependencies
 
-There are no reverse dependencies for v1.1.0 of the Bernadette package.
+There are no reverse dependencies for v1.1.1 of the Bernadette package.
 
 Thanks!
 

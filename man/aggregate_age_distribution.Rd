@@ -7,9 +7,11 @@
 aggregate_age_distribution(x, lookup_table)
 }
 \arguments{
-\item{x}{data.frame; an age distribution matrix. See \link[Bernadette]{age_distribution}.}
+\item{x}{data.frame;
+an age distribution matrix. See \link[Bernadette]{age_distribution}.}
 
-\item{lookup_table}{data.frame; a user-defined dataframe which maps the sixteen 5-year age bands to a new set of age bands.}
+\item{lookup_table}{data.frame;
+a user-defined dataframe which maps the sixteen 5-year age bands to a new set of age bands.}
 }
 \value{
 A data frame that contains the aggregated age distribution.
@@ -40,4 +42,6 @@ plot_age_distribution(aggr_age)
 }
 \references{
 United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, Online Edition. Rev. 1.
+
+Prem, K., van Zandvoort, K., Klepac, P. et al (2020). Projecting contact matrices in 177 geographical regions: an update and comparison with empirical data for the COVID-19 era. medRxiv 2020.07.22.20159772; doi: https://doi.org/10.1101/2020.07.22.20159772
 }

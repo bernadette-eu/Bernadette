@@ -1,24 +1,3 @@
-#' Age distribution per country
-#'
-#' A dataset containing the age distribution per country and per year. Information is broken
-#' down by gender and 5-year age bands, following the United Nations 2019 Revision
-#' of World Population Prospects.
-#'
-#' @format A data frame with 1,164,891 rows and 7 variables:
-#' \describe{
-#'   \item{Location}{character; name of country}
-#'   \item{Time}{numeric; year}
-#'   \item{AgeGrp}{character; 5-year age bands}
-#'   \item{AgeGrpStart}{numeric; year indicating the start of the respective age group}
-#'   \item{PopMale}{numeric; male population in the given age group}
-#'   \item{PopFemale}{numeric; female population in the given age group}
-#'   \item{PopTotal}{total population in the given age group}
-#' }
-#'
-#' @usage data(demographics_un)
-#'
-"demographics_un"
-
 #' Contact matrices per country
 #'
 #' A list of 16 by 16 contact matrices for 177 countries.
