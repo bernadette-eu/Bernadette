@@ -27,6 +27,7 @@ Imports:
     methods,
     Rcpp (>= 1.0.8.3),
     RcppParallel,
+    readr,
     rstantools,
     rstan (>= 2.21.3),
     scales,
