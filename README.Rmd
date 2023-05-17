@@ -149,6 +149,18 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 ```
 
+Find the number of cores in your machine and indicate how many will be used for parallel processing:
+
+```{r, eval=F, echo=T}
+parallel::detectCores()
+rstan_options(auto_write = TRUE)
+
+# Here we sample from four Markov chains in parallel:
+chains <- 4
+
+options(mc.cores = chains)
+```
+
 Sample from the posterior distribution of the parameters using the Hamiltonian Monte Carlo algorithm implemented in Stan - Note that a longer time horizon and/or a greater number of age groups in ```y_data``` will lead to increased CPU time:
 
 ```{r, eval=F, echo=T}
@@ -160,7 +172,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       likelihood_variance_type    = "quadratic",
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "sampling")
+                      algorithm_inference         = "sampling",
+                      chains                      = chains)
 ``` 
 
 ## Summarise the distributions of estimated parameters and derived quantities using the posterior draws. 
