@@ -2,41 +2,38 @@
 % Please edit documentation in R/plot_age_distribution.R
 \name{plot_age_distribution}
 \alias{plot_age_distribution}
-\title{Plot the age distribution}
+\title{Bar plot of the age distribution}
 \usage{
 plot_age_distribution(x)
 }
 \arguments{
-\item{x}{data.frame; the age distribution matrix. See \link[Bernadette]{age_distribution} and \link[Bernadette]{aggregate_age_distribution}.}
+\item{x}{data.frame;
+the age distribution matrix. See \link[Bernadette]{age_distribution} and \link[Bernadette]{aggregate_age_distribution}.}
 }
 \value{
-Bar plot of the age distribution
+A ggplot object that can be further customized using the
+  \pkg{ggplot2} package.
 }
 \description{
-Plot the age distribution
+Bar plot of the age distribution
 }
 \examples{
-
-\dontrun{
-# Plot the age distribution:
-age_distr <- age_distribution(country = "Greece",
-                             year    = 2020)
+# Import the age distribution for Greece in 2020:
+age_distr <- age_distribution(country = "Greece", year = 2020)
 
 plot_age_distribution(age_distr)
 
+# Lookup table:
 lookup_table <- data.frame(Initial = age_distr$AgeGrp,
-                          Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-                                      "18-39", "18-39", "18-39", "18-39",
-                                      "40-64", "40-64", "40-64", "40-64", "40-64",
-                                      " 65+", "65+", "65+"))
+                           Mapping = c(rep("0-39",  8),
+                                       rep("40-64", 5),
+                                       rep("65+"  , 3)))
 
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
 # Plot the aggregated age distribution matrix:
 plot_age_distribution(aggr_age)
-
-}
 
 }
 \references{

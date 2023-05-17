@@ -62,7 +62,7 @@
 #' @param nPost integer;
 #' number of MCMC iterations after burn-in. See \code{\link[rstan]{sampling}}.
 #'
-#' @param nThin integer
+#' @param nThin integer;
 #' a positive integer specifying the period for saving samples. The default is 1, which is usually the recommended value.
 #' See \code{\link[rstan]{sampling}}.
 #'
@@ -75,7 +75,7 @@
 #' @param seed integer;
 #' seed for the random number generator. See \code{set.seed}.
 #'
-#' @param ... additional arguments, to be passed to lower-level functions.
+#' @param ... Additional arguments, to be passed to lower-level functions.
 #'
 #' @details
 #' The \code{stan_igbm} function performs full Bayesian estimation (if
@@ -88,17 +88,18 @@
 #' age group alpha' The \code{stan_igbm} function calls the workhorse
 #' \code{stan_igbm.fit} function.
 #'
+#' @return An object of class \emph{stanigbm} representing the fitted results. Slot mode for this object indicates if the sampling is done or not.
+#'
 #' @references
 #' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
 #'
 #' @examples
-#' \dontrun{
-#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
 #' data(age_specific_infection_counts)
 #'
-#' # Import the age distribution for a country in a given year:
+#' # Import the age distribution for Greece in 2020:
 #' age_distr <- age_distribution(country = "Greece", year = 2020)
 #'
 #' # Lookup table:
@@ -110,7 +111,7 @@
 #' # Aggregate the age distribution table:
 #' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
-#' # Import the projected contact matrix for a country (i.e. Greece):
+#' # Import the projected contact matrix for Greece:
 #' conmat <- contact_matrix(country = "GRC")
 #'
 #' # Aggregate the contact matrix:
@@ -136,9 +137,11 @@
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
-#' }
+#'
+#' summary(igbm_fit)
 #'}
 #' @export
+#'
 stan_igbm <-
   function(y_data,
            contact_matrix,

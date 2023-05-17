@@ -8,8 +8,7 @@
 #' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
 #'
 #' @examples
-#' \dontrun{
-#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
 #' data(age_specific_infection_counts)
@@ -58,9 +57,9 @@
 #' # Visualise the posterior distribution of the infection counts:
 #' plot_posterior_infections(post_inf_summary, type = "age-specific")
 #' plot_posterior_infections(post_inf_summary, type = "age-aggregated")
-#' }
 #'}
 #' @export
+#'
 posterior_infections <- function(object){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
@@ -127,8 +126,7 @@ posterior_infections <- function(object){
 #' @seealso \code{\link{posterior_infections}}.
 #'
 #' @examples
-#' \dontrun{
-#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
 #' data(age_specific_infection_counts)
@@ -177,9 +175,9 @@ posterior_infections <- function(object){
 #' # Visualise the posterior distribution of the infection counts:
 #' plot_posterior_infections(post_inf_summary, type = "age-specific")
 #' plot_posterior_infections(post_inf_summary, type = "age-aggregated")
-#' }
 #'}
 #' @export
+#'
 plot_posterior_infections <- function(object,
                                       type = c("age-specific", "aggregated"),
                                       xlab = NULL,

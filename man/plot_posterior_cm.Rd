@@ -18,8 +18,7 @@ A \code{grid.arrange} object which can be further customised using the \pkg{grid
 Plot the posterior contact matrix
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
@@ -65,7 +64,6 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
 
 # Visualise the posterior distribution of the random contact matrix:
 plot_posterior_cm(igbm_fit)
-}
 }
 }
 \references{

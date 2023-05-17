@@ -7,11 +7,14 @@
 aggregate_ifr_react(x, user_AgeGrp, data_cases)
 }
 \arguments{
-\item{x}{data.frame; an age distribution matrix. See \link[Bernadette]{age_distribution}.}
+\item{x}{data.frame;
+an age distribution matrix. See \link[Bernadette]{age_distribution}.}
 
-\item{user_AgeGrp}{vector; a user-defined vector which maps the four age groups considered in REACT-2 to a new set of age groups.}
+\item{user_AgeGrp}{vector;
+a user-defined vector which maps the four age groups considered in REACT-2 to a new set of age groups.}
 
-\item{data_cases}{data.frame; time series dataset containing the age-stratified infection counts. See \link[Bernadette]{age_specific_infection_counts}.}
+\item{data_cases}{data.frame;
+time series dataset containing the age-stratified infection counts. See \link[Bernadette]{age_specific_infection_counts}.}
 }
 \value{
 A list of two data frames that contains the aggregated IFR estimates.
@@ -20,22 +23,17 @@ A list of two data frames that contains the aggregated IFR estimates.
 Function to aggregate the age-specific Infection Fatality Ratio (IFR) estimates reported by the REACT-2 large-scale community study of SARS-CoV-2 seroprevalence in England according to user-defined age groups.
 }
 \examples{
-
-\dontrun{
-# Import the age distribution for a country in a given year:
-age_distr <- age_distribution(country = "Greece",
-                             year    = 2020)
+# Import the age distribution for Greece in 2020:
+age_distr <- age_distribution(country = "Greece", year = 2020)
 
 age_mapping <- c(rep("0-39",  8),
-                rep("40-64", 5),
-                rep("65+",   3))
+                 rep("40-64", 5),
+                 rep("65+",   3))
 
 data(age_specific_infection_counts)
 
 # Aggregate the IFR:
 aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
-
-}
 
 }
 \references{

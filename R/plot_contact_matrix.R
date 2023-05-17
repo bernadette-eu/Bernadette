@@ -1,21 +1,19 @@
 #' Contact matrix heatmap
 #'
-#' @param x data.frame; a contact matrix.  See \link[Bernadette]{contact_matrix}.
+#' @param x data.frame;
+#' a contact matrix.  See \link[Bernadette]{contact_matrix}.
 #'
-#' @return A heatmap of a contact matrix for a particular country.
-#'
-#' @return Heatmap of a contact matrix
+#' @return A ggplot object that can be further customized using the
+#'   \pkg{ggplot2} package.
 #'
 #' @examples
+#' # Import the projected contact matrix for Greece:
+#' conmat <- contact_matrix(country = "GRC")
 #'
-#' \dontrun{
-#'
-#' cm <- contact_matrix(country = "GRC")
-#'
-#' plot_cm <- plot_contact_matrix(cm)
-#'}
+#' plot_contact_matrix(conmat)
 #'
 #' @export
+#'
 plot_contact_matrix <- function(x) {
 
   levs <- as.factor( colnames(x) )

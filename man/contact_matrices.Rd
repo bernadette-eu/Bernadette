@@ -5,10 +5,13 @@
 \alias{contact_matrices}
 \title{Contact matrices per country}
 \format{
-An object of class \code{list} of length 177.
+A list of 16 by 16 dataframes for 177 countries.
 }
 \usage{
 data(contact_matrices)
+}
+\value{
+A list object of 16 by 16 dataframes for 177 countries.
 }
 \description{
 A list of 16 by 16 contact matrices for 177 countries.

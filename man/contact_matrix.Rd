@@ -17,10 +17,7 @@ A 16 by 16 contact matrix whose row i of a column j corresponds to the number of
 made by an individual in group i with an individual in group j.
 }
 \examples{
-
-\dontrun{
 conmat <- contact_matrix(country = "GRC")
-}
 
 }
 \references{

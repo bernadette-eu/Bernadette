@@ -8,6 +8,8 @@
 #' @param algorithm
 #' See \code{algorithm} in \link[Bernadette]{stan_igbm}.
 #'
+#' @return An object of S4 class \emph{stanfit} representing the fitted results. Slot mode for this object indicates if the sampling is done or not.
+#'
 #' @export
 #'
 stan_igbm.fit <-

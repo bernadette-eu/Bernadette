@@ -95,7 +95,7 @@ number of burn-in iterations at the beginning of an MCMC run. See \code{\link[rs
 \item{nPost}{integer;
 number of MCMC iterations after burn-in. See \code{\link[rstan]{sampling}}.}
 
-\item{nThin}{integer
+\item{nThin}{integer;
 a positive integer specifying the period for saving samples. The default is 1, which is usually the recommended value.
 See \code{\link[rstan]{sampling}}.}
 
@@ -108,11 +108,16 @@ defaults to 14. See \code{\link[rstan]{stan}}.}
 \item{seed}{integer;
 seed for the random number generator. See \code{set.seed}.}
 
-\item{...}{additional arguments, to be passed to lower-level functions.}
+\item{...}{Additional arguments, to be passed to lower-level functions.}
 
 \item{standata_preprocessed}{A named list providing the data for the model. See \code{\link[rstan]{sampling}}.}
 
 \item{algorithm}{See \code{algorithm} in \link[Bernadette]{stan_igbm}.}
+}
+\value{
+An object of class \emph{stanigbm} representing the fitted results. Slot mode for this object indicates if the sampling is done or not.
+
+An object of S4 class \emph{stanfit} representing the fitted results. Slot mode for this object indicates if the sampling is done or not.
 }
 \description{
 A Bayesian evidence synthesis approach to model the age-specific transmission
@@ -135,13 +140,12 @@ age group alpha' The \code{stan_igbm} function calls the workhorse
 \code{stan_igbm.fit} function.
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
 
-# Import the age distribution for a country in a given year:
+# Import the age distribution for Greece in 2020:
 age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
@@ -153,7 +157,7 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
@@ -179,7 +183,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
-}
+
+summary(igbm_fit)
 }
 }
 \references{

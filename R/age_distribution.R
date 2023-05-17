@@ -10,7 +10,7 @@
 #' @param year numeric;
 #' calendar year.
 #'
-#' @return A data frame that contains the age distribution.
+#' @return An object of class \emph{data.frame} that contains the age distribution.
 #'
 #' @references
 #' United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, Online Edition. Rev. 1.
@@ -18,11 +18,8 @@
 #' Prem, K., van Zandvoort, K., Klepac, P. et al (2017). Projecting contact matrices in 177 geographical regions: an update and comparison with empirical data for the COVID-19 era. medRxiv 2020.07.22.20159772; doi: https://doi.org/10.1101/2020.07.22.20159772
 #'
 #' @examples
-#'
-#' \dontrun{
-#'age_distr <- age_distribution(country = "Greece",
-#'                              year    = 2020)
-#'}
+#' # Age distribution for Greece in 2020:
+#'age_distr <- age_distribution(country = "Greece", year = 2020)
 #'
 #' @export
 age_distribution <- function(country,

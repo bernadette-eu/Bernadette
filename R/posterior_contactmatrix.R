@@ -10,8 +10,7 @@
 #' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
 #'
 #' @examples
-#' \dontrun{
-#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+#' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
 #' data(age_specific_infection_counts)
@@ -57,9 +56,9 @@
 #'
 #' # Visualise the posterior distribution of the random contact matrix:
 #' plot_posterior_cm(igbm_fit)
-#' }
 #'}
 #' @export
+#'
 plot_posterior_cm <- function(object, ...){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")

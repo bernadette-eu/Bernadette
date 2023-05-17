@@ -12,12 +12,10 @@
 #' Prem, K., van Zandvoort, K., Klepac, P. et al (2020). Projecting contact matrices in 177 geographical regions: an update and comparison with empirical data for the COVID-19 era. medRxiv 2020.07.22.20159772; doi: https://doi.org/10.1101/2020.07.22.20159772
 #'
 #' @examples
-#'
-#' \dontrun{
 #' conmat <- contact_matrix(country = "GRC")
-#'}
 #'
 #' @export
+#'
 contact_matrix <- function(country){
 
   if(country %in% country_contact_matrices() == FALSE) stop("The user-defined country name is not available. Please check country_contact_matrices().")

@@ -35,12 +35,13 @@ A vector of length \emph{ts_length}.
 Function to discretize the infection-to-death distribution
 }
 \examples{
+# Age-specific mortality/incidence count time series:
+data(age_specific_mortality_counts)
 
-\dontrun{
-ditd <- itd_distribution(ts_length  = 100,
+# Infection-to-death distribution:
+ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_mean = 24.19231,
                          gamma_cv   = 0.3987261)
-}
 
 }
 \references{

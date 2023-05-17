@@ -17,29 +17,25 @@ a user-defined data.frame which maps the sixteen 5-year age bands to a new set o
 the aggregated age distribution. See \link[Bernadette]{aggregate_contact_matrix}.}
 }
 \value{
-An object of class "data.frame".
+An object of class \emph{data.frame}.
 }
 \description{
 Function to aggregate a contact matrix according to user-defined age groups.
 }
 \examples{
+# Import the age distribution for Greece in 2020:
+age_distr <- age_distribution(country = "Greece", year = 2020)
 
-\dontrun{
-# Import the age distribution for a country in a given year:
-age_distr <- age_distribution(country = "Greece",
-                             year    = 2020)
-
-lookup_table <- data.frame(Initial = colnames(conmat),
-                          Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-                                      "18-39", "18-39", "18-39", "18-39",
-                                      "40-64", "40-64", "40-64", "40-64", "40-64",
-                                      "65+", "65+", "65+"))
+# Lookup table:
+lookup_table <- data.frame(Initial = age_distr$AgeGrp,
+                           Mapping = c(rep("0-39",  8),
+                                       rep("40-64", 5),
+                                       rep("65+"  , 3)))
 
 # Aggregate the age distribution table:
-aggr_age <- aggregate_age_distribution(age_distr,
-                                      lookup_table)
+aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
@@ -47,5 +43,5 @@ aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 
 # Plot the contact matrix:
 plot_contact_matrix(aggr_cm)
-}
+
 }

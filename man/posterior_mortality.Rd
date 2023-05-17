@@ -16,13 +16,12 @@ A list of two dataframes which can be visualised using \code{\link[Bernadette]{p
 Summarize the posterior distribution of the mortality counts
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
 
-# Import the age distribution for a country in a given year:
+# Import the age distribution for Greece in 2020:
 age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
@@ -34,7 +33,7 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
@@ -66,7 +65,6 @@ post_mortality_summary <- posterior_mortality(igbm_fit)
 # Visualise the posterior distribution of the mortality counts:
 plot_posterior_mortality(post_mortality_summary, type = "age-specific")
 plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
-}
 }
 }
 \references{

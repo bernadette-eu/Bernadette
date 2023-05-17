@@ -4,10 +4,15 @@
 #' Row i of a column j of a contact matrix corresponds to the number of contacts
 #' made by an individual in group i with an individual in group j.
 #'
+#' @format A list of 16 by 16 dataframes for 177 countries.
+#'
+#' @return A list object of 16 by 16 dataframes for 177 countries.
+#'
 #' @usage data(contact_matrices)
 #'
 #' @section References:
 #' Prem, K., van Zandvoort, K., Klepac, P. et al (2020). Projecting contact matrices in 177 geographical regions: an update and comparison with empirical data for the COVID-19 era. medRxiv 2020.07.22.20159772; doi: https://doi.org/10.1101/2020.07.22.20159772
+#'
 "contact_matrices"
 
 #' Age distribution of reported deaths for Greece
@@ -27,12 +32,15 @@
 #'   \item{65+}{numeric; count of reported deaths on a given date for the age group "65+"}
 #' }
 #'
+#' @return A data.frame object with 210 rows and 8 variables.
+#'
 #' @usage data(age_specific_mortality_counts)
 #'
 #' @section References:
 #' Sandbird (2022). Daily regional statistics for covid19 cases in Greece.
 #'
 #' @source \url{https://github.com/Sandbird/covid19-Greece/}
+#'
 "age_specific_mortality_counts"
 
 #' Age distribution of reported infections for Greece
@@ -52,9 +60,13 @@
 #'   \item{65+}{numeric; count of reported infections on a given date for the age group "65+"}
 #' }
 #'
+#' @return A data.frame object with 210 rows and 8 variables.
+#'
 #' @usage data(age_specific_infection_counts)
 #'
 #' @section References:
 #' Sandbird (2022). Daily regional statistics for covid19 cases in Greece.
+#'
 #' @source \url{https://github.com/Sandbird/covid19-Greece/}
+#'
 "age_specific_infection_counts"

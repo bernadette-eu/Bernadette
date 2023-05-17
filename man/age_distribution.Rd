@@ -14,7 +14,7 @@ country identifier, following the List of United Nations Member States. See \lin
 calendar year.}
 }
 \value{
-A data frame that contains the age distribution.
+An object of class \emph{data.frame} that contains the age distribution.
 }
 \description{
 Function to extract the age distribution of a country for a given year, broken
@@ -22,11 +22,8 @@ down by 5-year age bands and gender, following the United Nations 2019 Revision 
 World Population Prospects.
 }
 \examples{
-
-\dontrun{
-age_distr <- age_distribution(country = "Greece",
-                             year    = 2020)
-}
+# Age distribution for Greece in 2020:
+age_distr <- age_distribution(country = "Greece", year = 2020)
 
 }
 \references{

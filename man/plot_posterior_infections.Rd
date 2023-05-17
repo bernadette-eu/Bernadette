@@ -33,8 +33,7 @@ A \code{ggplot} object which can be further customised using the \pkg{ggplot2} p
 Plot the posterior distribution of the infection counts
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
@@ -83,7 +82,6 @@ post_inf_summary <- plot_posterior_infections(igbm_fit)
 # Visualise the posterior distribution of the infection counts:
 plot_posterior_infections(post_inf_summary, type = "age-specific")
 plot_posterior_infections(post_inf_summary, type = "age-aggregated")
-}
 }
 }
 \seealso{

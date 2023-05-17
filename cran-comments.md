@@ -1,5 +1,48 @@
 # Version 1.1.1
 
+# Round 2
+
+2023-05-17
+
+## Test environments
+
+* Local:
+  - Windows 10, R 4.2.2 (x86_64-w64-mingw32/x64 (64-bit))
+* macOS builder (https://mac.r-project.org/)
+* R-hub builder (https://builder.r-hub.io/)
+
+## CRAN comments
+
+> Please add \\value to .Rd files regarding exported methods and explain the functions results in the documentation. Please write about the structure of the output (class) and also what the output means. (If a function does not return a value, please document that too, e.g. \\value{No return value, called for side effects}' or similar)
+Missing Rd-tags:
+      country_contact_matrices.Rd: \\value
+      stan_igbm.Rd: \\value
+      summary.stanigbm.Rd: \\value
+
+Added `\value` to all exported functions.
+
+> \\dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \\dontrun{} adds the comment ("# Not run:") as a warning for the user. Does not seem necessary. Please unwrap the examples if they are executable in < 5 sec, or create additionally small toy examples to allow automatic testing. (You could also replace \\dontrun{} with \\donttest{}, if it takes longer than 5 sec to be executed, but it would be preferable to have automatic checks for functions. Otherwise, you can also write some tests.)
+
+The examples that are executable in < 5 sec have been unwrapped. For the examples that are executable in > 5 sec, `\dontrun{}` was replaced with `\donttest{}`.
+
+> Please ensure that you do not use more than 2 cores in your examples, vignettes, etc.
+
+Done.
+
+# Round 1
+
+2023-05-16
+
+## Submission comments
+
+> Not more than 5MB for a CRAN package, please.
+
+This has been addressed and the size of the tarball is now < 5MB.
+
+> Is there some reference about the method you can add in the Description field in the form Authors (year) <doi:10.....> or <arXiv:.....>?
+
+A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".
+
 ## Test environments
 
 * Local:
@@ -7,7 +50,7 @@
 * macOS builder (https://mac.r-project.org/macbuilder/results/1684151644-59dd962bb20e410f/)
 * R-hub builder (https://builder.r-hub.io)
   - Windows Server 2022 R-devel, 64 bit
-    - NOTE 1 - A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".
+    - NOTE 1 - **A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".**
       ```
       * checking CRAN incoming feasibility ... [13s] NOTE
       
@@ -20,19 +63,19 @@
         Ntzoufras (16:40)
       Maintainer: 'Lampros Bouranis <bernadette.aueb@gmail.com>'
       ```
-    - NOTE 2 - This note is unrelated to the Bernadette package:
+    - NOTE 2 - **This note is unrelated to the Bernadette package.**
     
       ```
       * checking HTML version of manual ... NOTE
       Skipping checking math rendering: package 'V8' unavailable
       ```
-    - NOTE 3 - This is a Windows-related note.
+    - NOTE 3 - **This is a Windows-related note.**
       ```
       * checking for non-standard things in the check directory ... NOTE
       Found the following files/directories:
       ''NULL''
       ```
-    - NOTE 4 - Following [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
+    - NOTE 4 - **Following [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.**
     
       ```
       * checking for detritus in the temp directory ... NOTE
@@ -40,7 +83,7 @@
       'lastMiKTeXException'
       ```
   - Ubuntu Linux 20.04.1 LTS, R-release, GCC 
-    - NOTE 1 - A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".
+    - NOTE 1 - **A reference about the method has been added in the Description field in the form "Authors (year) <arXiv:.....>".**
       ```
       * checking CRAN incoming feasibility ... [5s/15s] NOTE
       Maintainer: ‘Lampros Bouranis <bernadette.aueb@gmail.com>’
@@ -61,13 +104,13 @@
       sub-directories of 1Mb or more:
         libs  59.0Mb
       ```
-    - NOTE 3 - GNU make is needed for handling the Makevars files that rstantools uses to compile the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.
+    - NOTE 3 - **GNU make is needed for handling the Makevars files that rstantools uses to compile the packages Stan models. It’s fairly commonly used for R packages with more complex Makefile needs.  See [this](https://discourse.mc-stan.org/t/using-rstan-in-an-r-package-generates-r-cmd-check-notes/26628) Stan Forums thread.**
     
       ```
       * checking for GNU extensions in Makefiles ... NOTE
       GNU make is a SystemRequirements.
       ```
-    - NOTE 4 - This note is unrelated to the Bernadette package:
+    - NOTE 4 - **This note is unrelated to the Bernadette package.**
       ```
       * checking HTML version of manual ... NOTE
       Skipping checking HTML validation: no command 'tidy' found
@@ -88,6 +131,6 @@
 
 There are no reverse dependencies for v1.1.1 of the Bernadette package.
 
-Thanks!
+Thank you,
 
 Lampros Bouranis

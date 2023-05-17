@@ -10,19 +10,18 @@ posterior_rt(object)
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}
 }
 \value{
-A ata.frames which can be visualised using \code{\link[Bernadette]{plot_posterior_rt}}.
+A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_rt}}.
 }
 \description{
 Estimate the effective reproduction number with the next generation matrix approach
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
 
-# Import the age distribution for a country in a given year:
+# Import the age distribution for Greece in 2020:
 age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
@@ -34,7 +33,7 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
@@ -65,7 +64,6 @@ post_rt_summary <- posterior_rt(igbm_fit)
 
 # Visualise the posterior distribution of the effective reproduction number:
 plot_posterior_rt(post_rt_summary)
-}
 }
 }
 \references{

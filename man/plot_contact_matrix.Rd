@@ -7,23 +7,20 @@
 plot_contact_matrix(x)
 }
 \arguments{
-\item{x}{data.frame; a contact matrix.  See \link[Bernadette]{contact_matrix}.}
+\item{x}{data.frame;
+a contact matrix.  See \link[Bernadette]{contact_matrix}.}
 }
 \value{
-A heatmap of a contact matrix for a particular country.
-
-Heatmap of a contact matrix
+A ggplot object that can be further customized using the
+  \pkg{ggplot2} package.
 }
 \description{
 Contact matrix heatmap
 }
 \examples{
+# Import the projected contact matrix for Greece:
+conmat <- contact_matrix(country = "GRC")
 
-\dontrun{
-
-cm <- contact_matrix(country = "GRC")
-
-plot_cm <- plot_contact_matrix(cm)
-}
+plot_contact_matrix(conmat)
 
 }

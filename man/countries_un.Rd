@@ -7,11 +7,15 @@
 countries_un()
 }
 \value{
-A character vector that contains the names of 201 countries/areas.
+A character vector that contains the full names of 201 countries/areas.
 }
 \description{
 Function to extract the names of the countries whose discrete age distribution is
 available by the United Nations.
+}
+\examples{
+countries_un()
+
 }
 \references{
 United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, Online Edition. Rev. 1.

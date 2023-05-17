@@ -47,59 +47,21 @@
 #'   then the Student t distribution is the Cauchy distribution.
 #'   If \code{scale} is not specified it will default to \eqn{2.5}.
 #' }
+#'
 #' @return A named list to be used internally by the \pkg{Bernadette} model
 #'   fitting functions.
+#'
 #' @seealso The vignette for the \pkg{Bernadette} package discusses
 #'   the use of some of the supported prior distributions.
 #'
 #' @examples
-#' \dontrun{
-#' if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
-#' # Age-specific mortality/incidence count time series:
-#' data(age_specific_mortality_counts)
-#' data(age_specific_infection_counts)
-#'
-#' # Import the age distribution for a country in a given year:
-#' age_distr <- age_distribution(country = "Greece", year = 2020)
-#'
-#' # Lookup table:
-#' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
-#'                           Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-#'                                       "18-39", "18-39", "18-39", "18-39",
-#'                                       "40-64", "40-64", "40-64", "40-64", "40-64",
-#'                                       "65+", "65+", "65+"))
-#'
-#' # Aggregate the age distribution table:
-#' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
-#'
-#' # Aggregate the contact matrix:
-#' aggr_cm <- aggregate_contact_matrix(cm,
-#'                                     lookup_table,
-#'                                     aggr_age)
-#'
-#' # Lookup table:
-#' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
-#'
-#' # Aggregate the IFR:
-#' aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
-#'
-#' # Posterior sampling:
-#' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
-#'                       contact_matrix              = aggr_cm,
-#'                       age_distribution_population = aggr_age,
-#'                       age_specific_ifr            = aggr_age_ifr[[3]],
-#'                       prior_volatility            = normal(location = 0, scale = 1),
-#'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-#'                       algorithm_inference         = "optimizing")
-#' }
-#'}
-#'
 #' \donttest{
 #' # Age-specific mortality/incidence count time series:
+#' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
 #' data(age_specific_infection_counts)
 #'
-#' # Import the age distribution for a country in a given year:
+#' # Import the age distribution for Greece in 2020:
 #' age_distr <- age_distribution(country = "Greece", year = 2020)
 #'
 #' # Lookup table:
@@ -111,7 +73,7 @@
 #' # Aggregate the age distribution table:
 #' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
-#' # Import the projected contact matrix for a country (i.e. Greece):
+#' # Import the projected contact matrix for Greece:
 #' conmat <- contact_matrix(country = "GRC")
 #'
 #' # Aggregate the contact matrix:

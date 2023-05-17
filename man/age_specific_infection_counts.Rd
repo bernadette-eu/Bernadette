@@ -23,6 +23,9 @@ A data frame with 210 rows and 8 variables:
 \usage{
 data(age_specific_infection_counts)
 }
+\value{
+A data.frame object with 210 rows and 8 variables.
+}
 \description{
 A dataset containing the age distribution of reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
 The dataset has been extracted from the Hellenic National Public Health Organization database.

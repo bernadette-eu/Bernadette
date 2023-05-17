@@ -11,36 +11,32 @@
 #' @param age_distr data.frame;
 #' the aggregated age distribution. See \link[Bernadette]{aggregate_contact_matrix}.
 #'
-#' @return An object of class "data.frame".
+#' @return An object of class \emph{data.frame}.
 #'
 #' @examples
+#' # Import the age distribution for Greece in 2020:
+#' age_distr <- age_distribution(country = "Greece", year = 2020)
 #'
-#' \dontrun{
-#'# Import the age distribution for a country in a given year:
-#'age_distr <- age_distribution(country = "Greece",
-#'                              year    = 2020)
+#' # Lookup table:
+#' lookup_table <- data.frame(Initial = age_distr$AgeGrp,
+#'                            Mapping = c(rep("0-39",  8),
+#'                                        rep("40-64", 5),
+#'                                        rep("65+"  , 3)))
 #'
-# Lookup table:
-#'lookup_table <- data.frame(Initial = colnames(conmat),
-#'                           Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-#'                                       "18-39", "18-39", "18-39", "18-39",
-#'                                       "40-64", "40-64", "40-64", "40-64", "40-64",
-#'                                       "65+", "65+", "65+"))
+#' # Aggregate the age distribution table:
+#' aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 #'
-#'# Aggregate the age distribution table:
-#'aggr_age <- aggregate_age_distribution(age_distr,
-#'                                       lookup_table)
+#' # Import the projected contact matrix for Greece:
+#' conmat <- contact_matrix(country = "GRC")
 #'
-#'# Import the projected contact matrix for a country (i.e. Greece):
-#'conmat <- contact_matrix(country = "GRC")
+#' # Aggregate the contact matrix:
+#' aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 #'
-#'# Aggregate the contact matrix:
-#'aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
+#' # Plot the contact matrix:
+#' plot_contact_matrix(aggr_cm)
 #'
-#'# Plot the contact matrix:
-#'plot_contact_matrix(aggr_cm)
-#'}
 #' @export
+#'
 aggregate_contact_matrix <- function(object,
                                      lookup_table,
                                      age_distr
@@ -50,12 +46,8 @@ aggregate_contact_matrix <- function(object,
     stop("The mapped age group labels do not correspond to the age group labels of the aggregated age distribution matrix.\n")
   }
 
-  # Try 1: indiv_age_df <- data.frame(indiv_age = base::names(object))
-  # Try 2:
   indiv_age_df <- base::data.frame(indiv_age = lookup_table$Initial)
-
-  object_df <- cbind(object, indiv_age_df)
-  #colnames(object_df)[1:(ncol(object_df)-1)] <- base::colnames(object)
+  object_df    <- cbind(object, indiv_age_df)
 
   long_dt <- stats::reshape(object_df,
                             varying   = list(base::names(object_df)[-ncol(object_df)]),

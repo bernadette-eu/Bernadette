@@ -16,36 +16,33 @@ A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterio
 Estimate the age-specific transmission rate
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
 
-# Import the age distribution for a country in a given year:
+# Import the age distribution for Greece in 2020:
 age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
 lookup_table <- data.frame(Initial = age_distr$AgeGrp,
-                          Mapping = c("0-17",  "0-17",  "0-17",  "0-17",
-                                      "18-39", "18-39", "18-39", "18-39",
-                                      "40-64", "40-64", "40-64", "40-64", "40-64",
-                                      "65+", "65+", "65+"))
+                          Mapping = c(rep("0-39",  8),
+                                      rep("40-64", 5),
+                                      rep("65+"  , 3)))
 
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
 aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 
-# Lookup table:
+# Aggregate the IFR:
 ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
 
-# Aggregate the IFR:
-aggr_age_ifr <- aggregate_ifr_react(age_distr, age_mapping, age_specific_infection_counts)
+aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
 
 # Infection-to-death distribution:
 ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
@@ -67,6 +64,5 @@ post_transmrate_summary <- posterior_transmrate(igbm_fit)
 
 # Visualise the posterior distribution of the age-specific transmission rate:
 plot_posterior_transmrate(post_transmrate_summary)
-}
 }
 }

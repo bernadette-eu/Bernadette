@@ -8,11 +8,13 @@ NOTE: See https://github.com/stan-dev/rstanarm/blob/master/R/posterior_traj.R}
 plot_posterior_rt(object, xlab = NULL, ylab = NULL, ...)
 }
 \arguments{
-\item{object}{A dataframe from \code{\link[Bernadette]{posterior_rt}}.}
+\item{object}{A data frame from \code{\link[Bernadette]{posterior_rt}}.}
 
-\item{xlab}{character; Title of x-axis.}
+\item{xlab}{character;
+Title of x-axis.}
 
-\item{ylab}{character; Title of y-axis.}
+\item{ylab}{character;
+Title of y-axis.}
 
 \item{...}{Optional arguments passed to \code{\link[ggplot2]{scale_x_date}} and \code{\link[ggplot2]{theme}}.}
 }
@@ -24,13 +26,12 @@ Plot the estimated effective reproduction number trajectory
 NOTE: See https://github.com/stan-dev/rstanarm/blob/master/R/posterior_traj.R
 }
 \examples{
-\dontrun{
-if (.Platform$OS.type != "windows" || .Platform$r_arch != "i386") {
+\donttest{
 # Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
 
-# Import the age distribution for a country in a given year:
+# Import the age distribution for Greece in 2020:
 age_distr <- age_distribution(country = "Greece", year = 2020)
 
 # Lookup table:
@@ -42,7 +43,7 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
 # Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 
-# Import the projected contact matrix for a country (i.e. Greece):
+# Import the projected contact matrix for Greece:
 conmat <- contact_matrix(country = "GRC")
 
 # Aggregate the contact matrix:
@@ -73,7 +74,6 @@ post_rt_summary <- posterior_rt(igbm_fit)
 
 # Visualise the posterior distribution of the effective reproduction number:
 plot_posterior_rt(post_rt_summary)
-}
 }
 }
 \seealso{
