@@ -127,7 +127,7 @@ plot_age_distribution(aggr_age)
 
 Next, import the projected contact matrix for Greece:
 
-```{r, fig.height=5, fig.width=9}
+```{r, fig.height=5, fig.width=12}
 conmat <- contact_matrix(country = "GRC")
 plot_contact_matrix(conmat)
 
