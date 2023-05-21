@@ -12,6 +12,8 @@ status](https://www.r-pkg.org/badges/version/Bernadette)](https://cran.r-project
 [![Last-commit](https://img.shields.io/github/last-commit/bernadette-eu/Bernadette)](https://github.com/bernadette-eu/Bernadette/commits/main)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![downloads](https://cranlogs.r-pkg.org/badges/Bernadette)](https://shinyus.ipub.com/cranview/)
+[![total](https://cranlogs.r-pkg.org/badges/grand-total/Bernadette)](https://shinyus.ipub.com/cranview/)
 <!-- badges: end -->
 
 ## Overview
@@ -69,6 +71,7 @@ install.packages("Bernadette")
 ``` r
 lib <- c("stats",
          "ggplot2",
+         "rstan",
          "bayesplot",
          "Bernadette",
          "loo")
@@ -184,8 +187,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       likelihood_variance_type    = "quadratic",
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "sampling",
-                      chains                      = chains)
+                      algorithm_inference         = "sampling")
 ```
 
 ## Summarise the distributions of estimated parameters and derived quantities using the posterior draws.
@@ -202,10 +204,11 @@ Example - Pairs plots between some parameters:
 cov_data           <- attributes(object)
 cov_data           <- cov_data$standata
 volatilities_names <- paste0("volatilities","[", 1:cov_data$A,"]")
+posterior_1        <- as.array(igbm_fit)
 ```
 
 ``` r
-bayesplot::mcmc_pairs(igbm_fit,
+bayesplot::mcmc_pairs(posterior_1,
                       pars          = volatilities_names,
                       off_diag_args = list(size = 1.5))
 ```
