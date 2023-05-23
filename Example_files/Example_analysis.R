@@ -155,3 +155,10 @@ plot_posterior_cm(igbm_fit, y_data = age_specific_mortality_counts)
 
  # Visualise the posterior distribution of the age-specific transmission rate:
  plot_posterior_transmrate(post_transmrate_summary)
+
+
+ log_lik_1 <- loo::extract_log_lik(igbm_fit, merge_chains = FALSE)
+ r_eff_1   <- loo::relative_eff(exp(log_lik_1), cores = 4)
+
+ loo_1 <- loo::loo(log_lik_1, r_eff = r_eff_1, cores = 4)
+ print(loo_1)
