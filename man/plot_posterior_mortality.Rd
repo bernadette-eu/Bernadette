@@ -77,7 +77,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_mortality_summary <- posterior_mortality(igbm_fit)
+post_mortality_summary <- posterior_mortality(object = igbm_fit,
+                                              y_data = age_specific_mortality_counts)
 
 # Visualise the posterior distribution of the mortality counts:
 plot_posterior_mortality(post_mortality_summary, type = "age-specific")

@@ -10,6 +10,9 @@ plot_posterior_cm(object, ...)
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}
 
 \item{...}{Optional arguments passed to \code{\link[ggplot2]{theme}}.}
+
+\item{y_data}{data.frame;
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 }
 \value{
 A \code{grid.arrange} object which can be further customised using the \pkg{gridExtra} package.
@@ -63,7 +66,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       algorithm_inference         = "optimizing")
 
 # Visualise the posterior distribution of the random contact matrix:
-plot_posterior_cm(igbm_fit)
+plot_posterior_cm(object = igbm_fit,
+                  y_data = age_specific_mortality_counts)
 }
 }
 \references{

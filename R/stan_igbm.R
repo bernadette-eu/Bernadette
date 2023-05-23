@@ -245,6 +245,4 @@ stan_igbm <-
                           max_treedepth         = max_treedepth,
                           seed                  = seed,
                           ...)
-
-    structure(stanfit, class = c("stanigbm"))
   }

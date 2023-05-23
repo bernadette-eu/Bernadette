@@ -2,6 +2,15 @@
 #'
 #' @param object An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.
 #'
+#' @param y_data data.frame;
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
+#'
+#' @param age_distribution_population data.frame;
+#' the age distribution of a given population. See \code{aggregate_age_distribution}.
+#'
+#' @param infectious_period integer;
+#' length of infectious period in days. Must be >=1.
+#'
 #' @return A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_rt}}.
 #'
 #' @references
@@ -54,23 +63,32 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_rt_summary <- posterior_rt(igbm_fit)
+#' post_rt_summary <- posterior_rt(object            = igbm_fit,
+#'                                 y_data            = age_specific_mortality_counts,
+#'                                 infectious_period = 4)
 #'
 #' # Visualise the posterior distribution of the effective reproduction number:
 #' plot_posterior_rt(post_rt_summary)
 #'}
 #' @export
 #'
-posterior_rt <- function(object){
+posterior_rt <- function(object,
+                         y_data,
+                         age_distribution_population,
+                         infectious_period){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
-  cov_data        <- attributes(object)
-  cov_data        <- cov_data$standata
-  age_grps        <- cov_data$A
 
-  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+  cov_data                   <- list()
+  cov_data$ydata             <- y_data[,-c(1:5)]
+  cov_data$dates             <- y_data$Dates
+  cov_data$pop_diag          <- 1/(age_distribution_population$PopTotal)
+  cov_data$infectious_period <- infectious_period
+  age_grps                   <- ncol(y_data[,-c(1:5)])
+
+  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", age_grps) )
 
   zero_mat             <- matrix(0L, nrow = age_grps, ncol = age_grps)
   identity_mat         <- diag(age_grps)
@@ -105,7 +123,7 @@ posterior_rt <- function(object){
     }
   }
 
-  data_eff_repnumber         <- data.frame(Date  = cov_data$Date)
+  data_eff_repnumber         <- data.frame(Date  = cov_data$dates)
   data_eff_repnumber$median  <- apply(R_eff_mat, 2, median)
   data_eff_repnumber$low0025 <- apply(R_eff_mat, 2, quantile, probs = c(0.025)) # c(0.025)
   data_eff_repnumber$low25   <- apply(R_eff_mat, 2, quantile, probs = c(0.25))  # c(0.025)
@@ -178,7 +196,8 @@ posterior_rt <- function(object){
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_rt_summary <- posterior_rt(igbm_fit)
+#' post_rt_summary <- posterior_rt(object = igbm_fit,
+#'                                 y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the effective reproduction number:
 #' plot_posterior_rt(post_rt_summary)

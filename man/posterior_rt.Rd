@@ -4,10 +4,19 @@
 \alias{posterior_rt}
 \title{Estimate the effective reproduction number with the next generation matrix approach}
 \usage{
-posterior_rt(object)
+posterior_rt(object, y_data, age_distribution_population, infectious_period)
 }
 \arguments{
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}
+
+\item{y_data}{data.frame;
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
+
+\item{age_distribution_population}{data.frame;
+the age distribution of a given population. See \code{aggregate_age_distribution}.}
+
+\item{infectious_period}{integer;
+length of infectious period in days. Must be >=1.}
 }
 \value{
 A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_rt}}.
@@ -60,7 +69,9 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_rt_summary <- posterior_rt(igbm_fit)
+post_rt_summary <- posterior_rt(object            = igbm_fit,
+                                y_data            = age_specific_mortality_counts,
+                                infectious_period = 4)
 
 # Visualise the posterior distribution of the effective reproduction number:
 plot_posterior_rt(post_rt_summary)

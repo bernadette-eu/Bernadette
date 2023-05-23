@@ -87,7 +87,7 @@ stan_igbm.fit <-
                     "log_lik",
                     "deviance")
 
-    #---- Call stan() to draw from posterior distribution:
+    #---- Call Stan to draw from posterior distribution:
     stanfit <- stanmodels$igbm
 
     #---- Optimizing:
@@ -114,26 +114,6 @@ stan_igbm.fit <-
 
       if (algorithm == "sampling") {
 
-         optimizing_args <- list(...)
-
-         if (is.null(optimizing_args$draws)) optimizing_args$draws <- 1000L
-
-         optimizing_args$object <- stanfit
-         optimizing_args$data   <- standata
-         optimizing_args$seed   <- seed
-
-         fit_optim <- do.call(rstan::optimizing, args = optimizing_args)
-
-         sampler_init <- function(){
-           list(pi           = fit_optim$par[names(fit_optim$par) %in% "pi"],
-                x0           = fit_optim$par[names(fit_optim$par) %in% "x0"],
-                x_noise      = fit_optim$par[grepl("x_noise[",     names(fit_optim$par), fixed = TRUE)],
-                L_raw        = fit_optim$par[grepl("L_raw[",       names(fit_optim$par), fixed = TRUE)],
-                volatilities = fit_optim$par[grepl("volatilities", names(fit_optim$par), fixed = TRUE)],
-                phiD         = fit_optim$par[names(fit_optim$par) %in% "phiD"]
-           )
-         }
-
          sampling_args <- set_sampling_args(object             = stanfit,
                                             user_dots          = list(...),
                                             user_adapt_delta   = adapt_delta,
@@ -144,7 +124,6 @@ stan_igbm.fit <-
                                             iter               = nIter,
                                             thin               = nThin,
                                             seed               = seed,
-                                            init               = sampler_init,
                                             show_messages      = FALSE
                                             )
 
@@ -153,32 +132,11 @@ stan_igbm.fit <-
       #---- Variational Bayes:
       } else {
 
-        optimizing_args <- list(...)
-
-        if (is.null(optimizing_args$draws)) optimizing_args$draws <- 1000L
-
-        optimizing_args$object <- stanfit
-        optimizing_args$data   <- standata
-        optimizing_args$seed   <- seed
-
-        fit_optim <- do.call(rstan::optimizing, args = optimizing_args)
-
-        sampler_init <- function(){
-          list(pi           = fit_optim$par[names(fit_optim$par) %in% "pi"],
-               x0           = fit_optim$par[names(fit_optim$par) %in% "x0"],
-               x_noise      = fit_optim$par[grepl("x_noise[",     names(fit_optim$par), fixed = TRUE)],
-               L_raw        = fit_optim$par[grepl("L_raw[",       names(fit_optim$par), fixed = TRUE)],
-               volatilities = fit_optim$par[grepl("volatilities", names(fit_optim$par), fixed = TRUE)],
-               phiD         = fit_optim$par[names(fit_optim$par) %in% "phiD"]
-          )
-        }
-
-        # Algorithm either "meanfield" or "fullrank"
+        # Algorithm either "meanfield" or "fullrank":
         stanfit <- rstan::vb(stanfit,
                              data      = standata,
                              pars      = parameters,
                              seed      = seed,
-                             init      = sampler_init,
                              algorithm = algorithm,
                              ...)
       }
@@ -188,8 +146,6 @@ stan_igbm.fit <-
 
       if (!isTRUE(check)) return(standata)
 
-      return(base::structure(stanfit,
-                             standata   = standata,
-                             stanparams = parameters))
+      return(stanfit)
     }
   }

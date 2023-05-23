@@ -4,16 +4,21 @@
 # \code{do.call}.
 #
 # @param object The stanfit object to use for sampling.
+#
 # @param user_dots The contents of \code{...} from the user's call to
 #   the \code{stan_*} modeling function.
+#
 # @param user_adapt_delta numeric; The value for \code{adapt_delta} specified by the user.
+#
 # @param user_max_treedepth numeric; The value for \code{max_treedepth} specified by the user.
+#
 # @param ... Other arguments to \code{\link[rstan]{sampling}} not coming from
 #   \code{user_dots} (e.g. \code{data}, \code{pars}, \code{init}, etc.).
+#
 # @return A list of arguments to use for the \code{args} argument for
 #   \code{do.call(sampling, args)}.
 set_sampling_args <- function(object,
-                              user_dots = list(),
+                              user_dots          = list(),
                               user_adapt_delta   = NULL,
                               user_max_treedepth = NULL,
                               ...) {

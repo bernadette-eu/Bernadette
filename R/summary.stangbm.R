@@ -5,6 +5,9 @@
 #' @param object
 #' An \code{R} object of class \code{stanigbm}.
 #'
+#' @param y_data data.frame;
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
+#'
 #' @param ...
 #' Additional arguments, to be passed to lower-level functions.
 #'
@@ -57,18 +60,22 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' summary(igbm_fit)
+#' summary(object = igbm_fit,
+#'         y_data = age_specific_mortality_counts)
 #'}
 #'
 #' @export
+#'
 #' @method summary stanigbm
 #'
-summary.stanigbm <- function(object, ...) {
+summary.stanigbm <- function(object,
+                             y_data,
+                             ...) {
 
-  validate_stanigbm_object(object)
+  check <- check_stanfit(object)
 
-  cov_data   <- attributes(object)
-  cov_data   <- cov_data$standata
+  if (!isTRUE(check)) stop("'object' must be of class 'stanfit'.")
+
   parameters <- c("pi",
                   "phiD",
                   "volatilities",
@@ -80,6 +87,10 @@ summary.stanigbm <- function(object, ...) {
                   "E_cases",
                   "E_deaths",
                   "Susceptibles")
+
+  cov_data       <- list()
+  cov_data$A     <- ncol(y_data[,-c(1:5)])
+  cov_data$n_obs <- nrow(y_data)
 
   rest_params <-
     c(parameters[1],
@@ -122,24 +133,18 @@ summary.stanigbm <- function(object, ...) {
   E_deaths_params <-
     paste0(parameters[10], "[", 1:cov_data$n_obs, "]")
 
-  Susceptibles_params <-
-    paste0(parameters[11],
-           "[",
-           apply(expand.grid(1:cov_data$n_obs,
-                             1:cov_data$A), 1, paste, collapse = ","),
-           "]")
-
-  out <- summary(object,
-                 pars = c("lp__",
-                          rest_params,
-                          cm_params,
-                          beta_params,
-                          E_casesAge_params,
-                          E_deathsAge_params,
-                          E_cases_params,
-                          E_deaths_params,
-                          Susceptibles_params),
-                 ...)
+  out <- round(summary(object,
+                       pars = c("lp__",
+                                rest_params,
+                                cm_params,
+                                beta_params,
+                                E_casesAge_params,
+                                E_deathsAge_params,
+                                E_cases_params,
+                                E_deaths_params
+                                ),
+                        ...
+                 )$summary, 3)
 
   return(out)
 }

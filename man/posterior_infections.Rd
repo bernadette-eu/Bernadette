@@ -4,10 +4,13 @@
 \alias{posterior_infections}
 \title{Summarize the posterior distribution of the infection counts}
 \usage{
-posterior_infections(object)
+posterior_infections(object, y_data)
 }
 \arguments{
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}
+
+\item{y_data}{data.frame;
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 }
 \value{
 A list of two dataframes which can be visualised using \code{\link[Bernadette]{plot_posterior_infections}}.
@@ -60,7 +63,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_inf_summary <- plot_posterior_infections(igbm_fit)
+post_inf_summary <- plot_posterior_infections(object = igbm_fit,
+                                              y_data = age_specific_mortality_counts)
 
 # Visualise the posterior distribution of the infection counts:
 plot_posterior_infections(post_inf_summary, type = "age-specific")

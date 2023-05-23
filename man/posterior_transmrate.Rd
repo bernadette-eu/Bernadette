@@ -8,6 +8,9 @@ posterior_transmrate(object)
 }
 \arguments{
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}
+
+\item{y_data}{data.frame;
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 }
 \value{
 A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_transmrate}}.
@@ -60,7 +63,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_transmrate_summary <- posterior_transmrate(igbm_fit)
+post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+                                                y_data = age_specific_mortality_counts)
 
 # Visualise the posterior distribution of the age-specific transmission rate:
 plot_posterior_transmrate(post_transmrate_summary)

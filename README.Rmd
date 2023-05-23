@@ -155,6 +155,38 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 ```
 
+Before performing MCMC, we can execute the routine for maximizing the joint posterior from the model. The estimates can be used as initialization points for the HMC algorithm.
+
+```{r, echo=T}
+igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
+                           contact_matrix              = aggr_cm,
+                           age_distribution_population = aggr_age,
+                           age_specific_ifr            = aggr_age_ifr[[3]],
+                           itd_distr                   = ditd,
+                           incubation_period           = 3,
+                           infectious_period           = 4,
+                           likelihood_variance_type    = "linear",
+                           prior_scale_x0              = 5,
+                           prior_scale_contactmatrix   = 0.05,
+                           pi_perc                     = 0.1,
+                           prior_volatility            = normal(location = 0, scale = 4),
+                           prior_nb_dispersion         = exponential(rate = 1/5),
+                           algorithm_inference         = "optimizing",
+                           seed                        = 1
+                           )
+
+sampler_init <- function(){
+  list(eta0        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "eta0"],
+       eta_init    = igbm_fit_init$par[grepl("eta_init",   names(igbm_fit_init$par), fixed = TRUE)],
+       eta_noise   = igbm_fit_init$par[grepl("eta_noise[", names(igbm_fit_init$par), fixed = TRUE)],
+       L_raw       = igbm_fit_init$par[grepl("L_raw[",     names(igbm_fit_init$par), fixed = TRUE)],
+       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
+       sigmaBM     = igbm_fit_init$par[grepl("sigmaBM",  names(igbm_fit_init$par), fixed = TRUE)],
+       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
+  )
+}# End function
+```
+
 Find the number of cores in your machine and indicate how many will be used for parallel processing:
 
 ```{r, eval=F, echo=T}

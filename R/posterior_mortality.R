@@ -2,6 +2,9 @@
 #'
 #' @param object An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.
 #'
+#' @param y_data data.frame;
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
+#'
 #' @return A list of two dataframes which can be visualised using \code{\link[Bernadette]{plot_posterior_mortality}}.
 #'
 #' @references
@@ -52,7 +55,8 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_mortality_summary <- posterior_mortality(igbm_fit)
+#' post_mortality_summary <- posterior_mortality(object = igbm_fit,
+#'                                               y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the mortality counts:
 #' plot_posterior_mortality(post_mortality_summary, type = "age-specific")
@@ -60,14 +64,16 @@
 #'}
 #' @export
 #'
-posterior_mortality <- function(object){
+posterior_mortality <- function(object,
+                                y_data){
 
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
-  cov_data        <- attributes(object)
-  cov_data        <- cov_data$standata
-  dates           <- cov_data$Dates
+  cov_data        <- list()
+  cov_data$ydata  <- y_data[,-c(1:5)]
+  cov_data$dates  <- y_data$Dates
+  cov_data$A      <- ncol(y_data[,-c(1:5)])
 
   #---- Age-specific:
   output_age_cols     <- c("Date", "Group", "median", "low", "high", "low25", "high75")
@@ -77,10 +83,10 @@ posterior_mortality <- function(object){
   for (i in 1:cov_data$A){
 
     fit_age           <- posterior_draws$E_deathsByAge[,,i]
-    dt_deaths_age_grp <- data.frame(Date  = dates,
-                                    Group = rep( colnames(cov_data$y_data)[i], length(dates) ) )
+    dt_deaths_age_grp <- data.frame(Date  = cov_data$dates,
+                                    Group = rep( colnames(cov_data$y_data)[i], length(cov_data$dates) ) )
 
-    dt_deaths_age_grp        <- data.frame(Date = dates)
+    dt_deaths_age_grp        <- data.frame(Date = cov_data$dates)
     dt_deaths_age_grp$median <- apply(fit_age, 2, median)
     dt_deaths_age_grp$low    <- apply(fit_age, 2, quantile, probs = c(0.025))
     dt_deaths_age_grp$high   <- apply(fit_age, 2, quantile, probs = c(0.975))
@@ -92,7 +98,7 @@ posterior_mortality <- function(object){
 
   #---- Aggregated:
   fit_aggregated           <- posterior_draws$E_deaths
-  output_aggregated        <- data.frame(Date = dates)
+  output_aggregated        <- data.frame(Date = cov_data$dates)
   output_aggregated$median <- apply(fit_aggregated, 2, median)
   output_aggregated$low    <- apply(fit_aggregated, 2, quantile, probs = c(0.025))
   output_aggregated$high   <- apply(fit_aggregated, 2, quantile, probs = c(0.975))
@@ -170,7 +176,8 @@ posterior_mortality <- function(object){
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_mortality_summary <- posterior_mortality(igbm_fit)
+#' post_mortality_summary <- posterior_mortality(object = igbm_fit,
+#'                                               y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the mortality counts:
 #' plot_posterior_mortality(post_mortality_summary, type = "age-specific")

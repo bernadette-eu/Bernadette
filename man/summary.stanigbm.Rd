@@ -4,10 +4,13 @@
 \alias{summary.stanigbm}
 \title{Summary of stanigbm posterior output}
 \usage{
-\method{summary}{stanigbm}(object, ...)
+\method{summary}{stanigbm}(object, y_data, ...)
 }
 \arguments{
 \item{object}{An \code{R} object of class \code{stanigbm}.}
+
+\item{y_data}{data.frame;
+age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 
 \item{...}{Additional arguments, to be passed to lower-level functions.}
 }
@@ -64,7 +67,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-summary(igbm_fit)
+summary(object = igbm_fit,
+        y_data = age_specific_mortality_counts)
 }
 
 }

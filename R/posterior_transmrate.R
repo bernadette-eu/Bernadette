@@ -3,6 +3,9 @@
 #' @param object
 #' An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.
 #'
+#' @param y_data data.frame;
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
+#'
 #' @return
 #' A data.frame which can be visualised using \code{\link[Bernadette]{plot_posterior_transmrate}}.
 #'
@@ -51,7 +54,8 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_transmrate_summary <- posterior_transmrate(igbm_fit)
+#' post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+#'                                                 y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the age-specific transmission rate:
 #' plot_posterior_transmrate(post_transmrate_summary)
@@ -63,16 +67,17 @@ posterior_transmrate <- function(object){
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
-  cov_data        <- attributes(object)
-  cov_data        <- cov_data$standata
-  age_grps        <- cov_data$A
 
-  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", cov_data$A) )
+  cov_data       <- list()
+  cov_data$ydata <- y_data[,-c(1:5)]
+  cov_data$dates <- y_data$Dates
+  age_grps       <- ncol(cov_data$ydata)
+
+  if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", age_grps) )
 
   beta_draws   <- posterior_draws$beta_trajectory
   chain_length <- nrow(beta_draws)
   ts_length    <- dim(beta_draws)[2]
-  dates        <- cov_data$Date
 
   data_transmission_rate_cols      <- c("Date", "Group", "median", "low0025", "low25", "high75", "high975")
   data_transmission_rate           <- data.frame(matrix(ncol = length(data_transmission_rate_cols), nrow = 0))
@@ -81,8 +86,8 @@ posterior_transmrate <- function(object){
   for (k in 1:age_grps){
 
     trans_rate_temp          <- matrix(0L, nrow = chain_length, ncol = ts_length)
-    data_trans_rate_age_grp  <- data.frame(Date  = dates,
-                                           Group = rep( colnames(cov_data$y_data)[k], length(dates)
+    data_trans_rate_age_grp  <- data.frame(Date  = cov_data$dates,
+                                           Group = rep( colnames(cov_data$y_data)[k], length(cov_data$dates)
                                            ))
 
     for (j in 1:ts_length) trans_rate_temp[,j] <- beta_draws[,j,k] * posterior_draws$cm_sample[,k,k]
@@ -160,7 +165,8 @@ posterior_transmrate <- function(object){
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_transmrate_summary <- posterior_transmrate(igbm_fit)
+#' post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+#'                                                 y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the age-specific transmission rate:
 #' plot_posterior_transmrate(post_transmrate_summary)

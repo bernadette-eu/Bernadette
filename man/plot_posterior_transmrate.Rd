@@ -67,7 +67,8 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_transmrate_summary <- posterior_transmrate(igbm_fit)
+post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+                                                y_data = age_specific_mortality_counts)
 
 # Visualise the posterior distribution of the age-specific transmission rate:
 plot_posterior_transmrate(post_transmrate_summary)

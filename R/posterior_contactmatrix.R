@@ -2,6 +2,9 @@
 #'
 #' @param object An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.
 #'
+#' @param y_data data.frame;
+#' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
+#'
 #' @param ... Optional arguments passed to \code{\link[ggplot2]{theme}}.
 #'
 #' @return A \code{grid.arrange} object which can be further customised using the \pkg{gridExtra} package.
@@ -55,7 +58,8 @@
 #'                       algorithm_inference         = "optimizing")
 #'
 #' # Visualise the posterior distribution of the random contact matrix:
-#' plot_posterior_cm(igbm_fit)
+#' plot_posterior_cm(object = igbm_fit,
+#'                   y_data = age_specific_mortality_counts)
 #'}
 #' @export
 #'
@@ -64,9 +68,7 @@ plot_posterior_cm <- function(object, ...){
   if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
-  cov_data        <- attributes(object)
-  cov_data        <- cov_data$standata
-  age_grps        <- cov_data$A
+  age_grps        <- ncol(y_data[,-c(1:5)])
 
   if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", age_grps) )
 
