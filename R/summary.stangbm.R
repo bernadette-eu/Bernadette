@@ -74,7 +74,7 @@ summary.stanigbm <- function(object,
 
   check <- check_stanfit(object)
 
-  if (!isTRUE(check)) stop("'object' must be of class 'stanfit'.")
+  if (!isTRUE(check)) stop("Provide an object of class 'stanfit' using rstan::sampling() or rstan::vb()")
 
   parameters <- c("pi",
                   "phiD",

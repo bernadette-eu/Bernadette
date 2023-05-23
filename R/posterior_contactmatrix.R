@@ -63,9 +63,11 @@
 #'}
 #' @export
 #'
-plot_posterior_cm <- function(object, ...){
+plot_posterior_cm <- function(object, y_data, ...){
 
-  if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
+  check <- check_stanfit(object)
+
+  if (!isTRUE(check)) stop("Provide an object of class 'stanfit' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
   age_grps        <- ncol(y_data[,-c(1:5)])

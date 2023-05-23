@@ -64,10 +64,11 @@
 #'}
 #' @export
 #'
-posterior_mortality <- function(object,
-                                y_data){
+posterior_mortality <- function(object, y_data){
 
-  if(class(object)[1] != "stanigbm") stop("Provide an object of class 'stanigbm' using rstan::sampling() or rstan::vb()")
+  check <- check_stanfit(object)
+
+  if (!isTRUE(check)) stop("Provide an object of class 'stanfit' using rstan::sampling() or rstan::vb()")
 
   posterior_draws <- rstan::extract(object)
   cov_data        <- list()
