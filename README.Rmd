@@ -202,14 +202,19 @@ options(mc.cores = chains)
 Sample from the posterior distribution of the parameters using the Hamiltonian Monte Carlo algorithm implemented in Stan - Note that a longer time horizon and/or a greater number of age groups in ```y_data``` will lead to increased CPU time:
 
 ```{r, eval=F, echo=T}
-igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
+igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts,
                       contact_matrix              = aggr_cm,
                       age_distribution_population = aggr_age,
                       age_specific_ifr            = aggr_age_ifr[[3]],
                       itd_distr                   = ditd,
-                      likelihood_variance_type    = "quadratic",
-                      prior_volatility            = normal(location = 0, scale = 1),
-                      prior_nb_dispersion         = gamma(shape = 2, rate = 1),
+                      incubation_period           = 3,
+                      infectious_period           = 4,
+                      likelihood_variance_type    = "linear",
+                      prior_scale_x0              = 5,
+                      prior_scale_contactmatrix   = 0.05,
+                      pi_perc                     = 0.1,
+                      prior_volatility            = normal(location = 0, scale = 4),
+                      prior_nb_dispersion         = exponential(rate = 1/5),
                       algorithm_inference         = "sampling",
                       nBurn                       = 500,
                       nPost                       = 500,
