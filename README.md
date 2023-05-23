@@ -160,6 +160,47 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 ```
 
+Before performing MCMC, we can execute the routine for maximizing the
+joint posterior from the model. The estimates can be used as
+initialization points for the HMC algorithm.
+
+``` r
+igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
+                           contact_matrix              = aggr_cm,
+                           age_distribution_population = aggr_age,
+                           age_specific_ifr            = aggr_age_ifr[[3]],
+                           itd_distr                   = ditd,
+                           incubation_period           = 3,
+                           infectious_period           = 4,
+                           likelihood_variance_type    = "linear",
+                           prior_scale_x0              = 5,
+                           prior_scale_contactmatrix   = 0.05,
+                           pi_perc                     = 0.1,
+                           prior_volatility            = normal(location = 0, scale = 4),
+                           prior_nb_dispersion         = exponential(rate = 1/5),
+                           algorithm_inference         = "optimizing",
+                           seed                        = 1
+                           )
+```
+
+    ## Warning in .local(object, ...): non-zero return code in optimizing
+
+    ## Error in chol.default(-H) : 
+    ##   the leading minor of order 1 is not positive definite
+
+``` r
+sampler_init <- function(){
+  list(eta0        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "eta0"],
+       eta_init    = igbm_fit_init$par[grepl("eta_init",   names(igbm_fit_init$par), fixed = TRUE)],
+       eta_noise   = igbm_fit_init$par[grepl("eta_noise[", names(igbm_fit_init$par), fixed = TRUE)],
+       L_raw       = igbm_fit_init$par[grepl("L_raw[",     names(igbm_fit_init$par), fixed = TRUE)],
+       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
+       sigmaBM     = igbm_fit_init$par[grepl("sigmaBM",  names(igbm_fit_init$par), fixed = TRUE)],
+       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
+  )
+}# End function
+```
+
 Find the number of cores in your machine and indicate how many will be
 used for parallel processing:
 
@@ -168,7 +209,7 @@ parallel::detectCores()
 rstan_options(auto_write = TRUE)
 
 # Here we sample from four Markov chains in parallel:
-chains <- 4
+chains <- 6
 
 options(mc.cores = chains)
 ```
@@ -187,13 +228,23 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       likelihood_variance_type    = "quadratic",
                       prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "sampling")
+                      algorithm_inference         = "sampling",
+                      nBurn                       = 500,
+                      nPost                       = 500,
+                      nThin                       = 1,
+                      chains                      = chains,
+                      adapt_delta                 = 0.8,
+                      max_treedepth               = 14,
+                      seed                        = 1,
+                      init                        = sampler_init)
 ```
 
 ## Summarise the distributions of estimated parameters and derived quantities using the posterior draws.
 
 ``` r
-summary(igbm_fit)
+print_summary <- summary(object = igbm_fit,
+                         y_data = age_specific_mortality_counts)
+round(print_summary$summary, 3)
 ```
 
 ## MCMC diagnostic plots
@@ -201,9 +252,7 @@ summary(igbm_fit)
 Example - Pairs plots between some parameters:
 
 ``` r
-cov_data           <- attributes(object)
-cov_data           <- cov_data$standata
-volatilities_names <- paste0("volatilities","[", 1:cov_data$A,"]")
+volatilities_names <- paste0("volatilities","[", 1:ncol(age_specific_mortality_counts[,-c(1:5)]),"]")
 posterior_1        <- as.array(igbm_fit)
 ```
 
@@ -218,14 +267,15 @@ bayesplot::mcmc_pairs(posterior_1,
 Visualise the posterior distribution of the random contact matrix:
 
 ``` r
-plot_posterior_cm(igbm_fit)
+plot_posterior_cm(igbm_fit, y_data = age_specific_mortality_counts)
 ```
 
 Visualise the posterior distribution (age-specific or aggregated daily
 estimates) of the infection counts:
 
 ``` r
-post_inf_summary <- plot_posterior_infections(igbm_fit)
+post_inf_summary <- posterior_infections(object = igbm_fit,
+                                         y_data = age_specific_mortality_counts)
 ```
 
 ``` r
@@ -233,14 +283,15 @@ plot_posterior_infections(post_inf_summary, type = "age-specific")
 ```
 
 ``` r
-plot_posterior_infections(post_inf_summary, type = "age-aggregated")
+plot_posterior_infections(post_inf_summary, type = "aggregated")
 ```
 
 Visualise the posterior distribution (age-specific or aggregated daily
 estimates) of the mortality counts:
 
 ``` r
-post_mortality_summary <- posterior_mortality(igbm_fit)
+post_mortality_summary <- posterior_mortality(object = igbm_fit,
+                                              y_data = age_specific_mortality_counts)
 ```
 
 ``` r
@@ -248,14 +299,17 @@ plot_posterior_mortality(post_mortality_summary, type = "age-specific")
 ```
 
 ``` r
-plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 ```
 
 Visualise the posterior distribution of the effective reproduction
 number:
 
 ``` r
-post_rt_summary <- posterior_rt(igbm_fit)
+post_rt_summary <- posterior_rt(object                      = igbm_fit,
+                                y_data                      = age_specific_mortality_counts,
+                                age_distribution_population = aggr_age,
+                                infectious_period           = 4)
 plot_posterior_rt(post_rt_summary)
 ```
 
@@ -263,7 +317,8 @@ Visualise the posterior distribution of the age-specific transmission
 rate:
 
 ``` r
-post_transmrate_summary <- posterior_transmrate(igbm_fit)
+post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+                                                y_data = age_specific_mortality_counts)
 plot_posterior_transmrate(post_transmrate_summary)
 ```
 
