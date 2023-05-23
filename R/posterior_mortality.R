@@ -5,7 +5,8 @@
 #' @param y_data data.frame;
 #' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
 #'
-#' @return A list of two dataframes which can be visualised using \code{\link[Bernadette]{plot_posterior_mortality}}.
+#' @return
+#' #' A named list with elements \code{Age_specific} and \code{Aggregated} which can be visualised using \code{\link[Bernadette]{plot_posterior_mortality}}.
 #'
 #' @references
 #' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
@@ -60,7 +61,7 @@
 #'
 #' # Visualise the posterior distribution of the mortality counts:
 #' plot_posterior_mortality(post_mortality_summary, type = "age-specific")
-#' plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+#' plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 #'}
 #' @export
 #'
@@ -72,8 +73,8 @@ posterior_mortality <- function(object, y_data){
 
   posterior_draws <- rstan::extract(object)
   cov_data        <- list()
-  cov_data$ydata  <- y_data[,-c(1:5)]
-  cov_data$dates  <- y_data$Dates
+  cov_data$y_data <- y_data[,-c(1:5)]
+  cov_data$dates  <- y_data$Date
   cov_data$A      <- ncol(y_data[,-c(1:5)])
 
   #---- Age-specific:
@@ -87,7 +88,6 @@ posterior_mortality <- function(object, y_data){
     dt_deaths_age_grp <- data.frame(Date  = cov_data$dates,
                                     Group = rep( colnames(cov_data$y_data)[i], length(cov_data$dates) ) )
 
-    dt_deaths_age_grp        <- data.frame(Date = cov_data$dates)
     dt_deaths_age_grp$median <- apply(fit_age, 2, median)
     dt_deaths_age_grp$low    <- apply(fit_age, 2, quantile, probs = c(0.025))
     dt_deaths_age_grp$high   <- apply(fit_age, 2, quantile, probs = c(0.975))
@@ -99,6 +99,7 @@ posterior_mortality <- function(object, y_data){
 
   #---- Aggregated:
   fit_aggregated           <- posterior_draws$E_deaths
+
   output_aggregated        <- data.frame(Date = cov_data$dates)
   output_aggregated$median <- apply(fit_aggregated, 2, median)
   output_aggregated$low    <- apply(fit_aggregated, 2, quantile, probs = c(0.025))
@@ -182,7 +183,7 @@ posterior_mortality <- function(object, y_data){
 #'
 #' # Visualise the posterior distribution of the mortality counts:
 #' plot_posterior_mortality(post_mortality_summary, type = "age-specific")
-#' plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+#' plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 #'}
 #' @export
 #'

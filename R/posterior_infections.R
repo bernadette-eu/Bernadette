@@ -5,7 +5,8 @@
 #' @param y_data data.frame;
 #' age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.
 #'
-#' @return A list of two dataframes which can be visualised using \code{\link[Bernadette]{plot_posterior_infections}}.
+#' @return
+#' A named list with elements \code{Age_specific} and \code{Aggregated} which can be visualized using \code{\link[Bernadette]{plot_posterior_infections}}.
 #'
 #' @references
 #' Bouranis, L., Demiris, N. Kalogeropoulos, K. and Ntzoufras, I. (2022). Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19. arXiv: \url{https://arxiv.org/abs/2211.15229}
@@ -55,12 +56,12 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_inf_summary <- plot_posterior_infections(object = igbm_fit,
-#'                                               y_data = age_specific_mortality_counts)
+#' post_inf_summary <- posterior_infections(object = igbm_fit,
+#'                                          y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the infection counts:
 #' plot_posterior_infections(post_inf_summary, type = "age-specific")
-#' plot_posterior_infections(post_inf_summary, type = "age-aggregated")
+#' plot_posterior_infections(post_inf_summary, type = "aggregated")
 #'}
 #' @export
 #'
@@ -72,8 +73,8 @@ posterior_infections <- function(object, y_data){
 
   posterior_draws <- rstan::extract(object)
   cov_data        <- list()
-  cov_data$ydata  <- y_data[,-c(1:5)]
-  cov_data$dates  <- y_data$Dates
+  cov_data$y_data <- y_data[,-c(1:5)]
+  cov_data$dates  <- y_data$Date
   cov_data$A      <- ncol(y_data[,-c(1:5)])
 
   #---- Age-specific:
@@ -87,7 +88,6 @@ posterior_infections <- function(object, y_data){
     dt_infections_age_grp <- data.frame(Date  = cov_data$dates,
                                         Group = rep( colnames(cov_data$y_data)[i], length(cov_data$dates) ) )
 
-    dt_infections_age_grp        <- data.frame(Date = cov_data$dates)
     dt_infections_age_grp$median <- apply(fit_age, 2, median)
     dt_infections_age_grp$low    <- apply(fit_age, 2, quantile, probs = c(0.025))
     dt_infections_age_grp$high   <- apply(fit_age, 2, quantile, probs = c(0.975))
@@ -99,6 +99,7 @@ posterior_infections <- function(object, y_data){
 
   #---- Aggregated:
   fit_aggregated           <- posterior_draws$E_cases
+
   output_aggregated        <- data.frame(Date = cov_data$dates)
   output_aggregated$median <- apply(fit_aggregated, 2, median)
   output_aggregated$low    <- apply(fit_aggregated, 2, quantile, probs = c(0.025))
@@ -177,12 +178,12 @@ posterior_infections <- function(object, y_data){
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_inf_summary <- plot_posterior_infections(object = igbm_fit,
-#'                                               y_data = age_specific_mortality_counts)
+#' post_inf_summary <- posterior_infections(object = igbm_fit,
+#'                                          y_data = age_specific_mortality_counts)
 #'
 #' # Visualise the posterior distribution of the infection counts:
 #' plot_posterior_infections(post_inf_summary, type = "age-specific")
-#' plot_posterior_infections(post_inf_summary, type = "age-aggregated")
+#' plot_posterior_infections(post_inf_summary, type = "aggregated")
 #'}
 #' @export
 #'

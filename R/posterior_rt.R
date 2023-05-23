@@ -63,9 +63,10 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' post_rt_summary <- posterior_rt(object            = igbm_fit,
-#'                                 y_data            = age_specific_mortality_counts,
-#'                                 infectious_period = 4)
+#' post_rt_summary <- posterior_rt(object                      = igbm_fit,
+#'                                 y_data                      = age_specific_mortality_counts,
+#'                                 age_distribution_population = aggr_age,
+#'                                 infectious_period            = 4)
 #'
 #' # Visualise the posterior distribution of the effective reproduction number:
 #' plot_posterior_rt(post_rt_summary)
@@ -84,8 +85,8 @@ posterior_rt <- function(object,
   posterior_draws <- rstan::extract(object)
 
   cov_data                   <- list()
-  cov_data$ydata             <- y_data[,-c(1:5)]
-  cov_data$dates             <- y_data$Dates
+  cov_data$y_data            <- y_data[,-c(1:5)]
+  cov_data$dates             <- y_data$Date
   cov_data$pop_diag          <- 1/(age_distribution_population$PopTotal)
   cov_data$infectious_period <- infectious_period
   age_grps                   <- ncol(y_data[,-c(1:5)])
