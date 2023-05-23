@@ -60,8 +60,10 @@
 #'                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
 #'                       algorithm_inference         = "optimizing")
 #'
-#' summary(object = igbm_fit,
-#'         y_data = age_specific_mortality_counts)
+#' print_summary <- summary(object = igbm_fit,
+#'                          y_data = age_specific_mortality_counts)
+#'
+#' round(print_summary$summary, 3)
 #'}
 #'
 #' @export
@@ -133,7 +135,7 @@ summary.stanigbm <- function(object,
   E_deaths_params <-
     paste0(parameters[10], "[", 1:cov_data$n_obs, "]")
 
-  out <- round(summary(object,
+  out <- summary(object,
                        pars = c("lp__",
                                 rest_params,
                                 cm_params,
@@ -143,8 +145,7 @@ summary.stanigbm <- function(object,
                                 E_cases_params,
                                 E_deaths_params
                                 ),
-                        ...
-                 )$summary, 3)
+                 ...)
 
   return(out)
 }

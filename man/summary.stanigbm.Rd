@@ -67,8 +67,10 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-summary(object = igbm_fit,
-        y_data = age_specific_mortality_counts)
+print_summary <- summary(object = igbm_fit,
+                         y_data = age_specific_mortality_counts)
+
+round(print_summary$summary, 3)
 }
 
 }

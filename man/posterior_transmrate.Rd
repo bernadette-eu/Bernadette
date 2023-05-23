@@ -4,7 +4,7 @@
 \alias{posterior_transmrate}
 \title{Estimate the age-specific transmission rate}
 \usage{
-posterior_transmrate(object)
+posterior_transmrate(object, y_data)
 }
 \arguments{
 \item{object}{An object of class \code{stanigbm}. See \code{\link[Bernadette]{stan_igbm}}.}

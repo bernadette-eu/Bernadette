@@ -62,7 +62,7 @@
 #'}
 #' @export
 #'
-posterior_transmrate <- function(object){
+posterior_transmrate <- function(object, y_data){
 
   check <- check_stanfit(object)
 

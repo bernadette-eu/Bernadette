@@ -100,12 +100,13 @@ igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts
                      seed                        = 1,
                      init                        = sampler_init)
 
+# Show only 10% and 90% posterior estimates:
 print_summary <- summary(object = igbm_fit,
-                         y_data = age_specific_mortality_counts)
-round(print(print_summary), 3)
+                         y_data = age_specific_mortality_counts,
+                         probs = c(0.1, 0.9))
+round(print_summary$summary, 3)
 
 # Example - Pairs plots between some parameters:
-
 cov_data       <- list()
 cov_data$A     <- ncol(y_data[,-c(1:5)])
 cov_data$n_obs <- nrow(y_data)
@@ -122,11 +123,34 @@ bayesplot::mcmc_pairs(posterior_1,
                       pars          = volatilities_names,
                       off_diag_args = list(size = 1.5))
 
-plot_posterior_cm(igbm_fit)
+plot_posterior_cm(igbm_fit, y_data = age_specific_mortality_counts)
 
-#' post_inf_summary <- plot_posterior_infections(object = igbm_fit,
-#'                                               y_data = age_specific_mortality_counts)
-#'
-#' # Visualise the posterior distribution of the infection counts:
-#' plot_posterior_infections(post_inf_summary, type = "age-specific")
-#' plot_posterior_infections(post_inf_summary, type = "age-aggregated")
+ post_inf_summary <- plot_posterior_infections(object = igbm_fit,
+                                               y_data = age_specific_mortality_counts)
+
+ # Visualise the posterior distribution of the infection counts:
+ plot_posterior_infections(post_inf_summary, type = "age-specific")
+ plot_posterior_infections(post_inf_summary, type = "age-aggregated")
+
+
+  post_mortality_summary <- posterior_mortality(object = igbm_fit,
+                                               y_data = age_specific_mortality_counts)
+
+ # Visualise the posterior distribution of the mortality counts:
+ plot_posterior_mortality(post_mortality_summary, type = "age-specific")
+ plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+
+
+  post_rt_summary <- posterior_rt(object            = igbm_fit,
+                                 y_data            = age_specific_mortality_counts,
+                                 infectious_period = 4)
+
+ # Visualise the posterior distribution of the effective reproduction number:
+ plot_posterior_rt(post_rt_summary)
+
+
+  post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+                                                 y_data = age_specific_mortality_counts)
+
+ # Visualise the posterior distribution of the age-specific transmission rate:
+ plot_posterior_transmrate(post_transmrate_summary)
