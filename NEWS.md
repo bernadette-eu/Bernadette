@@ -1,4 +1,4 @@
-# Bernadette (development version)
+# Bernadette 1.1.2
 
 # NEWS
 
