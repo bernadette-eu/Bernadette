@@ -13,7 +13,7 @@ posterior_mortality(object, y_data)
 age-specific mortality counts in time. See \code{data(age_specific_mortality_counts)}.}
 }
 \value{
-A list of two dataframes which can be visualised using \code{\link[Bernadette]{plot_posterior_mortality}}.
+#' A named list with elements \code{Age_specific} and \code{Aggregated} which can be visualised using \code{\link[Bernadette]{plot_posterior_mortality}}.
 }
 \description{
 Summarize the posterior distribution of the mortality counts
@@ -68,7 +68,7 @@ post_mortality_summary <- posterior_mortality(object = igbm_fit,
 
 # Visualise the posterior distribution of the mortality counts:
 plot_posterior_mortality(post_mortality_summary, type = "age-specific")
-plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 }
 }
 \references{

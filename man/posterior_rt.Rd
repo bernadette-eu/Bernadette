@@ -69,9 +69,10 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       prior_nb_dispersion         = gamma(shape = 2, rate = 1),
                       algorithm_inference         = "optimizing")
 
-post_rt_summary <- posterior_rt(object            = igbm_fit,
-                                y_data            = age_specific_mortality_counts,
-                                infectious_period = 4)
+post_rt_summary <- posterior_rt(object                      = igbm_fit,
+                                y_data                      = age_specific_mortality_counts,
+                                age_distribution_population = aggr_age,
+                                infectious_period            = 4)
 
 # Visualise the posterior distribution of the effective reproduction number:
 plot_posterior_rt(post_rt_summary)

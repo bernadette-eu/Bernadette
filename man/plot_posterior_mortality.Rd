@@ -82,7 +82,7 @@ post_mortality_summary <- posterior_mortality(object = igbm_fit,
 
 # Visualise the posterior distribution of the mortality counts:
 plot_posterior_mortality(post_mortality_summary, type = "age-specific")
-plot_posterior_mortality(post_mortality_summary, type = "age-aggregated")
+plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 }
 }
 \seealso{
