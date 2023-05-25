@@ -113,7 +113,7 @@ age_distr <- age_distribution(country = "Greece", year = 2020)
 plot_age_distribution(age_distr)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Information is available for sixteen 5-year age groups, with the last
 one being “75+”. We shall consider three age groups, {0-39, 40-64, 65+},
@@ -128,7 +128,7 @@ aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
 plot_age_distribution(aggr_age)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Next, import the projected contact matrix for Greece:
 
@@ -137,7 +137,7 @@ conmat <- contact_matrix(country = "GRC")
 plot_contact_matrix(conmat)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 Aggregate the contact matrix to the age groups {0-39, 40-64, 65+}:
 
@@ -146,7 +146,7 @@ aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 plot_contact_matrix(aggr_cm)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Obtain estimates of the age-specific infection-fatality-ratio:
 
@@ -195,7 +195,8 @@ exposed but not yet infectious,
 $I_t^{\alpha} = \sum_{j=1}^{2}I_{j,t}^{\alpha}$ is the number of
 infected and $R_t^{\alpha}$ is the number of removed individuals at time
 $t$ at age group $\alpha$. The number of individuals in each compartment
-is scaled by the total population \$ = *{= 1}^{A}*{} \$, so that the sum
+is scaled by the total population
+$\mathbb{N} = \sum_{\alpha = 1}^{A}\mathbb{N}_{\alpha}$, so that the sum
 of all compartments equals to one . The latent epidemic process is
 expressed by the following non-linear system of ordinary differential
 equations (ODEs) $$
@@ -295,7 +296,7 @@ C_{\alpha,\alpha'}
 \equiv 
 \beta^{\alpha\alpha}_{t}
 \cdot
-C_{\alpha,\alpha'},
+C_{\alpha,\alpha'}
 $$
 
 under the assumption
@@ -307,73 +308,58 @@ Denote the number of observed deaths on day $t = 1, \ldots, T$ in age
 group $\alpha \in \{1,\ldots,A\}$ by $y_{t,\alpha}$. A given infection
 may lead to observation events (i.e deaths) in the future. A link
 between $y_{t,\alpha}$ and the expected number of new age-stratified
-infections is established via the function $$
-\begin{equation*}
+infections is established via the function
+
+$$
+\begin{equation}
 d_{t,\alpha} = \mathbb{E}[y_{t,\alpha}] = \widehat{\text{IFR}}_{\alpha} \times \sum_{s = 1}^{t-1}h_{t-s} \Delta^{\text{infec}}_{s, \alpha}
-\end{equation*}
-$$ on the new expected age-stratified mortality counts, $d_{t,\alpha}$,
-the estimated age-stratified infection fatality rate,
+\end{equation}
+$$
+
+on the new expected age-stratified mortality counts, $d_{t,\alpha}$, the
+estimated age-stratified infection fatality rate,
 $\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution
 $h$, where $h_s$ gives the probability the death occurs on the $s^{th}$
 day after infection, is assumed to be gamma distributed with mean 24.2
-days and coefficient of variation 0.39 , that is $$
-\begin{equation}\label{eq:itd}
+days and coefficient of variation 0.39 , that is
+
+$$
+\begin{equation}
 h \sim \operatorname{Gamma}(6.29, 0.26).
 \end{equation}
 $$ We allow for over-dispersion in the observation processes to account
 for noise in the underlying data streams, for example due to day-of-week
 effects on data collection, and link $d_{t,\alpha}$ to $y_{t,\alpha}$
-through an over-dispersed count model $$
-\begin{equation}\label{eq:negbin}
+through an over-dispersed count model
+
+$$
+\begin{equation}
   y_{t,\alpha}\mid \theta \sim \operatorname{NegBin}\left(d_{t,\alpha}, \xi_{t,\alpha}\right),
 \end{equation}
 $$ where $\xi_{t,\alpha} = \frac{d_{t,\alpha}}{\phi}$, such that
 $\mathbb{V}[y_{t,\alpha}] = d_{t,\alpha}(1+\phi)$. The log-likelihood of
-the observed deaths is given by $$
-\begin{equation*}
+the observed deaths is given by
+
+$$
+\begin{equation}
 \ell^{Deaths}(y\mid \theta) = \sum_{t=1}^{T}\sum_{\alpha=1}^{A}\text{logNegBin}\left(y_{t,\alpha}\mid d_{t,\alpha}, \xi_{t,\alpha}\right),
-\end{equation*}
+\end{equation}
 $$ where $y \in \mathbb{R}^{T \times A}_{0,+}$ are the surveillance data
 on deaths for all time-points.
 
 ### Prior specification
 
+The unknown quantities that need to be inferred are
+$\theta= (x^{\alpha\alpha}_{0}, x^{\alpha\alpha}_{1:T}, C_{\alpha,\alpha'}, \sigma_{x,\alpha}, \rho, \phi)$
+for $\alpha \in \{1,\ldots,A\}$ for
+$(\alpha,\alpha') \in \{1,\ldots,A\}^2$
+
+The proposed prior distributions for the model parameters are:
+
+\$\$
+\$\$
+
 ## Model fitting
-
-Before performing MCMC, the user can opt to execute the routine for
-maximizing the joint posterior from the model. The estimates can be used
-as initialization points for the HMC algorithm by setting the option
-`r, eval=F init = igbm_fit_init` in `r, eval=F stan_igbm`.
-
-``` r
-igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
-                           contact_matrix              = aggr_cm,
-                           age_distribution_population = aggr_age,
-                           age_specific_ifr            = aggr_age_ifr[[3]],
-                           itd_distr                   = ditd,
-                           incubation_period           = 3,
-                           infectious_period           = 4,
-                           likelihood_variance_type    = "linear",
-                           prior_scale_x0              = 5,
-                           prior_scale_contactmatrix   = 0.05,
-                           pi_perc                     = 0.1,
-                           prior_volatility            = normal(location = 0, scale = 4),
-                           prior_nb_dispersion         = exponential(rate = 1/5),
-                           algorithm_inference         = "optimizing",
-                           seed                        = 1
-                           )
-
-sampler_init <- function(){
-  list(eta0        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "eta0"],
-       eta_init    = igbm_fit_init$par[grepl("eta_init",   names(igbm_fit_init$par), fixed = TRUE)],
-       eta_noise   = igbm_fit_init$par[grepl("eta_noise[", names(igbm_fit_init$par), fixed = TRUE)],
-       L_raw       = igbm_fit_init$par[grepl("L_raw[",     names(igbm_fit_init$par), fixed = TRUE)],
-       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
-       sigmaBM     = igbm_fit_init$par[grepl("sigmaBM",  names(igbm_fit_init$par), fixed = TRUE)],
-       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
-  )
-}# End function
-```
 
 Find the number of cores in your machine and indicate how many will be
 used for parallel processing:

@@ -1,6 +1,8 @@
 ---
-output: github_document
+output: 
+    github_document
 ---
+
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -64,6 +66,10 @@ lib <- c("stats",
          "loo")
 lapply(lib, require, character.only = TRUE)
 ``` 
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(kableExtra)
+```
 
 ## Example - COVID-19 in Greece
 
@@ -203,7 +209,7 @@ The transmission of COVID-19 is modeled through an age-stratified deterministic 
 Removed individuals are assumed to be immune to reinfection for at least the duration of the study period.
 
 The population is stratified into $\alpha \in \{1,\ldots,A\}$ age groups and the total size of the age group is denoted by $\mathbb{N}_{\alpha} = S_t^{\alpha} + E_{1,t}^{\alpha} + E_{2,t}^{\alpha} + I_{1,t}^{\alpha} + I_{2,t}^{\alpha} + R_t^{\alpha}$, where $S_t^{\alpha}$ represents the number of susceptible, $E_t^{\alpha} = \sum_{j=1}^{2}E_{j,t}^{\alpha}$ represents the number of exposed but not yet infectious, $I_t^{\alpha} = \sum_{j=1}^{2}I_{j,t}^{\alpha}$ is the number of infected and $R_t^{\alpha}$ is the number of removed individuals at time $t$ at age group $\alpha$. 
-The number of individuals in each compartment is scaled by the total population $\mathbb{N} = \sum_{\alpha = 1}^{A}\mathbb{N}_{\alpha} $, so that the sum of all compartments equals to one \citep{riou2}.
+The number of individuals in each compartment is scaled by the total population $\mathbb{N} = \sum_{\alpha = 1}^{A}\mathbb{N}_{\alpha}$, so that the sum of all compartments equals to one \citep{riou2}.
 The latent epidemic process is expressed by the following non-linear system of ordinary differential equations (ODEs)
 $$
 \begin{cases}
@@ -261,7 +267,7 @@ $$
 with volatilities $\sigma^{\alpha\alpha'}_x$, corresponding to the case of little information on the shape of $\beta^{\alpha\alpha'}_{t}$.
 The volatility $\sigma^{\alpha\alpha'}_x$ plays the role of the regularizing factor: higher values of $\sigma^{\alpha\alpha'}_x$ lead to greater changes in $\beta^{\alpha\alpha'}_{t}$. 
 The exponential transformation avoids negative values which have no biological meaning.
-                                                                                                                   A major advantage of considering a diffusion process for modeling $\beta^{\alpha\alpha'}_{t}$ is its ability to capture and quantify the randomness of the underlying transmission dynamics, which is particularly useful when the dynamics are not completely understood. 
+                                                                                                        A major advantage of considering a diffusion process for modeling $\beta^{\alpha\alpha'}_{t}$ is its ability to capture and quantify the randomness of the underlying transmission dynamics, which is particularly useful when the dynamics are not completely understood. 
 The diffusion process accounts for fluctuations in transmission that are influenced by non-modeled phenomena, such as new variants, mask-wearing propensity, etc. 
 The diffusion process also allows for capturing the effect of unknown extrinsic factors on the age-stratified force of infection,
 for monitoring of the temporal evolution of the age-specific transmission rate without the implicit inclusion of external variables and for tackling non-stationarity in the data.
@@ -275,76 +281,64 @@ C_{\alpha,\alpha'}
 \equiv 
 \beta^{\alpha\alpha}_{t}
 \cdot
-C_{\alpha,\alpha'},
+C_{\alpha,\alpha'}
 $$
 
 under the assumption $\beta^{\alpha\alpha'}_t \equiv \beta^{\alpha\alpha}_t, \alpha \neq \alpha'$. 
 
 ### Observation process
+
 Denote the number of observed deaths on day $t = 1, \ldots, T$ in age group $\alpha \in \{1,\ldots,A\}$ by $y_{t,\alpha}$. 
 A given infection may lead to observation events (i.e deaths) in the future. 
 A link between $y_{t,\alpha}$ and the expected number of new age-stratified infections is established via the function
+
 $$
-\begin{equation*}
+\begin{equation}
 d_{t,\alpha} = \mathbb{E}[y_{t,\alpha}] = \widehat{\text{IFR}}_{\alpha} \times \sum_{s = 1}^{t-1}h_{t-s} \Delta^{\text{infec}}_{s, \alpha}
-\end{equation*}
+\end{equation}
 $$
+
 on the new expected age-stratified mortality counts, $d_{t,\alpha}$, the estimated age-stratified infection fatality rate, $\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution $h$, where $h_s$ gives the probability the death occurs on the $s^{th}$ day after infection, is assumed to be gamma distributed with mean 24.2 days and coefficient of variation 0.39 \citep{flaxman, monod}, that is
+
 $$
-\begin{equation}\label{eq:itd}
+\begin{equation}
 h \sim \operatorname{Gamma}(6.29, 0.26).
 \end{equation}
 $$
 We allow for over-dispersion in the observation processes to account for noise in the underlying data streams, for example due to day-of-week effects on data collection, and link $d_{t,\alpha}$ to $y_{t,\alpha}$ through an over-dispersed count model
+
 $$
-\begin{equation}\label{eq:negbin}
+\begin{equation}
   y_{t,\alpha}\mid \theta \sim \operatorname{NegBin}\left(d_{t,\alpha}, \xi_{t,\alpha}\right),
 \end{equation}
 $$
 where $\xi_{t,\alpha} = \frac{d_{t,\alpha}}{\phi}$, such that $\mathbb{V}[y_{t,\alpha}] = d_{t,\alpha}(1+\phi)$. 
 The log-likelihood of the observed deaths is given by
+
 $$
-\begin{equation*}
+\begin{equation}
 \ell^{Deaths}(y\mid \theta) = \sum_{t=1}^{T}\sum_{\alpha=1}^{A}\text{logNegBin}\left(y_{t,\alpha}\mid d_{t,\alpha}, \xi_{t,\alpha}\right),
-\end{equation*}
+\end{equation}
 $$
 where $y \in \mathbb{R}^{T \times A}_{0,+}$ are the surveillance data on deaths for all time-points.
 
 ### Prior specification
 
+The unknown quantities that need to be inferred are $\theta= (x^{\alpha\alpha}_{0}, x^{\alpha\alpha}_{1:T}, C_{\alpha,\alpha'}, \sigma_{x,\alpha}, \rho, \phi)$ for $\alpha \in \{1,\ldots,A\}$ for $(\alpha,\alpha') \in \{1,\ldots,A\}^2$
+
+The proposed prior distributions for the model parameters are:
+
+$$
+\begin{aligned}
+\log R_t & \sim  f \left( t \right), 
+\\
+
+\\
+\end{aligned}
+$$
+
+
 ## Model fitting
-
-Before performing MCMC, the user can opt to execute the routine for maximizing the joint posterior from the model. The estimates can be used as initialization points for the HMC algorithm by setting the option `r, eval=F init = igbm_fit_init` in `r, eval=F stan_igbm`.
-
-```{r, eval=F, echo=T}
-igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
-                           contact_matrix              = aggr_cm,
-                           age_distribution_population = aggr_age,
-                           age_specific_ifr            = aggr_age_ifr[[3]],
-                           itd_distr                   = ditd,
-                           incubation_period           = 3,
-                           infectious_period           = 4,
-                           likelihood_variance_type    = "linear",
-                           prior_scale_x0              = 5,
-                           prior_scale_contactmatrix   = 0.05,
-                           pi_perc                     = 0.1,
-                           prior_volatility            = normal(location = 0, scale = 4),
-                           prior_nb_dispersion         = exponential(rate = 1/5),
-                           algorithm_inference         = "optimizing",
-                           seed                        = 1
-                           )
-
-sampler_init <- function(){
-  list(eta0        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "eta0"],
-       eta_init    = igbm_fit_init$par[grepl("eta_init",   names(igbm_fit_init$par), fixed = TRUE)],
-       eta_noise   = igbm_fit_init$par[grepl("eta_noise[", names(igbm_fit_init$par), fixed = TRUE)],
-       L_raw       = igbm_fit_init$par[grepl("L_raw[",     names(igbm_fit_init$par), fixed = TRUE)],
-       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
-       sigmaBM     = igbm_fit_init$par[grepl("sigmaBM",  names(igbm_fit_init$par), fixed = TRUE)],
-       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
-  )
-}# End function
-```
 
 Find the number of cores in your machine and indicate how many will be used for parallel processing:
 
