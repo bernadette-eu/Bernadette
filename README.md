@@ -81,13 +81,19 @@ lapply(lib, require, character.only = TRUE)
 ## Example - COVID-19 in Greece
 
 The time series of new daily age-specific mortality and incidence counts
-are ordered by epidemiological date. The time horizon in the example
-datasets for Greece spans from 2020-08-31 to 2021-03-28.
+are ordered by epidemiological date. The model described below can be
+computationally expensive to implement and so we restrict the analysis
+to shorter time horizon. The time horizon in the example datasets for
+Greece spans from 2020-08-31 to 2021-03-28 (210 days). We analyse the
+subset from 2020-08-31 to 2021-01-07 (130 days).
 
 ``` r
 Sys.setlocale("LC_ALL", "English")
 data(age_specific_mortality_counts)
 data(age_specific_infection_counts)
+
+age_specific_mortality_counts <- subset(age_specific_mortality_counts, Date <="2021-01-07")
+age_specific_infection_counts <- subset(age_specific_infection_counts, Date <="2021-01-07")
 ```
 
 ``` r
@@ -160,6 +166,49 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 ```
 
+## Modeling framework
+
+### Diffusion-driven multi-type transmission process
+
+### Observation process
+
+Denote the number of observed deaths on day $t = 1, \ldots, T$ in age
+group $\alpha \in \{1,\ldots,A\}$ by $y_{t,\alpha}$. A given infection
+may lead to observation events (i.e deaths) in the future. A link
+between $y_{t,\alpha}$ and the expected number of new age-stratified
+infections is established via the function $$
+\begin{equation*}
+d_{t,\alpha} = \mathbb{E}[y_{t,\alpha}] = \widehat{\text{IFR}}_{\alpha} \times \sum_{s = 1}^{t-1}h_{t-s} \Delta^{\text{infec}}_{s, \alpha}
+\end{equation*}
+$$ on the new expected age-stratified mortality counts, $d_{t,\alpha}$,
+the estimated age-stratified infection fatality rate,
+$\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution
+$h$, where $h_s$ gives the probability the death occurs on the $s^{th}$
+day after infection, is assumed to be gamma distributed with mean 24.2
+days and coefficient of variation 0.39 , that is $$
+\begin{equation}\label{eq:itd}
+h \sim \operatorname{Gamma}(6.29, 0.26).
+\end{equation}
+$$ We allow for over-dispersion in the observation processes to account
+for noise in the underlying data streams, for example due to day-of-week
+effects on data collection, and link $d_{t,\alpha}$ to $y_{t,\alpha}$
+through an over-dispersed count model $$
+\begin{equation}\label{eq:negbin}
+y_{t,\alpha}\mid \theta \sim \operatorname{NegBin}\left(d_{t,\alpha}, \xi_{t,\alpha}\right),
+\end{equation}
+$$ where $\xi_{t,\alpha} = \frac{d_{t,\alpha}}{\phi}$, such that
+$\mathbb{V}[y_{t,\alpha}] = d_{t,\alpha}(1+\phi)$. The log-likelihood of
+the observed deaths is given by $$
+\begin{equation*}
+\ell^{Deaths}(y\mid \theta) = \sum_{t=1}^{T}\sum_{\alpha=1}^{A}\text{logNegBin}\left(y_{t,\alpha}\mid d_{t,\alpha}, \xi_{t,\alpha}\right),
+\end{equation*}
+$$ where $y \in \mathbb{R}^{T \times A}_{0,+}$ are the surveillance data
+on deaths for all time-points.
+
+### Prior specification
+
+## Model fitting
+
 Before performing MCMC, we can execute the routine for maximizing the
 joint posterior from the model. The estimates can be used as
 initialization points for the HMC algorithm.
@@ -183,10 +232,8 @@ igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_
                            )
 ```
 
-    ## Warning in .local(object, ...): non-zero return code in optimizing
-
     ## Error in chol.default(-H) : 
-    ##   the leading minor of order 1 is not positive definite
+    ##   the leading minor of order 394 is not positive definite
 
 ``` r
 sampler_init <- function(){

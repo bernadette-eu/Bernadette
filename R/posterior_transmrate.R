@@ -73,7 +73,7 @@ posterior_transmrate <- function(object, y_data){
   cov_data        <- list()
   cov_data$y_data <- y_data[,-c(1:5)]
   cov_data$dates  <- y_data$Date
-  age_grps        <- ncol(cov_data$ydata)
+  age_grps        <- ncol(cov_data$y_data)
 
   if(ncol(posterior_draws$cm_sample) != age_grps) stop( paste0("The number of rows in the age distribution table must be equal to ", age_grps) )
 
