@@ -2,6 +2,8 @@
 
 # NEWS
 
-### NEW FEATURES 
+## Version 1.1.2
 
-* released to CRAN
+## Version 1.1.1
+
+* Released to CRAN on 2023-05-18
