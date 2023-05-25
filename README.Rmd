@@ -1,6 +1,7 @@
 ---
 output: 
-    github_document
+  github_document:
+    pandoc_args: "--webtex"
 ---
 
 
@@ -208,8 +209,8 @@ The aforementioned data streams and expert knowledge are integrated into a coher
 The transmission of COVID-19 is modeled through an age-stratified deterministic Susceptible-Exposed-Infectious-Removed (SEIR) compartmental model \citep{anderson} with Erlang-distributed latent and infectious periods. In particular, we introduce Erlang-distributed stage durations in the Exposed and Infected compartments and relax the mathematically convenient but unrealistic assumption of exponential stage durations by assuming that each of the Exposed and Infected compartments are defined by two stages, with the same rate of loss of latency ($\tau$) and infectiousness ($\gamma$) in both stages.
 Removed individuals are assumed to be immune to reinfection for at least the duration of the study period.
 
-The population is stratified into $\alpha \in \{1,\ldots,A\}$ age groups and the total size of the age group is denoted by $\mathbb{N}_{\alpha} = S_t^{\alpha} + E_{1,t}^{\alpha} + E_{2,t}^{\alpha} + I_{1,t}^{\alpha} + I_{2,t}^{\alpha} + R_t^{\alpha}$, where $S_t^{\alpha}$ represents the number of susceptible, $E_t^{\alpha} = \sum_{j=1}^{2}E_{j,t}^{\alpha}$ represents the number of exposed but not yet infectious, $I_t^{\alpha} = \sum_{j=1}^{2}I_{j,t}^{\alpha}$ is the number of infected and $R_t^{\alpha}$ is the number of removed individuals at time $t$ at age group $\alpha$. 
-The number of individuals in each compartment is scaled by the total population $\mathbb{N} = \sum_{\alpha = 1}^{A}\mathbb{N}_{\alpha}$, so that the sum of all compartments equals to one \citep{riou2}.
+The population is stratified into $\alpha \in \{1,\ldots,A\}$ age groups and the total size of the age group is denoted by $N_{\alpha} = S_t^{\alpha} + E_{1,t}^{\alpha} + E_{2,t}^{\alpha} + I_{1,t}^{\alpha} + I_{2,t}^{\alpha} + R_t^{\alpha}$, where $S_t^{\alpha}$ represents the number of susceptible, $E_t^{\alpha} = \sum_{j=1}^{2}E_{j,t}^{\alpha}$ represents the number of exposed but not yet infectious, $I_t^{\alpha} = \sum_{j=1}^{2}I_{j,t}^{\alpha}$ is the number of infected and $R_t^{\alpha}$ is the number of removed individuals at time $t$ at age group $\alpha$. 
+The number of individuals in each compartment is scaled by the total population $\mathbb{N} = \sum_{\alpha = 1}^{A}N_{\alpha}$, so that the sum of all compartments equals to one \citep{riou2}.
 The latent epidemic process is expressed by the following non-linear system of ordinary differential equations (ODEs)
 $$
 \begin{cases}
@@ -328,15 +329,39 @@ The unknown quantities that need to be inferred are $\theta= (x^{\alpha\alpha}_{
 
 The proposed prior distributions for the model parameters are:
 
-$$
-\begin{aligned}
-\log R_t & \sim  f \left( t \right), 
-\\
+\begin{table}
+\label{table:priors}
+\centering
+\setlength{\tabcolsep}{0.42em}
+\small
+%\footnotesize
+\begin{tabular}{lp{4.6cm}p{6.8cm}}
+\toprule
+\textbf{Symbol} & \textbf{Description} & \textbf{Prior \& source} \\
+\hline	
+\multicolumn{3}{l}{\textbf{Transmission model parameters}} \\						
+$\rho$ & Initial proportion of exposed (at time $t_0$) & Beta with $\mathbb{E}[\rho] = 0.1$, $\mathbb{V}[\rho] = 0.05\cdot\mathbb{E}[\rho]$.\\
 
+$\tilde{L}_{i,j}$ & Lower-triangular random matrix & $\tilde{L}_{i,j} \sim \operatorname{Normal}(0,1),~(i,j) \in \{1, \ldots, A\}^2, i \leq j$.
 \\
-\end{aligned}
-$$
-
+$L_{i,j}$ & Entries of the Cholesky factor $L$ & $L_{i,j} = L^{synth}_{i,j} + (0.05\cdot L^{synth}_{i,j})\cdot \tilde{L}_{i,j},~(i,j) \in \{1, \ldots, A\}^2, i \leq j$.\\
+ \\
+$x^{\alpha\alpha}_{0}$ & MBM model Brownian motion, at time $t_0$ & $\operatorname{Normal}(0,5^2)$ \\
+$x^{\alpha\alpha}_{1}$ & MBM model Brownian motion, at time $t_1$ & $\operatorname{Normal}(0,5^2)$ \\
+$x^{\alpha\alpha}_{t}$ & MBM model Brownian motion at time $t$&  $x^{\alpha\alpha}_{t}\mid x^{\alpha\alpha}_{t - 1}, \sigma^2_{x,\alpha} \sim \operatorname{Normal}(x^{\alpha\alpha}_{t - 1}, \sigma^2_{x,\alpha}),~t = 2,\ldots,T.$ \\
+$\sigma_{x}$ & Volatility of the Brownian motion in the SBM model & $\operatorname{Half-Normal}(0,4)$.\\
+$\sigma_{x,\alpha}$ & Volatility of the Brownian motion in the MBM model & $\operatorname{Half-Normal}(0,4)$\\
+\hline	
+\multicolumn{3}{l}{\textbf{Observation model parameters}} \\	
+$\phi$ & Negative Binomial over-dispersion & $\operatorname{Half-Normal}(0,5)$ for the MBM model, Austria. Otherwise, Exp(0.2). \\	
+\hline
+\multicolumn{3}{l}{\textbf{Parameters assumed known}} \\	
+$\widehat{\text{IFR}}_{\alpha}$ & Infection-fatality rate & \\
+$d_E$ & Mean Incubation period & 3 days.\\
+$d_I$ & Mean Infection period  & 4 days.\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 ## Model fitting
 
