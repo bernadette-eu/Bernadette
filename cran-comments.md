@@ -1,3 +1,12 @@
+# Version 1.1.2
+
+2023-05-25
+
+This is a resubmission. In this version I have:
+
+* Debugged functions R/stan_igbm.fit.R, R/stan_igbm.R and R/summary.stangbm.R.
+* Debugged the R/posterior_.R functions.
+
 # Version 1.1.1
 
 # Round 2
