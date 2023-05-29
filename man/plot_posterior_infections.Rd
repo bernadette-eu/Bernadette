@@ -67,15 +67,32 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 
 # Posterior sampling:
+
+rstan_options(auto_write = TRUE)
+chains <- 2
+options(mc.cores = chains)
+
 igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
                       contact_matrix              = aggr_cm,
                       age_distribution_population = aggr_age,
                       age_specific_ifr            = aggr_age_ifr[[3]],
                       itd_distr                   = ditd,
-                      likelihood_variance_type    = "quadratic",
+                      incubation_period           = 3,
+                      infectious_period           = 4,
+                      likelihood_variance_type    = "linear",
+                      prior_scale_x0              = 0.5,
+                      prior_scale_contactmatrix   = 0.05,
+                      pi_perc                     = 0.1,
                       prior_volatility            = normal(location = 0, scale = 1),
-                      prior_nb_dispersion         = gamma(shape = 2, rate = 1),
-                      algorithm_inference         = "optimizing")
+                      prior_nb_dispersion         = exponential(rate = 1/5),
+                      algorithm_inference         = "sampling",
+                      nBurn                       = 5,
+                      nPost                       = 10,
+                      nThin                       = 1,
+                      chains                      = chains,
+                      adapt_delta                 = 0.8,
+                      max_treedepth               = 16,
+                      seed                        = 1)
 
 post_inf_summary <- posterior_infections(object = igbm_fit,
                                          y_data = age_specific_mortality_counts)

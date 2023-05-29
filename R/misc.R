@@ -99,8 +99,7 @@ check_stanfit <- function(x) {
   if (is.list(x)) {
     if (!all(c("par", "value") %in% names(x)))
       stop("Invalid object produced please report bug")
-  }
-  else {
+  } else {
     stopifnot(is(x, "stanfit"))
     if (x@mode != 0)
       stop("Invalid stanfit object produced please report bug")

@@ -366,7 +366,7 @@ for (t in 1:n_obs) {
 		comp_C[t,j] = state_solutions[t,(n_difeq-1) * A + j]  *  n_pop;
 
 		//--- Alternative option:
-		E_casesByAge[t,j] = comp_C[t,j] - (t == 1 ? 0 :  ( comp_C[t,j] > comp_C[t-1,j] ? comp_C[t-1,j] : 0) );
+		E_casesByAge[t,j] = comp_C[t,j] - (t == 1 ? 0 : ( comp_C[t,j] > comp_C[t-1,j] ? comp_C[t-1,j] : 0) );
 
 		//--- Expected deaths by calendar day and age group:
 		if(t != 1) E_deathsByAge[t,j] =  age_specific_ifr[t,j] * dot_product(head(E_casesByAge[,j], t-1), tail(I_D_rev, t-1));

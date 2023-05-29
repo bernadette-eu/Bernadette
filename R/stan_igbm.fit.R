@@ -105,8 +105,6 @@ stan_igbm.fit <-
 
       check_stanfit(out)
 
-      out$stanfit <- suppressMessages(rstan::sampling(stanfit, data = standata, chains = 0))
-
       return(out)
 
     #---- Sampling:

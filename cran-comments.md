@@ -1,3 +1,14 @@
+# Version 1.1.3
+
+2023-05-29
+
+This is a resubmission. In this version I have:
+
+* Function R/stan_igbm.fit.R: removed code line 'out$stanfit <- suppressMessages(rstan::sampling(stanfit, data = standata, chains = 0))'.
+* Functions R/posterior_.R: added a stopping rule that tries to locate "theta_tilde" in 'names(object)', which can only be found in the object returned by rstan::optimizing(). A message is shown, instructing the user to perform Markov chain Monte Carlo sampling using rstan::sampling() or rstan::vb().
+* Ensured that no more than 2 cores are used in the examples.
+* Ensured that the examples are executable in < 5 sec.
+
 # Version 1.1.2
 
 2023-05-25
