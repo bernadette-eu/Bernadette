@@ -205,13 +205,13 @@ is the number of removed individuals at time
 ![\alpha](https://latex.codecogs.com/png.latex?%5Calpha "\alpha"). The
 number of individuals in each compartment is scaled by the total
 population
-![\mathbb{N} = \sum\_{\alpha = 1}^{A}\mathbb{N}\_{\alpha}](https://latex.codecogs.com/png.latex?%5Cmathbb%7BN%7D%20%3D%20%5Csum_%7B%5Calpha%20%3D%201%7D%5E%7BA%7D%5Cmathbb%7BN%7D_%7B%5Calpha%7D "\mathbb{N} = \sum_{\alpha = 1}^{A}\mathbb{N}_{\alpha}"),
-so that the sum of all compartments equals to one . The latent epidemic
+![N = \sum\_{\alpha = 1}^{A}N\_{\alpha}](https://latex.codecogs.com/png.latex?N%20%3D%20%5Csum_%7B%5Calpha%20%3D%201%7D%5E%7BA%7DN_%7B%5Calpha%7D "N = \sum_{\alpha = 1}^{A}N_{\alpha}"),
+so that the sum of all compartments equals to one. The latent epidemic
 process is expressed by the following non-linear system of ordinary
 differential equations (ODEs)
 
 ![\begin{cases}
-\frac{dS^{\alpha}\_{t}}{dt}   & = -\lambda\_{\alpha}(t) S^{\alpha}\_{t},% - \rho\_{\alpha}\nu\_{t-u},
+\frac{dS^{\alpha}\_{t}}{dt}   & = -\lambda\_{\alpha}(t) S^{\alpha}\_{t},
 \\\\
 \frac{dE^{\alpha}\_{1,t}}{dt} & = \lambda\_{\alpha}(t) S^{\alpha}\_{t} - \tau E^{\alpha}\_{1,t},
 \\\\
@@ -221,9 +221,9 @@ differential equations (ODEs)
 \\\\
 \frac{dI^{\alpha}\_{2,t}}{dt} & = \gamma \left( I^{\alpha}\_{1,t} - I^{\alpha}\_{2,t}\right),
 \\\\
-\frac{dR^{\alpha}\_{t}}{dt}   & = \gamma I^{\alpha}\_{2,t} + \rho\_{\alpha}\nu\_{t-u},
-\end{cases}](https://latex.codecogs.com/png.latex?%5Cbegin%7Bcases%7D%0A%5Cfrac%7BdS%5E%7B%5Calpha%7D_%7Bt%7D%7D%7Bdt%7D%20%20%20%26%20%3D%20-%5Clambda_%7B%5Calpha%7D%28t%29%20S%5E%7B%5Calpha%7D_%7Bt%7D%2C%25%20-%20%5Crho_%7B%5Calpha%7D%5Cnu_%7Bt-u%7D%2C%0A%5C%5C%0A%5Cfrac%7BdE%5E%7B%5Calpha%7D_%7B1%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Clambda_%7B%5Calpha%7D%28t%29%20S%5E%7B%5Calpha%7D_%7Bt%7D%20-%20%5Ctau%20E%5E%7B%5Calpha%7D_%7B1%2Ct%7D%2C%0A%5C%5C%0A%5Cfrac%7BdE%5E%7B%5Calpha%7D_%7B2%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Ctau%20%5Cleft%28%20E%5E%7B%5Calpha%7D_%7B1%2Ct%7D%20-%20E%5E%7B%5Calpha%7D_%7B2%2Ct%7D%5Cright%29%2C%0A%5C%5C%0A%5Cfrac%7BdI%5E%7B%5Calpha%7D_%7B1%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Ctau%20E%5E%7B%5Calpha%7D_%7B2%2Ct%7D%20-%20%5Cgamma%20I%5E%7B%5Calpha%7D_%7B1%2Ct%7D%2C%0A%5C%5C%0A%5Cfrac%7BdI%5E%7B%5Calpha%7D_%7B2%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Cgamma%20%5Cleft%28%20I%5E%7B%5Calpha%7D_%7B1%2Ct%7D%20-%20I%5E%7B%5Calpha%7D_%7B2%2Ct%7D%5Cright%29%2C%0A%5C%5C%0A%5Cfrac%7BdR%5E%7B%5Calpha%7D_%7Bt%7D%7D%7Bdt%7D%20%20%20%26%20%3D%20%5Cgamma%20I%5E%7B%5Calpha%7D_%7B2%2Ct%7D%20%2B%20%5Crho_%7B%5Calpha%7D%5Cnu_%7Bt-u%7D%2C%0A%5Cend%7Bcases%7D "\begin{cases}
-\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t},% - \rho_{\alpha}\nu_{t-u},
+\frac{dR^{\alpha}\_{t}}{dt}   & = \gamma I^{\alpha}\_{2,t},
+\end{cases}](https://latex.codecogs.com/png.latex?%5Cbegin%7Bcases%7D%0A%5Cfrac%7BdS%5E%7B%5Calpha%7D_%7Bt%7D%7D%7Bdt%7D%20%20%20%26%20%3D%20-%5Clambda_%7B%5Calpha%7D%28t%29%20S%5E%7B%5Calpha%7D_%7Bt%7D%2C%0A%5C%5C%0A%5Cfrac%7BdE%5E%7B%5Calpha%7D_%7B1%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Clambda_%7B%5Calpha%7D%28t%29%20S%5E%7B%5Calpha%7D_%7Bt%7D%20-%20%5Ctau%20E%5E%7B%5Calpha%7D_%7B1%2Ct%7D%2C%0A%5C%5C%0A%5Cfrac%7BdE%5E%7B%5Calpha%7D_%7B2%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Ctau%20%5Cleft%28%20E%5E%7B%5Calpha%7D_%7B1%2Ct%7D%20-%20E%5E%7B%5Calpha%7D_%7B2%2Ct%7D%5Cright%29%2C%0A%5C%5C%0A%5Cfrac%7BdI%5E%7B%5Calpha%7D_%7B1%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Ctau%20E%5E%7B%5Calpha%7D_%7B2%2Ct%7D%20-%20%5Cgamma%20I%5E%7B%5Calpha%7D_%7B1%2Ct%7D%2C%0A%5C%5C%0A%5Cfrac%7BdI%5E%7B%5Calpha%7D_%7B2%2Ct%7D%7D%7Bdt%7D%20%26%20%3D%20%5Cgamma%20%5Cleft%28%20I%5E%7B%5Calpha%7D_%7B1%2Ct%7D%20-%20I%5E%7B%5Calpha%7D_%7B2%2Ct%7D%5Cright%29%2C%0A%5C%5C%0A%5Cfrac%7BdR%5E%7B%5Calpha%7D_%7Bt%7D%7D%7Bdt%7D%20%20%20%26%20%3D%20%5Cgamma%20I%5E%7B%5Calpha%7D_%7B2%2Ct%7D%2C%0A%5Cend%7Bcases%7D "\begin{cases}
+\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t},
 \\
 \frac{dE^{\alpha}_{1,t}}{dt} & = \lambda_{\alpha}(t) S^{\alpha}_{t} - \tau E^{\alpha}_{1,t},
 \\
@@ -233,7 +233,7 @@ differential equations (ODEs)
 \\
 \frac{dI^{\alpha}_{2,t}}{dt} & = \gamma \left( I^{\alpha}_{1,t} - I^{\alpha}_{2,t}\right),
 \\
-\frac{dR^{\alpha}_{t}}{dt}   & = \gamma I^{\alpha}_{2,t} + \rho_{\alpha}\nu_{t-u},
+\frac{dR^{\alpha}_{t}}{dt}   & = \gamma I^{\alpha}_{2,t},
 \end{cases}")
 
 where the mean latent and infectious periods are
@@ -273,13 +273,12 @@ by
 ![m\_{\alpha,\alpha'}(t) = \beta^{\alpha\alpha'}\_{t} \cdot C\_{\alpha,\alpha'},](https://latex.codecogs.com/png.latex?m_%7B%5Calpha%2C%5Calpha%27%7D%28t%29%20%3D%20%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D%20%5Ccdot%20C_%7B%5Calpha%2C%5Calpha%27%7D%2C "m_{\alpha,\alpha'}(t) = \beta^{\alpha\alpha'}_{t} \cdot C_{\alpha,\alpha'},")
 
 breaking down the transmission rate matrix into its biological and
-social components : the social component is represented by the average
+social components: the social component is represented by the average
 number of contacts between individuals of age group
 ![\alpha](https://latex.codecogs.com/png.latex?%5Calpha "\alpha") and
 age group
 ![\alpha'](https://latex.codecogs.com/png.latex?%5Calpha%27 "\alpha'")
-viThe number of individuals in each compartment is scaled by the total
-populationa the contact matrix element
+via the contact matrix element
 ![C\_{\alpha,\alpha'}](https://latex.codecogs.com/png.latex?C_%7B%5Calpha%2C%5Calpha%27%7D "C_{\alpha,\alpha'}");
 ![\beta^{\alpha\alpha'}\_{t}](https://latex.codecogs.com/png.latex?%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D "\beta^{\alpha\alpha'}_{t}")
 is the time-varying transmissibility of the virus, the probability that
@@ -293,8 +292,8 @@ leads to transmission at time
 The formulation below may be viewed as a stochastic extension to the
 deterministic multi-type SEIR model, using diffusion processes for the
 coefficients
-![\beta^{\alpha\alpha'}\_{t}](https://latex.codecogs.com/png.latex?%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D "\beta^{\alpha\alpha'}_{t}")
-in , driven by independent Brownian motions
+![\beta^{\alpha\alpha'}\_{t}](https://latex.codecogs.com/png.latex?%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D "\beta^{\alpha\alpha'}_{t}"),
+driven by independent Brownian motions
 
 ![\begin{cases}
 \beta^{\alpha\alpha'}\_{t} & = \exp(x^{\alpha\alpha'}\_{t}), 
@@ -325,8 +324,9 @@ plays the role of the regularizing factor: higher values of
 lead to greater changes in
 ![\beta^{\alpha\alpha'}\_{t}](https://latex.codecogs.com/png.latex?%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D "\beta^{\alpha\alpha'}_{t}").
 The exponential transformation avoids negative values which have no
-biological meaning. A major advantage of considering a diffusion process
-for modeling
+biological meaning.
+
+A major advantage of considering a diffusion process for modeling
 ![\beta^{\alpha\alpha'}\_{t}](https://latex.codecogs.com/png.latex?%5Cbeta%5E%7B%5Calpha%5Calpha%27%7D_%7Bt%7D "\beta^{\alpha\alpha'}_{t}")
 is its ability to capture and quantify the randomness of the underlying
 transmission dynamics, which is particularly useful when the dynamics
@@ -395,7 +395,7 @@ and the infection-to-death distribution
 probability the death occurs on the
 ![s^{th}](https://latex.codecogs.com/png.latex?s%5E%7Bth%7D "s^{th}")
 day after infection, is assumed to be gamma distributed with mean 24.2
-days and coefficient of variation 0.39 , that is
+days and coefficient of variation 0.39, that is
 
 ![\begin{equation}
 h \sim \operatorname{Gamma}(6.29, 0.26).

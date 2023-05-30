@@ -206,15 +206,15 @@ The aforementioned data streams and expert knowledge are integrated into a coher
 
 ### Diffusion-driven multi-type transmission process
 
-The transmission of COVID-19 is modeled through an age-stratified deterministic Susceptible-Exposed-Infectious-Removed (SEIR) compartmental model \citep{anderson} with Erlang-distributed latent and infectious periods. In particular, we introduce Erlang-distributed stage durations in the Exposed and Infected compartments and relax the mathematically convenient but unrealistic assumption of exponential stage durations by assuming that each of the Exposed and Infected compartments are defined by two stages, with the same rate of loss of latency ($\tau$) and infectiousness ($\gamma$) in both stages.
+The transmission of COVID-19 is modeled through an age-stratified deterministic Susceptible-Exposed-Infectious-Removed (SEIR) compartmental model with Erlang-distributed latent and infectious periods. In particular, we introduce Erlang-distributed stage durations in the Exposed and Infected compartments and relax the mathematically convenient but unrealistic assumption of exponential stage durations by assuming that each of the Exposed and Infected compartments are defined by two stages, with the same rate of loss of latency ($\tau$) and infectiousness ($\gamma$) in both stages.
 Removed individuals are assumed to be immune to reinfection for at least the duration of the study period.
 
 The population is stratified into $\alpha \in \{1,\ldots,A\}$ age groups and the total size of the age group is denoted by $N_{\alpha} = S_t^{\alpha} + E_{1,t}^{\alpha} + E_{2,t}^{\alpha} + I_{1,t}^{\alpha} + I_{2,t}^{\alpha} + R_t^{\alpha}$, where $S_t^{\alpha}$ represents the number of susceptible, $E_t^{\alpha} = \sum_{j=1}^{2}E_{j,t}^{\alpha}$ represents the number of exposed but not yet infectious, $I_t^{\alpha} = \sum_{j=1}^{2}I_{j,t}^{\alpha}$ is the number of infected and $R_t^{\alpha}$ is the number of removed individuals at time $t$ at age group $\alpha$. 
-The number of individuals in each compartment is scaled by the total population $\mathbb{N} = \sum_{\alpha = 1}^{A}N_{\alpha}$, so that the sum of all compartments equals to one \citep{riou2}.
+The number of individuals in each compartment is scaled by the total population $N = \sum_{\alpha = 1}^{A}N_{\alpha}$, so that the sum of all compartments equals to one.
 The latent epidemic process is expressed by the following non-linear system of ordinary differential equations (ODEs)
 $$
 \begin{cases}
-\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t},% - \rho_{\alpha}\nu_{t-u},
+\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t},
 \\
 \frac{dE^{\alpha}_{1,t}}{dt} & = \lambda_{\alpha}(t) S^{\alpha}_{t} - \tau E^{\alpha}_{1,t},
 \\
@@ -224,7 +224,7 @@ $$
 \\
 \frac{dI^{\alpha}_{2,t}}{dt} & = \gamma \left( I^{\alpha}_{1,t} - I^{\alpha}_{2,t}\right),
 \\
-\frac{dR^{\alpha}_{t}}{dt}   & = \gamma I^{\alpha}_{2,t} + \rho_{\alpha}\nu_{t-u},
+\frac{dR^{\alpha}_{t}}{dt}   & = \gamma I^{\alpha}_{2,t},
 \end{cases}
 $$
 where the mean latent and infectious periods are $d_E = \frac{2}{\tau}$, $d_I = \frac{2}{\gamma}$, respectively. The number of new infections in age group $\alpha$ at day $t$ is 
@@ -248,10 +248,10 @@ m_{\alpha,\alpha'}(t) =
 C_{\alpha,\alpha'},
 \)
 
-breaking down the transmission rate matrix into its biological and social components \citep{baguelin, knock}: the social component is represented by the average number of contacts between individuals of age group $\alpha$ and age group $\alpha'$ viThe number of individuals in each compartment is scaled by the total populationa the contact matrix element $C_{\alpha,\alpha'}$; 
+breaking down the transmission rate matrix into its biological and social components: the social component is represented by the average number of contacts between individuals of age group $\alpha$ and age group $\alpha'$ via the contact matrix element $C_{\alpha,\alpha'}$; 
 $\beta^{\alpha\alpha'}_{t}$ is the time-varying transmissibility of the virus, the probability that a contact between an infectious person in age group $\alpha$ and a susceptible person in age group $\alpha'$ leads to transmission at time $t$.
 
-The formulation below may be viewed as a stochastic extension to the deterministic multi-type SEIR model, using diffusion processes for the coefficients $\beta^{\alpha\alpha'}_{t}$ in \eqref{eq:transmission_matrix_process}, driven by independent Brownian motions
+The formulation below may be viewed as a stochastic extension to the deterministic multi-type SEIR model, using diffusion processes for the coefficients $\beta^{\alpha\alpha'}_{t}$, driven by independent Brownian motions
 
 $$
 \begin{cases}
@@ -267,8 +267,9 @@ $$
 
 with volatilities $\sigma^{\alpha\alpha'}_x$, corresponding to the case of little information on the shape of $\beta^{\alpha\alpha'}_{t}$.
 The volatility $\sigma^{\alpha\alpha'}_x$ plays the role of the regularizing factor: higher values of $\sigma^{\alpha\alpha'}_x$ lead to greater changes in $\beta^{\alpha\alpha'}_{t}$. 
-The exponential transformation avoids negative values which have no biological meaning.
-                                                                                                        A major advantage of considering a diffusion process for modeling $\beta^{\alpha\alpha'}_{t}$ is its ability to capture and quantify the randomness of the underlying transmission dynamics, which is particularly useful when the dynamics are not completely understood. 
+The exponential transformation avoids negative values which have no biological meaning. 
+
+A major advantage of considering a diffusion process for modeling $\beta^{\alpha\alpha'}_{t}$ is its ability to capture and quantify the randomness of the underlying transmission dynamics, which is particularly useful when the dynamics are not completely understood. 
 The diffusion process accounts for fluctuations in transmission that are influenced by non-modeled phenomena, such as new variants, mask-wearing propensity, etc. 
 The diffusion process also allows for capturing the effect of unknown extrinsic factors on the age-stratified force of infection,
 for monitoring of the temporal evolution of the age-specific transmission rate without the implicit inclusion of external variables and for tackling non-stationarity in the data.
@@ -299,7 +300,7 @@ d_{t,\alpha} = \mathbb{E}[y_{t,\alpha}] = \widehat{\text{IFR}}_{\alpha} \times \
 \end{equation}
 $$
 
-on the new expected age-stratified mortality counts, $d_{t,\alpha}$, the estimated age-stratified infection fatality rate, $\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution $h$, where $h_s$ gives the probability the death occurs on the $s^{th}$ day after infection, is assumed to be gamma distributed with mean 24.2 days and coefficient of variation 0.39 \citep{flaxman, monod}, that is
+on the new expected age-stratified mortality counts, $d_{t,\alpha}$, the estimated age-stratified infection fatality rate, $\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution $h$, where $h_s$ gives the probability the death occurs on the $s^{th}$ day after infection, is assumed to be gamma distributed with mean 24.2 days and coefficient of variation 0.39, that is
 
 $$
 \begin{equation}

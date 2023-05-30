@@ -12,7 +12,7 @@ authors:
 affiliations:
   - name: "Department of Statistics, Athens University of Economics and Business, Athens, Greece"
     index: 1
-date: "2023-05-21"
+date: "2023-05-30"
 bibliography: paper.bib
 output:
   md_document:
@@ -25,19 +25,32 @@ csl: apa.csl
 
 # Summary
 
-# Statement of need
+The Coronavirus Disease 2019 (COVID-19) outbreak caused by SARS-CoV-2
+has led to developments in Bayesian infectious disease modeling,
+allowing modelers to assess the impact of mitigation strategies on
+transmission and quantify the burden of the pandemic. The package
+`Bernadette` implements a Bayesian evidence synthesis approach to
+modeling the age-specific transmission dynamics of a disease based on
+daily mortality counts. The functionality of `Bernadette` can be used to
+reconstruct the epidemic drivers from publicly available data, to
+estimate key epidemiological quantities like the rate of disease
+transmission, the latent counts of infections and the reproduction
+number for a given population, and to perform model checking and model
+comparison using information criteria.
 
-# Example
+# Statement of need (max 2 paragraphs)
 
-# Conclusion
+The `epidemia` package ([Scott et al., 2020](#ref-epidemia)) implements
+… `Bernadette` complements this by adding
+
+# Functionality
 
 # Licensing and Availability
 
-The {Bernadette} package is licensed under the GNU General Public
+The `Bernadette` package is licensed under the GNU General Public
 License (GPL v3.0). It is available on CRAN, and can be installed using
-`install.packages("Bernadette")`. The full tutorial website can be
-accessed at: <https://rempsyc.remi-theriault.com/>. All code is
-open-source and hosted on GitHub, and bugs can be reported at
+`install.packages("Bernadette")`. All code is open-source and hosted on
+GitHub, and bugs can be reported at
 <https://github.com/bernadette-eu/Bernadette/issues/>.
 
 # Acknowledgements
@@ -47,3 +60,8 @@ Lampros Bouranis’ research is supported by the European Union’s Horizon
 grant agreement No 101027218.
 
 # References
+
+Scott, J., Gandy, A., Mishra, S., Unwin, J., Flaxman, S., & Bhatt, S.
+(2020). *<span class="nocase">epidemia: Modeling of Epidemics using
+Hierarchical Bayesian Models</span>*.
+<https://imperialcollegelondon.github.io/epidemia/>

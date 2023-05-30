@@ -25,24 +25,22 @@ csl: apa.csl
 
 # Summary
 
+The Coronavirus Disease 2019 (COVID-19) outbreak caused by SARS-CoV-2 has led to developments in Bayesian infectious disease modeling, allowing modelers to assess the impact of mitigation strategies on transmission and quantify the burden of the pandemic. 
+The package `Bernadette` implements a Bayesian evidence synthesis approach to modeling the age-specific transmission dynamics of a disease based on daily mortality counts. 
+The functionality of `Bernadette` can be used to reconstruct the epidemic drivers from publicly available data, to estimate key epidemiological quantities like the rate of disease transmission, the latent counts of infections and the reproduction number for a given population, and to perform model checking and model comparison using information criteria.
+ 
+# Statement of need (max 2 paragraphs)
+The `epidemia` package [@epidemia] implements ...
+`Bernadette` complements this by adding
 
-# Statement of need
-
-# Example
-
-# Conclusion
+# Functionality
 
 # Licensing and Availability
 
-The {Bernadette} package is licensed under the GNU General Public License (GPL 
-v3.0). It is available on CRAN, and can be installed using 
-`install.packages("Bernadette")`. The full tutorial website can be accessed at: 
-https://rempsyc.remi-theriault.com/. All code is open-source and hosted on 
-GitHub, and bugs can be reported at https://github.com/bernadette-eu/Bernadette/issues/.
+The `Bernadette` package is licensed under the GNU General Public License (GPL v3.0). It is available on CRAN, and can be installed using `install.packages("Bernadette")`. All code is open-source and hosted on GitHub, and bugs can be reported at https://github.com/bernadette-eu/Bernadette/issues/.
 
 # Acknowledgements
 
-Lampros Bouranis’ research is supported by the European Union’s Horizon 2020 research
-and innovation programme under the Marie Sklodowska-Curie grant agreement No 101027218.
+Lampros Bouranis’ research is supported by the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 101027218.
 
 # References

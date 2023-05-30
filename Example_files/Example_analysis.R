@@ -44,12 +44,42 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
 parallel::detectCores()
 rstan_options(auto_write = TRUE)
 
-chains <- 3
+chains <- 2
 
 options(mc.cores = chains)
 
 # Posterior sampling:
-igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
+# igbm_fit_init <- stan_igbm(y_data                 = age_specific_mortality_counts,
+#                       contact_matrix              = aggr_cm,
+#                       age_distribution_population = aggr_age,
+#                       age_specific_ifr            = aggr_age_ifr[[3]],
+#                       itd_distr                   = ditd,
+#                       incubation_period           = 3,
+#                       infectious_period           = 4,
+#                       likelihood_variance_type    = "linear",
+#                       prior_scale_x0              = 0.5,
+#                       prior_scale_contactmatrix   = 0.05,
+#                       pi_perc                     = 0.1,
+#                       prior_volatility            = normal(location = 0, scale = 1),
+#                       prior_nb_dispersion         = exponential(rate = 1/5),
+#                       algorithm_inference         = "optimizing",
+#                       seed                        = 1
+#                       )
+#
+# # Make this assignment so as to check the posterior_.R functions:
+# igbm_fit <- igbm_fit_init
+#
+# sampler_init <- function(){
+#   list(x0          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "x0"],
+#        x_noise     = igbm_fit_init$par[grepl("x_noise[", names(igbm_fit_init$par), fixed = TRUE)],
+#        L_raw       = igbm_fit_init$par[grepl("L_raw[",   names(igbm_fit_init$par), fixed = TRUE)],
+#        pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
+#        volatilities= igbm_fit_init$par[grepl("volatilities",  names(igbm_fit_init$par), fixed = TRUE)],
+#        phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
+#   )
+# }# End function
+
+igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts,
                       contact_matrix              = aggr_cm,
                       age_distribution_population = aggr_age,
                       age_specific_ifr            = aggr_age_ifr[[3]],
@@ -57,48 +87,24 @@ igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_
                       incubation_period           = 3,
                       infectious_period           = 4,
                       likelihood_variance_type    = "linear",
-                      prior_scale_x0              = 5,
+                      prior_scale_x0              = 0.5,
                       prior_scale_contactmatrix   = 0.05,
                       pi_perc                     = 0.1,
-                      prior_volatility            = normal(location = 0, scale = 4),
+                      prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = exponential(rate = 1/5),
-                      algorithm_inference         = "optimizing",
-                      seed                        = 1
+                      algorithm_inference         = "sampling",
+                      nBurn                       = 5,
+                      nPost                       = 10,
+                      nThin                       = 1,
+                      chains                      = chains,
+                      adapt_delta                 = 0.8,
+                      max_treedepth               = 16,
+                      seed                        = 1#,
+                      #init                        = sampler_init
                       )
 
-sampler_init <- function(){
-  list(eta0        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "eta0"],
-       eta_init    = igbm_fit_init$par[grepl("eta_init",   names(igbm_fit_init$par), fixed = TRUE)],
-       eta_noise   = igbm_fit_init$par[grepl("eta_noise[", names(igbm_fit_init$par), fixed = TRUE)],
-       L_raw       = igbm_fit_init$par[grepl("L_raw[",     names(igbm_fit_init$par), fixed = TRUE)],
-       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
-       sigmaBM     = igbm_fit_init$par[grepl("sigmaBM",  names(igbm_fit_init$par), fixed = TRUE)],
-       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
-  )
-}# End function
-
-igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts,
-                     contact_matrix              = aggr_cm,
-                     age_distribution_population = aggr_age,
-                     age_specific_ifr            = aggr_age_ifr[[3]],
-                     itd_distr                   = ditd,
-                     incubation_period           = 3,
-                     infectious_period           = 4,
-                     likelihood_variance_type    = "linear",
-                     prior_scale_x0              = 5,
-                     prior_scale_contactmatrix   = 0.05,
-                     pi_perc                     = 0.1,
-                     prior_volatility            = normal(location = 0, scale = 4),
-                     prior_nb_dispersion         = exponential(rate = 1/5),
-                     algorithm_inference         = "sampling",
-                     nBurn                       = 500,
-                     nPost                       = 500,
-                     nThin                       = 1,
-                     chains                      = chains,
-                     adapt_delta                 = 0.8,
-                     max_treedepth               = 14,
-                     seed                        = 1,
-                     init                        = sampler_init)
+names(object)
+names(igbm_fit)
 
 # Show only 10% and 90% posterior estimates:
 print_summary <- summary(object = igbm_fit,
