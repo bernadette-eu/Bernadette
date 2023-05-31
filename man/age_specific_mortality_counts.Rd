@@ -3,7 +3,7 @@
 \docType{data}
 \name{age_specific_mortality_counts}
 \alias{age_specific_mortality_counts}
-\title{Age distribution of reported deaths for Greece}
+\title{Age distribution of new reported deaths for Greece}
 \format{
 A data frame with 210 rows and 8 variables:
 \describe{
@@ -11,10 +11,10 @@ A data frame with 210 rows and 8 variables:
   \item{Right}{numeric; Index + 1}
   \item{Date}{Date, format; date in the format "2020-08-31"}
   \item{Week_ID}{numeric; index of the week that each day falls into. A week is assumed to have 7 days}
-  \item{New_Deaths}{numeric; count of total reported deaths on a given date}
-  \item{0-39}{numeric; count of reported deaths on a given date for the age group "0-39"}
-  \item{40-64}{numeric; count of reported deaths on a given date for the age group "40-64"}
-  \item{65+}{numeric; count of reported deaths on a given date for the age group "65+"}
+  \item{New_Deaths}{numeric; count of new total reported deaths on a given date}
+  \item{0-39}{numeric; count of new reported deaths on a given date for the age group "0-39"}
+  \item{40-64}{numeric; count of new reported deaths on a given date for the age group "40-64"}
+  \item{65+}{numeric; count of new reported deaths on a given date for the age group "65+"}
 }
 }
 \source{

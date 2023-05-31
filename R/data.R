@@ -15,7 +15,7 @@
 #'
 "contact_matrices"
 
-#' Age distribution of reported deaths for Greece
+#' Age distribution of new reported deaths for Greece
 #'
 #' A dataset containing the age distribution of reported deaths in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
 #' The dataset has been extracted from the Hellenic National Public Health Organization database.
@@ -26,10 +26,10 @@
 #'   \item{Right}{numeric; Index + 1}
 #'   \item{Date}{Date, format; date in the format "2020-08-31"}
 #'   \item{Week_ID}{numeric; index of the week that each day falls into. A week is assumed to have 7 days}
-#'   \item{New_Deaths}{numeric; count of total reported deaths on a given date}
-#'   \item{0-39}{numeric; count of reported deaths on a given date for the age group "0-39"}
-#'   \item{40-64}{numeric; count of reported deaths on a given date for the age group "40-64"}
-#'   \item{65+}{numeric; count of reported deaths on a given date for the age group "65+"}
+#'   \item{New_Deaths}{numeric; count of new total reported deaths on a given date}
+#'   \item{0-39}{numeric; count of new reported deaths on a given date for the age group "0-39"}
+#'   \item{40-64}{numeric; count of new reported deaths on a given date for the age group "40-64"}
+#'   \item{65+}{numeric; count of new reported deaths on a given date for the age group "65+"}
 #' }
 #'
 #' @return A data.frame object with 210 rows and 8 variables.
@@ -43,9 +43,9 @@
 #'
 "age_specific_mortality_counts"
 
-#' Age distribution of reported infections for Greece
+#' Age distribution of new reported infections for Greece
 #'
-#' A dataset containing the age distribution of reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
+#' A dataset containing the age distribution of new reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
 #' The dataset has been extracted from the Hellenic National Public Health Organization database.
 #'
 #' @format A data frame with 210 rows and 8 variables:
@@ -70,3 +70,32 @@
 #' @source \url{https://github.com/Sandbird/covid19-Greece/}
 #'
 "age_specific_infection_counts"
+
+#' Age distribution of cumulative reported infections for Greece
+#'
+#' A dataset containing the age distribution of cumulative reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
+#' The dataset has been extracted from the Hellenic National Public Health Organization database.
+#'
+#' @format A data frame with 210 rows and 5 variables:
+#' \describe{
+#'   \item{Date}{Date, format; date in the format "2020-08-31"}
+#'   \item{Total_Cases}{numeric; count of total cumulative reported infections on a given date}
+#'   \item{0-39}{numeric; count of cumulative reported infections on a given date for the age group "0-39"}
+#'   \item{40-64}{numeric; count of cumulative reported infections on a given date for the age group "40-64"}
+#'   \item{65+}{numeric; count of cumulative reported infections on a given date for the age group "65+"}
+#' }
+#'
+#' @return A data.frame object with 210 rows and 5 variables.
+#'
+#' @usage data(age_specific_cusum_infection_counts)
+#'
+#' @section References:
+#' Sandbird (2022). Daily regional statistics for covid19 cases in Greece.
+#'
+#' @source \url{https://github.com/Sandbird/covid19-Greece/}
+#'
+"age_specific_cusum_infection_counts"
+
+
+
+

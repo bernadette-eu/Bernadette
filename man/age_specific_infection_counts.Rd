@@ -3,7 +3,7 @@
 \docType{data}
 \name{age_specific_infection_counts}
 \alias{age_specific_infection_counts}
-\title{Age distribution of reported infections for Greece}
+\title{Age distribution of new reported infections for Greece}
 \format{
 A data frame with 210 rows and 8 variables:
 \describe{
@@ -27,7 +27,7 @@ data(age_specific_infection_counts)
 A data.frame object with 210 rows and 8 variables.
 }
 \description{
-A dataset containing the age distribution of reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
+A dataset containing the age distribution of new reported infections in Greece from 2020-08-31 to 2021-03-28 (30 weeks).
 The dataset has been extracted from the Hellenic National Public Health Organization database.
 }
 \section{References}{

@@ -170,12 +170,12 @@ data_engineering_observations_GR <- function(start_date  = NULL,
   data_cumcases_wide <- data_cumcases_wide[reorder_colnames_cumcases]
 
   data_cumcases_wide <- data_cumcases_wide[ data_cumcases_wide$Date >= as.Date(start_date, format = "%Y-%m-%d") &
-                                              data_cumcases_wide$Date <= as.Date(end_date,   format = "%Y-%m-%d"),]
+                                            data_cumcases_wide$Date <= as.Date(end_date,   format = "%Y-%m-%d"),]
 
-  output_list <- list(Deaths    = dt_mortality_analysis_period,
-                      Cases     = dt_cases_analysis_period,
-                      All       = dt_analysis_period,
-                      Cum_Cases = data_cumcases_wide)
+  output_list <- list(Deaths      = dt_mortality_analysis_period,
+                      Cases       = dt_cases_analysis_period,
+                      All         = dt_analysis_period,
+                      Cumul_Cases = data_cumcases_wide)
 
   return(output_list)
 
@@ -190,9 +190,11 @@ data_all <- data_engineering_observations_GR(start_date     = start_date,
                                              end_date       = end_date,
                                              age_mapping    = age_mapping_deaths)
 
-age_specific_mortality_counts <- data_all$Deaths
-age_specific_infection_counts <- data_all$Cases
+age_specific_mortality_counts       <- data_all$Deaths
+age_specific_infection_counts       <- data_all$Cases
+age_specific_cusum_infection_counts <- data_all$Cumul_Cases
 
 # Export:
-usethis::use_data(age_specific_mortality_counts, overwrite = TRUE)
-usethis::use_data(age_specific_infection_counts, overwrite = TRUE)
+usethis::use_data(age_specific_mortality_counts,       overwrite = TRUE)
+usethis::use_data(age_specific_infection_counts,       overwrite = TRUE)
+usethis::use_data(age_specific_cusum_infection_counts, overwrite = TRUE)
