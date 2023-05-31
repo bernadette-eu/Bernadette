@@ -76,7 +76,11 @@ aggregate_ifr_react <- function(x,
   output[[2]] <- aggregate(AgrIFR ~ Group_mapping, output[[1]], FUN = function(x) x[1])
 
   #---- Time-dependent IFR:
-  data_cases_weights <- data_cases[, !(colnames(data_cases) %in% c("Index", "Right", "Week_ID"))]
+
+  if( any( c("Index", "Right", "Week_ID") %in%  colnames(data_cases)  ) ) {
+    data_cases_weights <- data_cases[, !(colnames(data_cases) %in% c("Index", "Right", "Week_ID"))]
+  } else data_cases_weights <- data_cases
+
   data_cases_weights <- cbind(data_cases_weights[, "Date", drop = FALSE],
                               data.frame(sapply(data_cases_weights[, -1, drop = FALSE], function(x) x / data_cases$Total_Cases)))
   data_cases_weights$Date <- data_cases$Date
