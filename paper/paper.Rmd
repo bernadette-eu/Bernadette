@@ -64,10 +64,20 @@ The Github page for this package contains a detailed [README](https://github.com
 knitr::include_graphics("C:/Users/lbour/OneDrive/Desktop1/Files_HP_Lampros/Academic/Post_Doctoral_Researcher/1_Marie_Curie_PostDoc/8_BERNADETTE/8_Package/bernadette/paper/Data_generating_mechanism_eps.eps")
 ```
 
-`Bernadette` uses the framework offered by `Stan` to both specify and fit models.
+![Functional relationships between data sources (rectangles), modeled outputs (ovals) and parameters (hexagons).](Data_generating_mechanism_eps.eps)
+
+## Data processing and visualization
+
+## Parameter estimation
+
+The main function is `stan_igbm()`. `Bernadette` uses the framework offered by `Stan` to both specify and fit models.
 User-specified models are internally translated into data that is passed to a precompiled Stan program. The models are fit using sampling methods from `rstan` [@rstan].
 
-The primary function is `stan_igbm()`
+## Post-processing
+
+
+
+
 
 # Licensing and Availability
 

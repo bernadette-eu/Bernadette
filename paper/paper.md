@@ -114,13 +114,21 @@ in the workflow.
 outputs (ovals) and parameters
 (hexagons)](Data_generating_mechanism_eps.eps)
 
-`Bernadette` uses the framework offered by `Stan` to both specify and
-fit models. User-specified models are internally translated into data
-that is passed to a precompiled Stan program. The models are fit using
-sampling methods from `rstan` ([Stan Development Team,
-2023](#ref-rstan)).
+![Functional relationships between data sources (rectangles), modeled
+outputs (ovals) and parameters
+(hexagons).](Data_generating_mechanism_eps.eps)
 
-The primary function is `stan_igbm()`
+## Data processing and visualization
+
+## Parameter estimation
+
+The main function is `stan_igbm()`. `Bernadette` uses the framework
+offered by `Stan` to both specify and fit models. User-specified models
+are internally translated into data that is passed to a precompiled Stan
+program. The models are fit using sampling methods from `rstan` ([Stan
+Development Team, 2023](#ref-rstan)).
+
+## Post-processing
 
 # Licensing and Availability
 
