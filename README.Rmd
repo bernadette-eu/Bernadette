@@ -4,7 +4,6 @@ output:
     pandoc_args: "--webtex"
 ---
 
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Bernadette <img src="https://github.com/bernadette-eu/bernadette-eu.github.io/blob/9588dba70edb87adc5b026ec0ae1912c290bfeb0/images/abc.png" align="right" height="150px" width="150px"/>
@@ -20,6 +19,14 @@ output:
 <!-- badges: end -->
 
 NOTE: This documentation is work in progress.
+
+## Contribution
+
+This R package is provided for use under the [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) License by the author.
+Please use the [issue tracker](https://github.com/bernadette-eu/Bernadette/issues) for bug reports and feature requests.
+All contributions are welcome, in particular those that improve the approach or the robustness of the code base. We also welcome 
+additions and extensions to the underlying model either in the form of options or improvements.
+
 
 ## Overview
 
@@ -508,12 +515,3 @@ waic_1 <- loo::waic(log_lik_1)
 print(waic_1)
 ```
 
-## License
-
-This R package is provided for use under the GPL-3.0 License by the author.
-
-## Contributing
-
-File an issue [here](https://github.com/bernadette-eu/Bernadette/issues) if you have identified an issue with the package. 
-We welcome all contributions, in particular those that improve the approach or the robustness of the code base. We also welcome 
-additions and extensions to the underlying model either in the form of options or improvements.

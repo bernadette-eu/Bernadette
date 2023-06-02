@@ -18,6 +18,17 @@ stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecy
 
 NOTE: This documentation is work in progress.
 
+## Contribution
+
+This R package is provided for use under the
+[GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) License by the
+author. Please use the [issue
+tracker](https://github.com/bernadette-eu/Bernadette/issues) for bug
+reports and feature requests. All contributions are welcome, in
+particular those that improve the approach or the robustness of the code
+base. We also welcome additions and extensions to the underlying model
+either in the form of options or improvements.
+
 ## Overview
 
 The **Bernadette** (“Bayesian inference and model selection for
@@ -598,16 +609,3 @@ estimated effective number of parameters are given by
 waic_1 <- loo::waic(log_lik_1)
 print(waic_1)
 ```
-
-## License
-
-This R package is provided for use under the GPL-3.0 License by the
-author.
-
-## Contributing
-
-File an issue [here](https://github.com/bernadette-eu/Bernadette/issues)
-if you have identified an issue with the package. We welcome all
-contributions, in particular those that improve the approach or the
-robustness of the code base. We also welcome additions and extensions to
-the underlying model either in the form of options or improvements.
