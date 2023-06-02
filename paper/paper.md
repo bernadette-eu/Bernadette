@@ -249,6 +249,7 @@ leave-one-out cross-validation and WAIC for Bayesian models</span>*.
 
 Ward, H., Atchison, C., Whitaker, M., Ainslie, K., Elliott, J., Okell,
 L., Redd, R., Ashby, D., Donnelly, C., Barclay, W., Darzi, A., Cooke,
-G., Riley, S., & Elliott, P. (2021). SARS-CoV-2 antibody prevalence in
-england following the first peak of the pandemic. *Nat. Commun.*, *12*,
-905. https://doi.org/<https://doi.org/10.1038/s41467-021-21237-w>
+G., Riley, S., & Elliott, P. (2021). <span class="nocase">SARS-CoV-2
+antibody prevalence in England following the first peak of the
+pandemic</span>. *Nature Communications*, *12*, 905.
+<https://doi.org/10.1038/s41467-021-21237-w>
