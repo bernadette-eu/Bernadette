@@ -57,7 +57,7 @@ The effective reproduction number, $R_t$, is estimated from the daily age-strati
 <!-- The probabilistic programming language `Stan` [@carpenter2017stan] has been used extensively to specify and fit Bayesian models for disease transmission during the Covid-19 pandemic.  -->
 <!-- Examples analyses include Flaxman et al. (2020), Hauser et al. (2020) and Doremalen et al. (2020).  -->
 
-`Bernadette` features nine functions for data processing and visualization, a main function for specifying and fitting the Bayesian hierarchical model and five functions for post-processing and visualization of posterior model estimates of important epidemiological quantities. The key model components are presented in Figure \ref{fig:functional_relationships}. 
+`Bernadette` features nine functions for data processing and visualization, a main function for specifying and fitting the Bayesian hierarchical model and five functions for post-processing and visualization of posterior model estimates of important epidemiological quantities. The key model components are presented in Figure \@ref{fig:functional_relationships}. 
 The Github page for this package contains a detailed [README](https://github.com/bernadette-eu/Bernadette/blob/master/README.md) file with a description of the modeling framework and the steps involved in the workflow.
 
 ```{r, fig.cap = "Functional relationships between data sources (rectangles), modeled outputs (ovals) and parameters (hexagons)", label = "functional_relationships"}

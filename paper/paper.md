@@ -101,8 +101,9 @@ propagated naturally via Markov chain Monte Carlo ([Brooks et al.,
 visualization, a main function for specifying and fitting the Bayesian
 hierarchical model and five functions for post-processing and
 visualization of posterior model estimates of important epidemiological
-quantities. The key model components are presented in Figure . The
-Github page for this package contains a detailed
+quantities. The key model components are presented in Figure
+@ref{fig:functional\_relationships}. The Github page for this package
+contains a detailed
 [README](https://github.com/bernadette-eu/Bernadette/blob/master/README.md)
 file with a description of the modeling framework and the steps involved
 in the workflow.
