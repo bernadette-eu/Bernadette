@@ -228,7 +228,7 @@ J., Meakin, S., Munday, J., Bosse, N., Sherrat, K. e., Thompson, R.,
 White, L., Huisman, J., Scire, J., … Cobey, S. (2020). <span
 class="nocase">Practical considerations for measuring the effective
 reproductive number, Rt</span>. *PLoS Computational Biology*, *16*(12),
-1–21.
+1–21. https://doi.org/<https://doi.org/10.1371/journal.pcbi.1008409>
 
 R Core Team. (2023). *R: A language and environment for statistical
 computing*. R Foundation for Statistical Computing.
