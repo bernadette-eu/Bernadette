@@ -63,17 +63,17 @@ populations.
 `Bernadette` complements these packages by implementing the Bayesian
 hierarchical modeling approach described in Bouranis et al.
 ([2022](#ref-bouranis)). It links the observed age-stratified mortality
-counts for a given population over time to latent infections via an
-over-dispersed count model. The change in infections over time is
-governed by a deterministic multi-type compartmental model which is
-driven by potentially non-scalar diffusion processes to adequately
-capture the temporal evolution of the age-stratified transmission rates.
-`Bernadette` relaxes the assumption of a homogeneous population,
-incorporates age structure and accounts for the presence of social
-structures via publicly available contact matrices. This allows for
-further evidence synthesis utilizing information from contact surveys
-and for sharing statistical strength across age groups. Further, the
-Bayesian evidence synthesis approach implemented in the `Bernadette`
+counts for the population of a given country over time to latent
+infections via an over-dispersed count model. The change in infections
+over time is governed by a deterministic multi-type compartmental model
+which is driven by potentially non-scalar diffusion processes to
+adequately capture the temporal evolution of the age-stratified
+transmission rates. `Bernadette` relaxes the assumption of a homogeneous
+population, incorporates age structure and accounts for the presence of
+social structures via publicly available contact matrices. This allows
+for further evidence synthesis utilizing information from contact
+surveys and for sharing statistical strength across age groups. Further,
+the Bayesian evidence synthesis approach implemented in the `Bernadette`
 package enables learning the age-stratified virus transmission rates
 from one group to another, with a particular focus on the transmission
 rate between and onto vulnerable groups which could support public
@@ -88,47 +88,78 @@ propagated naturally via Markov chain Monte Carlo ([Brooks et al.,
 
 # Functionality
 
-<!-- See https://imperialcollegelondon.github.io/epidemia/articles/model-introduction.html -->
-<!-- - Bayesian evidence synthesis -->
-<!-- Generative model + figure. Connect this to the main functions -->
 <!-- - Description of main functions -->
 <!-- - Stan -->
 <!-- - Information criteria with loo. -->
 <!-- The probabilistic programming language `Stan` [@carpenter2017stan] has been used extensively to specify and fit Bayesian models for disease transmission during the Covid-19 pandemic.  -->
 <!-- Examples analyses include Flaxman et al. (2020), Hauser et al. (2020) and Doremalen et al. (2020).  -->
 
-`Bernadette` features nine functions for data processing and
+`Bernadette` features eight functions for data processing and
 visualization, a main function for specifying and fitting the Bayesian
 hierarchical model and five functions for post-processing and
 visualization of posterior model estimates of important epidemiological
-quantities. The key model components are presented in Figure
-@ref{fig:functional\_relationships}. The Github page for this package
-contains a detailed
+quantities. The Github page for this package contains a detailed
 [README](https://github.com/bernadette-eu/Bernadette/blob/master/README.md)
 file with a description of the modeling framework and the steps involved
 in the workflow.
 
-    knitr::include_graphics("C:/Users/lbour/OneDrive/Desktop1/Files_HP_Lampros/Academic/Post_Doctoral_Researcher/1_Marie_Curie_PostDoc/8_BERNADETTE/8_Package/bernadette/paper/Data_generating_mechanism_eps.eps")
-
-![Functional relationships between data sources (rectangles), modeled
-outputs (ovals) and parameters
-(hexagons)](Data_generating_mechanism_eps.eps)
-
-![Functional relationships between data sources (rectangles), modeled
-outputs (ovals) and parameters
-(hexagons).](Data_generating_mechanism_eps.eps)
-
 ## Data processing and visualization
+
+1.  `age_distribution`: Imports the age distribution of a country for a
+    given year, broken down by 5-year age bands and gender, following
+    the United Nations 2019 Revision of World Population Prospects.
+2.  `aggregate_age_distribution`: Aggregates the age distribution
+    according to user-defined age groups.
+3.  `contact_matrix`: For a given country, it imports a 16 by 16 contact
+    matrix whose row *i* of a column *j* corresponds to the number of
+    contacts made by an individual in group *i* with an individual in
+    group *j*.
+4.  `aggregate_contact_matrix`: Aggregates the contact matrix according
+    to user-defined age groups.
+5.  `aggregate_ifr_react`: Aggregates the age-specific Infection
+    Fatality Ratio (IFR) estimates reported by the REACT-2 large-scale
+    community study of SARS-CoV-2 seroprevalence in England ([Ward et
+    al., 2021](#ref-ward_react2)) according to age group mappings
+    defined by the user.
+6.  `itd_distribution`: Parameterizes the time distribution from an
+    infection to an observation. `Bernadette` focuses on observed
+    mortality counts, therefore we refer to this distribution as the
+    *infection-to-death distribution*.
+7.  `plot_age_distribution`: visualizes a given age distribution using a
+    bar plot.
+8.  `plot_contact_matrix`: visualizes a given contact matrix using a
+    heatmap.
+
+The age-specific time series of mortality counts and the age-specific
+time series of cumulative reported infections complete the list of data
+streams that are integrated together with expert knowledge into a
+coherent modeling framework via a Bayesian evidence synthesis approach
+for estimation of key epidemiological quantities. Two example datasets
+(objects `age_specific_mortality_counts` and
+`age_specific_cusum_infection_counts`) are provided with the
+`Bernadette` package to guide the user regarding the format of their
+input.
 
 ## Parameter estimation
 
-The main function is `stan_igbm()`. `Bernadette` uses the framework
-offered by `Stan` to both specify and fit models. User-specified models
-are internally translated into data that is passed to a precompiled Stan
-program. The models are fit using sampling methods from `rstan` ([Stan
-Development Team, 2023](#ref-rstan)).
+The main function for Bayesian parameter estimation is `stan_igbm`.
+`Bernadette` uses the framework offered by the probabilistic programming
+language `Stan` ([Carpenter et al., 2017](#ref-carpenter2017stan)) to
+both specify and fit models. User-specified models are internally
+translated into data that are passed to a precompiled Stan program. The
+models are fit using sampling methods from `rstan` ([Stan Development
+Team, 2023](#ref-rstan)).
 
 ## Post-processing
+
+1.  `posterior_contactmatrix`:
+2.  `posterior_infections`:
+3.  `posterior_mortality`:
+4.  `posterior_transmrate`:
+5.  `posterior_rt`:
+
+Model checking and model comparison using information criteria with the
+`loo` R package ([Vehtari et al., 2023](#ref-psisloo2)).
 
 # Licensing and Availability
 
@@ -158,8 +189,14 @@ epidemic models with application to COVID-19</span>*. arXiv.
 Brooks, S., Gelman, A., Jones, G., & Meng, X. (2011). *Handbook of
 markov chain monte carlo*. CRC press.
 
-Cori, A. (2021). *EpiEstim: Estimate time varying reproduction numbers
-from epidemic curves*. <https://CRAN.R-project.org/package=EpiEstim>
+Carpenter, B., Gelman, A., Hoffman, M., Lee, D., Goodrich, B.,
+Betancourt, M., Brubaker, M., Guo, J., Li, P., & Riddell, A. (2017).
+Stan: A probabilistic programming language. *Journal of Statistical
+Software*, *76*(1), 1–32.
+
+Cori, A. (2021). *<span class="nocase">EpiEstim: Estimate Time Varying
+Reproduction Numbers from Epidemic Curves</span>*.
+<https://CRAN.R-project.org/package=EpiEstim>
 
 Cori, A., Ferguson, NM., Fraser, C., & Cauchemez, S. (2013). <span
 class="nocase">A New Framework and Software to Estimate Time-Varying
@@ -185,3 +222,14 @@ Hierarchical Bayesian Models</span>*.
 
 Stan Development Team. (2023). *RStan: The R interface to Stan*.
 <https://mc-stan.org/>
+
+Vehtari, A., Gabry, J., Magnusson, M., Yao, Y., Bürkner, P., Paananen,
+T., & Gelman, A. (2023). *<span class="nocase">loo: Efficient
+leave-one-out cross-validation and WAIC for Bayesian models</span>*.
+<https://mc-stan.org/loo/>
+
+Ward, H., Atchison, C., Whitaker, M., Ainslie, K., Elliott, J., Okell,
+L., Redd, R., Ashby, D., Donnelly, C., Barclay, W., Darzi, A., Cooke,
+G., Riley, S., & Elliott, P. (2021). SARS-CoV-2 antibody prevalence in
+england following the first peak of the pandemic. *Nat. Commun.*, *12*,
+905. https://doi.org/<https://doi.org/10.1038/s41467-021-21237-w>
