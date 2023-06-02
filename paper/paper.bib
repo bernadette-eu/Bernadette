@@ -1,28 +1,95 @@
+@misc{bouranis,
+  author    = {Bouranis, L. and Demiris, N. and Kalogeropoulos, K. and Ntzoufras, I.},
+  title     = {{Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19}},
+  publisher = {arXiv},
+  year      = {2022},
+  doi       = {10.48550/arXiv.2211.15229},
+  note      = {\url{https://arxiv.org/abs/2211.15229}}
+}
+
 @Manual{bernadette,
-    title = {Bernadette: Bayesian Inference and Model Selection for Stochastic Epidemics},
-    author = {Lampros Bouranis},
-    year = {2023},
-    note = {R package version 1.1.3},
-    url = {https://cran.r-project.org/web/packages/Bernadette/index.html},
+  title  = {Bernadette: Bayesian Inference and Model Selection for Stochastic Epidemics},
+  author = {Lampros Bouranis},
+  year   = {2023},
+  note   = {R package version 1.1.3},
+  url    = {https://CRAN.R-project.org/package=Bernadette},
+  }
+
+@Misc{epidemia,
+    title  = {{epidemia: Modeling of Epidemics using Hierarchical Bayesian Models}},
+    author = {Scott, J. and Gandy, A. and Mishra, S. and Unwin, J. and Flaxman, S. and Bhatt, S.},
+    year   = {2020},
+    note   = {R package version 1.0.0},
+    url    = {https://imperialcollegelondon.github.io/epidemia/},
   }
 
 @Manual{rsoft,
-    title = {R: A Language and Environment for Statistical Computing},
-    author = {{R Core Team}},
-    organization = {R Foundation for Statistical Computing},
-    address = {Vienna, Austria},
-    year = {2022},
-    url = {https://www.R-project.org/},
+  title        = {R: A Language and Environment for Statistical Computing},
+  author       = {{R Core Team}},
+  organization = {R Foundation for Statistical Computing},
+  address      = {Vienna, Austria},
+  year         = {2023},
+  url          = {https://www.R-project.org/},
+  }
+
+@Misc{rstan,
+  title  = {{RStan}: the {R} interface to {Stan}},
+  author = {{Stan Development Team}},
+  note   = {R package version 2.21.8},
+  year   = {2023},
+  url    = {https://mc-stan.org/}
   }
 
 
-@Misc{epidemia,
-    title = {{epidemia: Modeling of Epidemics using Hierarchical Bayesian Models}},
-    author = {Scott, J. and Gandy, A. and Mishra, S. and Unwin, J. and Flaxman, S. and Bhatt, S.},
-    year = {2020},
-    note = {R package version 1.0.0},
-    url = {https://imperialcollegelondon.github.io/epidemia/},
-  }
+@article{carpenter2017stan,
+  title   = {Stan: A probabilistic programming language},
+  author  = {Carpenter, B. and Gelman, A. and Hoffman, M. and Lee, D. and Goodrich, B. and Betancourt, M. and   Brubaker, M. and Guo, J. and Li, P. and Riddell, A.},
+  journal = {{Journal of statistical software}},
+  year    = {2017},
+  volume  = {76},
+  number  = {1},
+  pages   = {1--32}
+}
+
+@Manual{epiestim,
+  title = {EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves},
+  author = {Cori, A.},
+  year = {2021},
+  note = {R package version 2.2-4},
+  url = {https://CRAN.R-project.org/package=EpiEstim},
+}
+
+@article{Cori2013,
+  author = {Cori, A. and Ferguson, NM. and Fraser, C. and Cauchemez, S.},
+  year   = {2013},
+  title  = {{A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics}},
+  journal= {Am. J. Epidemiol.},
+  doi    = {10.1093/aje/kwt133},
+}
+
+@article{gostic,
+  author = {Gostic, K. and McGough, L. and Baskerville, E. and Abbott, S. and Joshi, K. and Tedijanto, C. and Kahn, R. and Niehus, R. and Hay, J. and De Salazar, P. and Hellewell, J. and Meakin, S. and Munday, J. and Bosse, N. and Sherrat, K.e and Thompson, R. and White, L. and Huisman, J. and Scire, J. and Bonhoeffer, S. and Stadler, T. and Wallinga, J. and Funk, S. and Lipsitch, M. and Cobey, S.},
+title = {{Practical considerations for measuring the effective reproductive number, Rt}},
+  journal = {{PLoS Computational Biology}},
+  year = {2020},
+  volume = {16},
+  number = {12},
+  pages = {1-21}
+}
+
+@book{brooks,
+  author    = {Brooks, S. and Gelman, A. and Jones, G. and Meng, X.},
+  title     = {Handbook of Markov Chain Monte Carlo},
+  publisher = {CRC press},
+  year      = 2011
+}
+
+
+
+
+
+
+
 
 
 @article{covid19dashboard,
@@ -124,15 +191,7 @@ pages = {59--73}
 
 }
 
-@article{carpenter2017stan,
-title={Stan: A probabilistic programming language},
-author={Carpenter, B. and Gelman, A. and Hoffman, M. and Lee, D. and Goodrich, B. and Betancourt, M. and Brubaker, M. and Guo, J. and Li, P. and Riddell, A.},
-journal ={{J. Stat Softw}},
-year={2017},
-volume={76},
-number={1},
-pages = {1--32}
-}
+
 
 @article{Driessche,
 author = {{van den Driessche}, P. and Watmough, J.},
@@ -585,16 +644,6 @@ year = {2022},
 volume = {119},
 number = {10},
 pages = {e2118425119}
-}
-
-@article{gostic,
-author = {Gostic, K. and McGough, L. and Baskerville, E. and Abbott, S. and Joshi, K. and Tedijanto, C. and Kahn, R. and Niehus, R. and Hay, J. and De Salazar, P. and Hellewell, J. and Meakin, S. and Munday, J. and Bosse, N. and Sherrat, K.e and Thompson, R. and White, L. and Huisman, J. and Scire, J. and Bonhoeffer, S. and Stadler, T. and Wallinga, J. and Funk, S. and Lipsitch, M. and Cobey, S.},
-title = {{Practical considerations for measuring the effective reproductive number, Rt}},
-journal = {{PLoS Comput. Biol.}},
-year = {2020},
-volume = {16},
-number = {12},
-pages = {1-21}
 }
 
 
