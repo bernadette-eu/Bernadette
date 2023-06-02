@@ -37,8 +37,8 @@ counts. The functionality of `Bernadette` can be used to reconstruct the
 epidemic drivers from publicly available data, to estimate key
 epidemiological quantities like the rate of disease transmission, the
 latent counts of infections and the reproduction number for a given
-population over time, and to perform model checking and model comparison
-using information criteria.
+population over time, and to perform model comparison using information
+criteria.
 
 # Statement of need
 
@@ -72,29 +72,23 @@ transmission rates. `Bernadette` relaxes the assumption of a homogeneous
 population, incorporates age structure and accounts for the presence of
 social structures via publicly available contact matrices. This allows
 for further evidence synthesis utilizing information from contact
-surveys and for sharing statistical strength across age groups. Further,
-the Bayesian evidence synthesis approach implemented in the `Bernadette`
-package enables learning the age-stratified virus transmission rates
-from one group to another, with a particular focus on the transmission
-rate between and onto vulnerable groups which could support public
-health authorities in devising interventions targeting these groups. The
-effective reproduction number, *R*<sub>*t*</sub>, is estimated from the
-daily age-stratified mortality counts, accounting for variations in
-transmissibility that are not obvious from reported infection counts.
-While estimation of the uncertainty over *R*<sub>*t*</sub> is itself a
-challenging problem ([Gostic et al., 2020](#ref-gostic)), it is
-propagated naturally via Markov chain Monte Carlo ([Brooks et al.,
-2011](#ref-brooks)).
+surveys and for sharing statistical strength across age groups and time.
+Further, the Bayesian evidence synthesis approach implemented in the
+`Bernadette` package enables learning the age-stratified virus
+transmission rates from one group to another, with a particular focus on
+the transmission rate between and onto vulnerable groups which could
+support public health authorities in devising interventions targeting
+these groups. The effective reproduction number, *R*<sub>*t*</sub>, is
+estimated from the daily age-stratified mortality counts, accounting for
+variations in transmissibility that are not obvious from reported
+infection counts. While estimation of the uncertainty over
+*R*<sub>*t*</sub> is itself a challenging problem ([Gostic et al.,
+2020](#ref-gostic)), it is propagated naturally via Markov chain Monte
+Carlo ([Brooks et al., 2011](#ref-brooks)).
 
 # Functionality
 
-<!-- - Description of main functions -->
-<!-- - Stan -->
-<!-- - Information criteria with loo. -->
-<!-- The probabilistic programming language `Stan` [@carpenter2017stan] has been used extensively to specify and fit Bayesian models for disease transmission during the Covid-19 pandemic.  -->
-<!-- Examples analyses include Flaxman et al. (2020), Hauser et al. (2020) and Doremalen et al. (2020).  -->
-
-`Bernadette` features eight functions for data processing and
+`Bernadette` features eight main functions for data processing and
 visualization, a main function for specifying and fitting the Bayesian
 hierarchical model and five functions for post-processing and
 visualization of posterior model estimates of important epidemiological
@@ -109,13 +103,13 @@ in the workflow.
     given year, broken down by 5-year age bands and gender, following
     the United Nations 2019 Revision of World Population Prospects.
 2.  `aggregate_age_distribution`: Aggregates the age distribution
-    according to user-defined age groups.
+    according to user-defined age groupings.
 3.  `contact_matrix`: For a given country, it imports a 16 by 16 contact
     matrix whose row *i* of a column *j* corresponds to the number of
     contacts made by an individual in group *i* with an individual in
     group *j*.
 4.  `aggregate_contact_matrix`: Aggregates the contact matrix according
-    to user-defined age groups.
+    to user-defined age groupings.
 5.  `aggregate_ifr_react`: Aggregates the age-specific Infection
     Fatality Ratio (IFR) estimates reported by the REACT-2 large-scale
     community study of SARS-CoV-2 seroprevalence in England ([Ward et
@@ -142,24 +136,49 @@ input.
 
 ## Parameter estimation
 
-The main function for Bayesian parameter estimation is `stan_igbm`.
-`Bernadette` uses the framework offered by the probabilistic programming
-language `Stan` ([Carpenter et al., 2017](#ref-carpenter2017stan)) to
-both specify and fit models. User-specified models are internally
-translated into data that are passed to a precompiled Stan program. The
-models are fit using sampling methods from `rstan` ([Stan Development
-Team, 2023](#ref-rstan)).
+The main function for Bayesian parameter estimation, `stan_igbm`, allows
+for specification of a joint distribution for the outcomes (in this
+case, the age-specific mortality counts) and the unknown quantities,
+which is expressed by the likelihood for the outcomes conditional on the
+unknowns multiplied by a marginal prior distribution for the unknowns.
+This joint distribution is proportional to the posterior distribution of
+the unknowns conditional on the observed data. Prior beliefs for the
+unknown model parameters can be expressed by a selection of appropriate
+distributions available to the end-user. `Bernadette` uses the framework
+offered by the probabilistic programming language `Stan` ([Carpenter et
+al., 2017](#ref-carpenter2017stan)) to specify a model and draw from the
+posterior distribution using MCMC. The user-specified model is
+internally translated into data that are passed to a precompiled `Stan`
+program and then it is fit using sampling methods from `rstan` ([Stan
+Development Team, 2023](#ref-rstan)).
 
 ## Post-processing
 
-1.  `posterior_contactmatrix`:
-2.  `posterior_infections`:
-3.  `posterior_mortality`:
-4.  `posterior_transmrate`:
-5.  `posterior_rt`:
+The output of `stan_igbm` contains draws from the posterior
+distribution, which can be post-processed and visualized to extract
+insights about the mechanism of disease transmission over a given
+period.
 
-Model checking and model comparison using information criteria with the
-`loo` R package ([Vehtari et al., 2023](#ref-psisloo2)).
+1.  `plot_posterior_cm`: Density plots of the posterior distribution of
+    the contact matrix.
+2.  `posterior_infections`: Summarizes the posterior distribution of the
+    infection counts over time (age-specific and aggregated). It is
+    accompanied by the plotting function `plot_posterior_infections`.
+3.  `posterior_mortality`: Summarizes the posterior distribution of the
+    mortality counts over time (age-specific and aggregated). It is
+    accompanied by the plotting function `plot_posterior_mortality`.
+4.  `posterior_transmrate`: Summarizes the posterior distribution of the
+    age-specific transmission rate. It is accompanied by the plotting
+    function `plot_posterior_transmrate`.
+5.  `posterior_rt`: Summarizes the posterior distribution of the
+    time-varying reproduction number. The posterior trajectory is
+    visualized with `plot_posterior_rt`.
+
+The output of `stan_igbm` can additionally be used to compute
+approximate leave-one-out cross-validation with the `loo` R package
+([Vehtari et al., 2023](#ref-psisloo2)). This enables estimation of
+information criteria which are considered when comparing among a set of
+alternative models for the same data.
 
 # Licensing and Availability
 
