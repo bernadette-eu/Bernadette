@@ -15,6 +15,33 @@ matrix to_triangular(vector x, int K) {
 	return y;
 }// End function
 
+matrix repeat_matrix(matrix input, int K) {
+  int N = rows(input);
+  int M = cols(input);
+  matrix[N * K, M] repmat; // stack N*M matrix K times
+  int pos = 1;
+
+	for (n in 1:N) {
+	  for (k in 1:K) {
+      repmat[pos,] = to_row_vector(input[n,]);
+      pos += 1;
+	  }
+	}
+  return repmat;
+}
+
+matrix repeat_rv_to_matrix(row_vector input, int K) {
+  int M = num_elements(input);
+  matrix[K, M] repmat;
+  int pos = 1;
+
+  for (k in 1:K) {
+    repmat[pos,] = input;
+    pos += 1;
+  }
+  return repmat;
+}
+
 real[] rep_each(real[] x, int K) {
 	int N = size(x);
 	real y[N  *  K];
@@ -197,14 +224,17 @@ real[,] integrate_ode_trapezoidal(real[] y_initial,
 data {
 //#include /data/data_igbm.stan
 //---- igbm data:
-int A;                 // Number of age groups
-int n_obs;             // Length of analysis period
+int A;                             // Number of age groups
+int n_obs;                        // Length of analysis period
 int y_data[n_obs,A];              // Count outcome -  Age-specific mortality counts
-
 int<lower = 1> n_pop;             // Population
+int<lower = 1, upper = 7> ecr_changes;
+int n_changes;
+int n_remainder;
+int L_raw_length;
+
 real age_dist[A];                 // Age distribution of the general population
 vector[A] pop_diag;               // Inverse of population for each age group
-
 int<lower = 1> n_difeq;           // Number of differential equations (S,I,C)
 
 vector[A] L_cm[A];                // Lower triangular matrix, stemming from the Cholesky decomposition of the observed contact matrix
@@ -277,7 +307,7 @@ real init[A * n_difeq] = rep_array(0.0, A * n_difeq);    // Initial conditions f
 
 vector[A] ones_vector_A = rep_vector(1.0, A);
 
-vector[(A * (A + 1)) / 2] L_vector = rep_vector(0, (A * (A + 1)) / 2);
+vector[L_raw_length] L_vector = rep_vector(0, L_raw_length);
 
 //---- Infection-fatality rate per age group
 for( t in 1:n_obs ) I_D_rev[t] = I_D[n_obs - t + 1];
@@ -290,23 +320,23 @@ x_r[1:n_obs]                         = left_t;
 x_r[(n_obs+1):(2 * n_obs)]           = right_t;
 x_r[(2 * n_obs + 1):(2 * n_obs + A)] = age_dist;
 
-tau    = 2.0/incubation_period;
-gamma  = 2.0/infectious_period;
+tau    = 2.0 / incubation_period;
+gamma  = 2.0 / infectious_period;
 
 }
 
 parameters {
 real x0;                          // Initial transmission rate
 real x_init[A];
-real x_noise[(n_obs - 1)*A];
+real x_noise[(n_changes - 1)*A];
 real<lower = 0, upper = 1> pi;    // Number of population infections at t0
 real<lower = 0> volatilities[A];  // Standard deviation of GBM
 real<lower = 0> phiD;             // Likelihood variance parameter
-vector[(A * (A + 1)) / 2] L_raw;  // Vectorized version of the L matrix. Used to apply a NCP to calculate the sampled contact matrix .
+vector[L_raw_length] L_raw;       // Vectorized version of the L matrix. Used to apply a NCP to calculate the sampled contact matrix .
 }
 
 transformed parameters{
-matrix[n_obs, A] x_trajectory;
+matrix[n_changes, A] x_trajectory;
 real<lower = 0> beta0;                       // Initial transmission rate
 
 matrix<lower = 0>[n_obs, A] beta_trajectory; // Daily Effective contact rate, beta_trajectory = exp(x_trajectory)
@@ -325,7 +355,7 @@ matrix[A, A] cm_sample;
 //---- Transformed parameters for the contact matrix (Non-central parameterisation):
 matrix[A, A] L_raw_mat           = to_triangular(L_raw, A);
 matrix[A, A] L                   = to_triangular(L_vector, A);
-matrix[n_obs - 1, A] x_noise_mat = to_matrix(x_noise, n_obs - 1, A);
+matrix[n_obs - 1, A] x_noise_mat = to_matrix(x_noise, n_changes - 1, A);
 
 for(col in 1:A) for(row in col:A) L[row,col] = L_cm[row,col] + (prior_scale_contactmatrix * L_cm[row,col]) *  L_raw_mat[row,col];
 
@@ -335,11 +365,20 @@ cm_sample = diag_pre_multiply(pop_diag, cm_sym);
 //---- Transformed parameters for the GBM (Non-central parameterisation):
 x_trajectory[1,] = to_row_vector(x_init);
 
-for (t in 2:n_obs) for (j in 1:A) x_trajectory[t,j] = x_trajectory[t-1,j] + volatilities[j] * x_noise_mat[t-1,j];
+for (t in 2:n_changes) for (j in 1:A) x_trajectory[t,j] = x_trajectory[t-1,j] + volatilities[j] * x_noise_mat[t-1,j];
 
-beta0           = exp(x0);
-beta_trajectory = exp(x_trajectory);
-beta_N          = to_vector_colwise(beta_trajectory);
+beta0 = exp(x0);
+
+if (ecr_changes == 1) {
+  beta_trajectory = exp(x_trajectory);
+
+} else {
+ beta_trajectory = append_row( repeat_matrix(       exp( x_trajectory[1:(n_changes-1),] ), ecr_changes),
+                               repeat_rv_to_matrix( exp( x_trajectory[n_changes] ),        n_remainder)
+                               );
+}
+
+beta_N = to_vector_colwise(beta_trajectory);
 
 //---- Change of format for integrate_ode_euler/ integrate_ode_rk45/ integrate_ode_bdf:
 theta[1:(A * A)]                     = to_vector_rowwise(cm_sample);

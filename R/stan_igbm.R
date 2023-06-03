@@ -33,6 +33,9 @@
 #' If \eqn{0}, the variance of the over-dispersed count model is a quadratic function of the mean;
 #' if \eqn{1}, the variance of the over-dispersed count model is a linear function of the mean.
 #'
+#' @param ecr_changes integer;
+#' between 1 and 7, defaults to 1. Expresses the number of changes of the effective contact rate during the course of 7 days.
+#'
 #' @param prior_scale_x0 double;
 #' scale parameter of a Normal prior distribution assigned to the age-specific log(transmissibility) at time \eqn{t = 0}.
 #'
@@ -144,6 +147,7 @@
 #'                       incubation_period           = 3,
 #'                       infectious_period           = 4,
 #'                       likelihood_variance_type    = "linear",
+#'                       ecr_changes                 = 7,
 #'                       prior_scale_x0              = 0.5,
 #'                       prior_scale_x1              = 0.5,
 #'                       prior_scale_contactmatrix   = 0.05,
@@ -172,6 +176,7 @@ stan_igbm <-
            incubation_period         = 3,
            infectious_period         = 4,
            likelihood_variance_type  = c("quadratic", "linear"),
+           ecr_changes               = 1,
            prior_scale_x0            = 1,
            prior_scale_x1            = 1,
            prior_scale_contactmatrix = 0.05,
@@ -224,6 +229,9 @@ stan_igbm <-
     if( pi_perc > 1 )
       stop("'pi_perc' must be between 0 and 1.")
 
+    if( (ecr_changes > 7) | (ecr_changes < 1) )
+        stop("'ecr_changes' must be between 1 and 7.")
+
     pi_prior_params          <- lapply(pi_perc, function(x) estBetaParams(x, (0.05*x)) )
     algorithm_inference      <- match.arg(algorithm_inference)
     likelihood_variance_type <- match.arg(likelihood_variance_type)
@@ -238,6 +246,7 @@ stan_igbm <-
             n_pop              = sum(age_distribution_population$PopTotal),
             age_dist           = age_distribution_population$PopTotal/sum(age_distribution_population$PopTotal),
             pop_diag           = 1/(age_distribution_population$PopTotal),
+            ecr_changes        = ecr_changes,
             n_difeq            = length(c("S", "E", "E", "I", "I", "C")),
             L_cm               = t( base::chol( base::diag(age_distribution_population$PopTotal) %*% as.matrix(contact_matrix) ) ),
             age_specific_ifr   = age_specific_ifr[,-1], # Remove the Date column

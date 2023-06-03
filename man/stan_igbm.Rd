@@ -14,6 +14,7 @@ stan_igbm(
   incubation_period = 3,
   infectious_period = 4,
   likelihood_variance_type = c("quadratic", "linear"),
+  ecr_changes = 1,
   prior_scale_x0 = 1,
   prior_scale_x1 = 1,
   prior_scale_contactmatrix = 0.05,
@@ -69,6 +70,9 @@ length of infectious period in days. Must be >=1.}
 \item{likelihood_variance_type}{integer;
 If \eqn{0}, the variance of the over-dispersed count model is a quadratic function of the mean;
 if \eqn{1}, the variance of the over-dispersed count model is a linear function of the mean.}
+
+\item{ecr_changes}{integer;
+between 1 and 7, defaults to 1. Expresses the number of changes of the effective contact rate during the course of 7 days.}
 
 \item{prior_scale_x0}{double;
 scale parameter of a Normal prior distribution assigned to the age-specific log(transmissibility) at time \eqn{t = 0}.}
@@ -191,6 +195,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       incubation_period           = 3,
                       infectious_period           = 4,
                       likelihood_variance_type    = "linear",
+                      ecr_changes                 = 7,
                       prior_scale_x0              = 0.5,
                       prior_scale_x1              = 0.5,
                       prior_scale_contactmatrix   = 0.05,

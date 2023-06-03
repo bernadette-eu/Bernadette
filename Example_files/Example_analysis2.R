@@ -15,9 +15,11 @@ lapply(lib, require, character.only = TRUE)
 
 #---- Age-specific mortality/incidence count time series:
 data(age_specific_mortality_counts)
-data(age_specific_infection_counts)
+#data(age_specific_infection_counts)
+data(age_specific_cusum_infection_counts)
 
-c(min(age_specific_mortality_counts$Date), max(age_specific_mortality_counts$Date) )
+c(min(age_specific_mortality_counts$Date),
+  max(age_specific_mortality_counts$Date) )
 
 nrow(age_specific_mortality_counts)
 
@@ -81,7 +83,7 @@ aggr_cm <- aggregate_contact_matrix(conmat, lookup_table, aggr_age)
 #---- Aggregate the IFR:
 ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
 
-aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
+aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_cusum_infection_counts)
 
 #---- Infection-to-death distribution:
 ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
@@ -97,7 +99,7 @@ chains <- 6
 options(mc.cores = chains)
 
 #---- Posterior sampling:
-igbm_fit_init <- stan_igbm(y_data                     = age_specific_mortality_counts,
+igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
                            contact_matrix              = aggr_cm,
                            age_distribution_population = aggr_age,
                            age_specific_ifr            = aggr_age_ifr[[3]],
@@ -105,17 +107,21 @@ igbm_fit_init <- stan_igbm(y_data                     = age_specific_mortality_c
                            incubation_period           = 3,
                            infectious_period           = 4,
                            likelihood_variance_type    = "linear",
-                           prior_scale_x0              = 0.5,
+                           ecr_changes                 = 7,
+                           prior_scale_x0              = 5,
+                           prior_scale_x1              = 4,
                            prior_scale_contactmatrix   = 0.05,
-                           pi_perc                     = 0.3,
-                           prior_volatility            = normal(location = 0, scale = 0.5),
-                           prior_nb_dispersion         = normal(location = 0, scale = 0.5),
+                           pi_perc                     = 0.1,
+                           prior_volatility            = normal(location = 0, scale = 4),
+                           prior_nb_dispersion         = exponential(rate = 1/5),
                            algorithm_inference         = "optimizing",
-                           seed                        =2
+                           seed                        = 1,
+                           hessian                     = TRUE
 )
 
 sampler_init <- function(){
   list(x0          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "x0"],
+       x_init      = igbm_fit_init$par[grepl("x_init",   names(igbm_fit_init$par), fixed = TRUE)],
        x_noise     = igbm_fit_init$par[grepl("x_noise[", names(igbm_fit_init$par), fixed = TRUE)],
        L_raw       = igbm_fit_init$par[grepl("L_raw[",   names(igbm_fit_init$par), fixed = TRUE)],
        pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
@@ -132,11 +138,13 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       incubation_period           = 3,
                       infectious_period           = 4,
                       likelihood_variance_type    = "linear",
-                      prior_scale_x0              = 0.5,
+                      ecr_changes                 = 7,
+                      prior_scale_x0              = 5,
+                      prior_scale_x1              = 4,
                       prior_scale_contactmatrix   = 0.05,
                       pi_perc                     = 0.1,
-                      prior_volatility            = normal(location = 0, scale = 0.5),
-                      prior_nb_dispersion         = normal(location = 0, scale = 0.5),
+                      prior_volatility            = normal(location = 0, scale = 4),
+                      prior_nb_dispersion         = exponential(rate = 1/5),
                       algorithm_inference         = "sampling",
                       nBurn                       = 500,
                       nPost                       = 500,

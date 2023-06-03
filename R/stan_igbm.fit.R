@@ -29,6 +29,17 @@ stan_igbm.fit <-
     nIter   <- nBurn + nPost
     nBurnin <- nBurn
 
+    # standata_preprocessed <- list()
+    # standata_preprocessed$ecr_changes <- 7
+    # standata_preprocessed$n_obs <- 210
+    # standata_preprocessed$A <- 3
+
+    n_changes    <- ceiling(standata_preprocessed$n_obs / standata_preprocessed$ecr_changes)
+    n_remainder  <- (standata_preprocessed$n_obs - (n_changes-1)*standata_preprocessed$ecr_changes)
+    L_raw_length <- (standata_preprocessed$A * (standata_preprocessed$A + 1)) / 2
+
+    #(n_changes-1)*standata_preprocessed$ecr_changes + n_remainder
+
     #---- Useless assignments to pass R CMD check
     prior_dist_volatility       <- prior_dist_nb_dispersion <-
       prior_mean_volatility     <- prior_scale_volatility   <-
@@ -69,7 +80,10 @@ stan_igbm.fit <-
                       prior_scale_nb_dispersion = prior_scale_nb_dispersion,
                       prior_df_nb_dispersion    = prior_df_nb_dispersion,
                       prior_shape_nb_dispersion = prior_shape_nb_dispersion,
-                      prior_rate_nb_dispersion  = prior_rate_nb_dispersion
+                      prior_rate_nb_dispersion  = prior_rate_nb_dispersion,
+                      n_changes                 = n_changes,
+                      n_remainder               = n_remainder,
+                      L_raw_length              = L_raw_length
                       ))
 
     #---- List of parameters that will be monitored:

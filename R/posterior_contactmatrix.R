@@ -60,6 +60,7 @@
 #'                       incubation_period           = 3,
 #'                       infectious_period           = 4,
 #'                       likelihood_variance_type    = "linear",
+#'                       ecr_changes                 = 7,
 #'                       prior_scale_x0              = 0.5,
 #'                       prior_scale_contactmatrix   = 0.05,
 #'                       pi_perc                     = 0.1,
