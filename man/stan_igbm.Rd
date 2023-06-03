@@ -15,6 +15,7 @@ stan_igbm(
   infectious_period = 4,
   likelihood_variance_type = c("quadratic", "linear"),
   prior_scale_x0 = 1,
+  prior_scale_x1 = 1,
   prior_scale_contactmatrix = 0.05,
   pi_perc = 0.1,
   prior_volatility = normal(location = 0, scale = 2.5),
@@ -71,6 +72,9 @@ if \eqn{1}, the variance of the over-dispersed count model is a linear function 
 
 \item{prior_scale_x0}{double;
 scale parameter of a Normal prior distribution assigned to the age-specific log(transmissibility) at time \eqn{t = 0}.}
+
+\item{prior_scale_x1}{double;
+scale parameter of a Normal prior distribution assigned to the age-specific log(transmissibility) at time \eqn{t = 1}.}
 
 \item{prior_scale_contactmatrix}{double;
 defaults to 0.05. A positive number that scales the informative Normal prior distribution assigned to the random contact matrix.}
@@ -188,6 +192,7 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
                       infectious_period           = 4,
                       likelihood_variance_type    = "linear",
                       prior_scale_x0              = 0.5,
+                      prior_scale_x1              = 0.5,
                       prior_scale_contactmatrix   = 0.05,
                       pi_perc                     = 0.1,
                       prior_volatility            = normal(location = 0, scale = 1),
