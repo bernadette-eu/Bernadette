@@ -259,6 +259,8 @@ real<lower=0> prior_shape_nb_dispersion;
 real<lower=0> prior_rate_nb_dispersion;
 
 real<lower=0> prior_scale_x0; // Assume a Normal(0, prior_scale_x0) distribution for the age-specific trajectories at t = 0.
+real<lower=0> prior_scale_x1; // Assume a Normal(0, prior_scale_x1) distribution for the age-specific trajectories at t = 1.
+
 real<lower=0> prior_scale_contactmatrix;
 matrix<lower = 0>[1,2] prior_dist_pi;
 }
@@ -295,7 +297,8 @@ gamma  = 2.0/infectious_period;
 
 parameters {
 real x0;                          // Initial transmission rate
-real x_noise[n_obs*A];
+real x_init[A];
+real x_noise[(n_obs - 1)*A];
 real<lower = 0, upper = 1> pi;    // Number of population infections at t0
 real<lower = 0> volatilities[A];  // Standard deviation of GBM
 real<lower = 0> phiD;             // Likelihood variance parameter
@@ -311,7 +314,7 @@ real<lower = 0> beta_N[n_obs*A];             // Daily Effective contact rate
 
 real theta[A*A + A*n_obs + 4];               // Vector of ODE parameters
 real state_solutions[n_obs, A * n_difeq];    // Solution from the ODE solver
-matrix[n_obs, A] comp_C;			         // Store the calculated values for the dummy ODE compartment
+matrix[n_obs, A] comp_C;			               // Store the calculated values for the dummy ODE compartment
 
 matrix<lower = 0>[n_obs, A] E_casesByAge;    // Expected infections per group
 matrix<lower = 0>[n_obs, A] E_deathsByAge;   // Expected deaths per age group
@@ -320,9 +323,9 @@ matrix[A, A] cm_sym;
 matrix[A, A] cm_sample;
 
 //---- Transformed parameters for the contact matrix (Non-central parameterisation):
-matrix[A, A] L_raw_mat         = to_triangular(L_raw, A);
-matrix[A, A] L                 = to_triangular(L_vector, A);
-matrix[n_obs, A]   x_noise_mat = to_matrix(x_noise, n_obs, A);
+matrix[A, A] L_raw_mat           = to_triangular(L_raw, A);
+matrix[A, A] L                   = to_triangular(L_vector, A);
+matrix[n_obs - 1, A] x_noise_mat = to_matrix(x_noise, n_obs - 1, A);
 
 for(col in 1:A) for(row in col:A) L[row,col] = L_cm[row,col] + (prior_scale_contactmatrix * L_cm[row,col]) *  L_raw_mat[row,col];
 
@@ -330,9 +333,9 @@ cm_sym    = tcrossprod(L);
 cm_sample = diag_pre_multiply(pop_diag, cm_sym);
 
 //---- Transformed parameters for the GBM (Non-central parameterisation):
-for (j in 1:A) x_trajectory[1,j] = x0 + volatilities[j] * x_noise_mat[1,j];
+x_trajectory[1,] = to_row_vector(x_init);
 
-for (t in 2:n_obs) for (j in 1:A) x_trajectory[t,j] = x_trajectory[t-1,j] + volatilities[j] * x_noise_mat[t,j]; // Implies x_trajectory[i,j] ~ normal(x_trajectory[i-1,j], volatilities[j]);
+for (t in 2:n_obs) for (j in 1:A) x_trajectory[t,j] = x_trajectory[t-1,j] + volatilities[j] * x_noise_mat[t-1,j];
 
 beta0           = exp(x0);
 beta_trajectory = exp(x_trajectory);
@@ -348,12 +351,12 @@ theta[A*n_obs + A*A + 4]             = tau;
 
 //---- Solution to the ODE system:
 state_solutions = integrate_ode_trapezoidal(init,   // initial states
-										    t0,     // initial_time,
-										    ts,     // real times
-										    theta,  // parameters
-										    x_r,    // real data
-										    x_i     // integer data
-										    );
+										                        t0,     // initial_time,
+										                        ts,     // real times
+										                        theta,  // parameters
+										                        x_r,    // real data
+										                        x_i     // integer data
+										                        );
 
 //---- Calculate new daily Expected cases and Expected deaths for each age group:
 for (t in 1:n_obs) {
@@ -363,7 +366,7 @@ for (t in 1:n_obs) {
 	for (j in 1:A){
 
 		//--- Format ODE results
-		comp_C[t,j] = state_solutions[t,(n_difeq-1) * A + j]  *  n_pop;
+		comp_C[t,j] = state_solutions[t,(n_difeq-1) * A + j] * n_pop;
 
 		//--- Alternative option:
 		E_casesByAge[t,j] = comp_C[t,j] - (t == 1 ? 0 : ( comp_C[t,j] > comp_C[t-1,j] ? comp_C[t-1,j] : 0) );
@@ -379,6 +382,7 @@ model {
 //---- Prior distributions:
 pi           ~ beta(prior_dist_pi[1,1], prior_dist_pi[1,2]);
 x0           ~ normal(0, prior_scale_x0);
+x_init       ~ normal(0, prior_scale_x1);
 x_noise      ~ std_normal();
 L_raw        ~ std_normal();
 
@@ -408,7 +412,7 @@ generated quantities {
 vector[n_obs] E_cases;         // Expected infections <lower = 0>
 vector[n_obs] E_deaths;        // Expected deaths <lower = 0>
 matrix[n_obs, A] Susceptibles; // Counts of susceptibles at time t, for age group a = 1,..,A.
-							   // To be used for the calculation of the time-varying Effective Reproduction Number.
+							                 // To be used for the calculation of the time-varying Effective Reproduction Number.
 matrix[n_obs,A] log_like_age;
 vector[n_obs] log_lik;         // Log-likelihood vector for use by the loo package.
 
@@ -435,5 +439,5 @@ for (t in 1:n_obs) {
 }// End for
 
 //---- Deviance:
-deviance = (-2)  *  sum(log_lik);
+deviance = (-2) * sum(log_lik);
 }
