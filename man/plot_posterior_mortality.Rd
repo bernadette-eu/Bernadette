@@ -24,7 +24,7 @@ title of x-axis.}
 \item{ylab}{character;
 title of y-axis.}
 
-\item{...}{Optional arguments passed to \code{\link[ggplot2]{facet_wrap}}, \code{\link[ggplot2]{scale_x_date}} and \code{\link[ggplot2]{theme}}.}
+\item{...}{Optional arguments passed to \code{\link[ggplot2]{scale_x_date}}.}
 }
 \value{
 A \code{ggplot} object which can be further customised using the \pkg{ggplot2} package.

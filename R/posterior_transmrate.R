@@ -135,7 +135,7 @@ posterior_transmrate <- function(object, y_data){
 #'
 #' @param ylab character; Title of y-axis.
 #'
-#' @param ... Optional arguments passed to \code{\link[ggplot2]{facet_wrap}}, \code{\link[ggplot2]{scale_x_date}} and \code{\link[ggplot2]{theme}}.
+#' @param ... Optional arguments passed to \code{\link[ggplot2]{scale_x_date}}.
 #'
 #' @return A \code{ggplot} object which can be further customised using the \pkg{ggplot2} package.
 #'
@@ -226,7 +226,7 @@ plot_posterior_transmrate <- function(object,
 
   ret <-
     ggplot2::ggplot(object) +
-    ggplot2::facet_wrap(. ~ Group, ...) +
+    ggplot2::facet_wrap(. ~ Group, scales = "free_y") +
     ggplot2::geom_line(ggplot2::aes(x     = Date,
                                     y     = median,
                                     color = "Median"),
@@ -242,8 +242,7 @@ plot_posterior_transmrate <- function(object,
     ggplot2::scale_colour_manual(name = '', values = c('Median' = "black")) +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom",
-                   legend.title    = ggplot2::element_blank(),
-                   ...)
+                   legend.title    = ggplot2::element_blank())
 
   ret
 }
