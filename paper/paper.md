@@ -12,7 +12,7 @@ authors:
 affiliations:
   - name: "Department of Statistics, Athens University of Economics and Business, Athens, Greece"
     index: 1
-date: "2023-06-02"
+date: "2023-06-04"
 bibliography: paper.bib
 output:
   md_document:
@@ -160,7 +160,7 @@ insights about the mechanism of disease transmission over a given
 period.
 
 1.  `plot_posterior_cm`: Density plots of the posterior distribution of
-    the contact matrix.
+    the random contact matrix.
 2.  `posterior_infections`: Summarizes the posterior distribution of the
     infection counts over time (age-specific and aggregated). It is
     accompanied by the plotting function `plot_posterior_infections`.

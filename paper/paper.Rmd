@@ -75,7 +75,7 @@ The user-specified model is internally translated into data that are passed to a
 
 The output of `stan_igbm` contains draws from the posterior distribution, which can be post-processed and visualized to extract insights about the mechanism of disease transmission over a given period.
 
-1. `plot_posterior_cm`: Density plots of the posterior distribution of the contact matrix.
+1. `plot_posterior_cm`: Density plots of the posterior distribution of the random contact matrix.
 2. `posterior_infections`: Summarizes the posterior distribution of the infection counts over time (age-specific and aggregated). It is accompanied by the plotting function `plot_posterior_infections`.
 3. `posterior_mortality`: Summarizes the posterior distribution of the mortality counts over time (age-specific and aggregated). It is accompanied by the plotting function `plot_posterior_mortality`.
 4. `posterior_transmrate`: Summarizes the posterior distribution of the age-specific transmission rate. It is accompanied by the plotting function `plot_posterior_transmrate`.
