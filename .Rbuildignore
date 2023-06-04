@@ -15,3 +15,5 @@
 ^paper$
 ^Example_files$
 ^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$
+^tests$
