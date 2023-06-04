@@ -54,7 +54,7 @@
 #'
 #' # Posterior sampling:
 #'
-#' rstan_options(auto_write = TRUE)
+#' rstan::rstan_options(auto_write = TRUE)
 #' chains <- 2
 #' options(mc.cores = chains)
 #'
@@ -210,7 +210,7 @@ posterior_rt <- function(object,
 #'
 #' # Posterior sampling:
 #'
-#' rstan_options(auto_write = TRUE)
+#' rstan::rstan_options(auto_write = TRUE)
 #' chains <- 2
 #' options(mc.cores = chains)
 #'

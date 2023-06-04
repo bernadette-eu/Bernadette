@@ -58,7 +58,7 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
 
 # Posterior sampling:
 
-rstan_options(auto_write = TRUE)
+rstan::rstan_options(auto_write = TRUE)
 chains <- 2
 options(mc.cores = chains)
 
