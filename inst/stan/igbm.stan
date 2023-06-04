@@ -353,9 +353,9 @@ matrix[A, A] cm_sym;
 matrix[A, A] cm_sample;
 
 //---- Transformed parameters for the contact matrix (Non-central parameterisation):
-matrix[A, A] L_raw_mat           = to_triangular(L_raw, A);
-matrix[A, A] L                   = to_triangular(L_vector, A);
-matrix[n_obs - 1, A] x_noise_mat = to_matrix(x_noise, n_changes - 1, A);
+matrix[A, A] L_raw_mat               = to_triangular(L_raw, A);
+matrix[A, A] L                       = to_triangular(L_vector, A);
+matrix[n_changes - 1, A] x_noise_mat = to_matrix(x_noise, n_changes - 1, A);
 
 for(col in 1:A) for(row in col:A) L[row,col] = L_cm[row,col] + (prior_scale_contactmatrix * L_cm[row,col]) *  L_raw_mat[row,col];
 
