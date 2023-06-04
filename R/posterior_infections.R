@@ -254,14 +254,16 @@ plot_posterior_infections <- function(object,
                                         ymax = high75,
                                         fill = "50% CrI"),
                            alpha = 0.5) +
-      ggplot2::geom_ribbon(ggplot2::aes(x    = Date,
-                                        ymin = low,
-                                        ymax = high,
-                                        fill = "95% CrI"),
-                           alpha = 0.5) +
+      # ggplot2::geom_ribbon(ggplot2::aes(x    = Date,
+      #                                   ymin = low,
+      #                                   ymax = high,
+      #                                   fill = "95% CrI"),
+      #                      alpha = 0.5) +
       ggplot2::labs(x = xlab, y = ylab) +
       ggplot2::scale_x_date(...) +
-      ggplot2::scale_fill_manual(values = c("50% CrI" = "gray70", "95% CrI" = "gray40")) +
+      ggplot2::scale_fill_manual(values = c("50% CrI" = "gray70"#,
+                                            #"95% CrI" = "gray40"
+                                              )) +
       ggplot2::scale_colour_manual(name = '', values = c('Median' = "black")) +
       ggplot2::theme_bw() +
       ggplot2::theme(legend.position = "bottom",
@@ -280,14 +282,16 @@ plot_posterior_infections <- function(object,
                                           ymax = high75,
                                           fill = "50% CrI"),
                                       alpha = 0.5) +
-        ggplot2::geom_ribbon(ggplot2::aes(x    = Date,
-                                          ymin = low,
-                                          ymax = high,
-                                          fill = "95% CrI"),
-                                      alpha = 0.5) +
+        # ggplot2::geom_ribbon(ggplot2::aes(x    = Date,
+        #                                   ymin = low,
+        #                                   ymax = high,
+        #                                   fill = "95% CrI"),
+        #                               alpha = 0.5) +
         ggplot2::labs(x = xlab, y = ylab) +
         ggplot2::scale_x_date(...) +
-        ggplot2::scale_fill_manual(values = c("50% CrI" = "gray70", "95% CrI" = "gray40")) +
+        ggplot2::scale_fill_manual(values = c("50% CrI" = "gray70"#,
+                                              #"95% CrI" = "gray40"
+                                                )) +
         ggplot2::scale_colour_manual(name = '', values = c('Median' = "black")) +
         ggplot2::theme_bw() +
         ggplot2::theme(legend.position = "bottom",
