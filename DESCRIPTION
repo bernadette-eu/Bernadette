@@ -10,7 +10,7 @@ Authors@R:
              comment = c(ORCID = "0000-0002-1291-2192")),
       person(given   = "European Union", 
              role    = "fnd", 
-             comment = "Funding by the European Union's Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 101027218."))
+             comment = "Funding by the European Union's Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 101027218"))
 Description: Bayesian analysis for stochastic extensions of non-linear
     dynamic systems using advanced computational algorithms. Described in Bouranis, L., 
     Demiris, N., Kalogeropoulos, K., and Ntzoufras, I. (2022) <arXiv:2211.15229>.

@@ -18,8 +18,6 @@ output:
 [![total](https://cranlogs.r-pkg.org/badges/grand-total/Bernadette)](https://shinyus.ipub.com/cranview/)
 <!-- badges: end -->
 
-NOTE: This documentation is work in progress.
-
 ## Contribution
 
 This R package is provided for use under the [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) License by the author.
@@ -64,7 +62,7 @@ install.packages("Bernadette")
 ``` 
 
 ## Load any required libraries
-```{r, results='hide', message=FALSE, warning=FALSE}
+```{r, eval = T, results='hide', message=FALSE, warning=FALSE}
 lib <- c("stats",
          "ggplot2",
          "rstan",
@@ -74,10 +72,6 @@ lib <- c("stats",
 lapply(lib, require, character.only = TRUE)
 ``` 
 
-```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-library(kableExtra)
-```
-
 ## Example - COVID-19 in Greece
 
 The time series of new daily age-specific mortality and incidence counts are ordered by epidemiological date. The time horizon in the example datasets for Greece spans from 2020-08-31 to 2021-03-28 (210 days). 
@@ -85,7 +79,7 @@ The time series of new daily age-specific mortality and incidence counts are ord
 ```{r, results='hide', message=FALSE, warning=FALSE}
 Sys.setlocale("LC_ALL", "English")
 data(age_specific_mortality_counts)
-data(age_specific_infection_counts)
+data(age_specific_cusum_infection_counts)
 ```
 
 ```{r mortality_time_series, echo = FALSE, fig.height=5, fig.width=7}
@@ -119,45 +113,8 @@ ggplot(mortality_df_long,
         legend.title     = element_blank() )
 ``` 
 
-The model described below can be computationally expensive to implement and so we restrict the analysis to a shorter time horizon. We analyse the subset from 2020-10-02 to 2021-01-07 (98 days):
-
-```{r, results='hide', message=FALSE, warning=FALSE}
-age_specific_mortality_counts <- subset(age_specific_mortality_counts, Date >= "2020-10-02" & Date <= "2021-01-07")
-age_specific_infection_counts <- subset(age_specific_infection_counts, Date >= "2020-10-02" & Date <= "2021-01-07")
-```
-
-```{r mortality_time_series_subset, echo = FALSE, fig.height=5, fig.width=7}
-sub <- age_specific_mortality_counts[c(3, 6:ncol(age_specific_mortality_counts))]
-mortality_df_long <- stats::reshape(sub,
-                                    direction = "long",
-                                    varying   = list(names(sub)[2:ncol(sub)]),
-                                    v.names   = "New_Deaths",
-                                    idvar     = c("Date"),
-                                    timevar   = "Group",
-                                    times     = colnames(sub)[-1])
-
-ggplot(mortality_df_long,
-       aes(Date       = Date,
-           New_Deaths = New_Deaths)) +
-  geom_point(aes(x   = Date,
-                 y   = New_Deaths,
-                 fill= "Reported deaths")) +
-  facet_wrap(. ~ Group,
-              scales = "free_y", 
-              ncol   = 2,
-              strip.position = "top")+
-  scale_fill_manual(values = c('Reported deaths' = 'black'), guide = "none") +
-  labs(x = "Epidemiological Date",
-       y = "Number of new deaths") +
-  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
-  theme_bw() +
-  theme(panel.spacing    = unit(0.1,"cm"),
-        axis.text.x      = element_text(angle = 45, hjust = 1),
-        legend.position  = "bottom",
-        legend.title     = element_blank() )
-``` 
-
 Let's import the rest of the datasets required for model fitting. First, import and plot the age distribution for Greece in 2020:
+
 ```{r}
 age_distr <- age_distribution(country = "Greece", year = 2020)
 plot_age_distribution(age_distr)
@@ -205,7 +162,6 @@ ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
                          gamma_cv   = 0.3987261)
 ```
 
-
 ## Modeling framework
 
 The aforementioned data streams and expert knowledge are integrated into a coherent modeling framework via a Bayesian evidence synthesis approach. Τhe modeling process is separated into a latent epidemic process and an observation process in an effort to reduce sensitivity to observation noise and to allow for more flexibility in modeling different forms of data.
@@ -220,15 +176,15 @@ The number of individuals in each compartment is scaled by the total population 
 The latent epidemic process is expressed by the following non-linear system of ordinary differential equations (ODEs)
 $$
 \begin{cases}
-\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t},
+\frac{dS^{\alpha}_{t}}{dt}   & = -\lambda_{\alpha}(t) S^{\alpha}_{t}
 \\
-\frac{dE^{\alpha}_{1,t}}{dt} & = \lambda_{\alpha}(t) S^{\alpha}_{t} - \tau E^{\alpha}_{1,t},
+\frac{dE^{\alpha}_{1,t}}{dt} & = \lambda_{\alpha}(t) S^{\alpha}_{t} - \tau E^{\alpha}_{1,t}
 \\
-\frac{dE^{\alpha}_{2,t}}{dt} & = \tau \left( E^{\alpha}_{1,t} - E^{\alpha}_{2,t}\right),
+\frac{dE^{\alpha}_{2,t}}{dt} & = \tau \left( E^{\alpha}_{1,t} - E^{\alpha}_{2,t}\right)
 \\
-\frac{dI^{\alpha}_{1,t}}{dt} & = \tau E^{\alpha}_{2,t} - \gamma I^{\alpha}_{1,t},
+\frac{dI^{\alpha}_{1,t}}{dt} & = \tau E^{\alpha}_{2,t} - \gamma I^{\alpha}_{1,t}
 \\
-\frac{dI^{\alpha}_{2,t}}{dt} & = \gamma \left( I^{\alpha}_{1,t} - I^{\alpha}_{2,t}\right),
+\frac{dI^{\alpha}_{2,t}}{dt} & = \gamma \left( I^{\alpha}_{1,t} - I^{\alpha}_{2,t}\right)
 \\
 \frac{dR^{\alpha}_{t}}{dt}   & = \gamma I^{\alpha}_{2,t},
 \end{cases}
@@ -261,11 +217,11 @@ The formulation below may be viewed as a stochastic extension to the determinist
 
 $$
 \begin{cases}
-\beta^{\alpha\alpha'}_{t} & = \exp(x^{\alpha\alpha'}_{t}), 
+\beta^{\alpha\alpha'}_{t} & = \exp(x^{\alpha\alpha'}_{t})
 \\
-x^{\alpha\alpha'}_{t} \mid x^{\alpha\alpha'}_{t - 1}, \sigma^{\alpha\alpha'}_x & \sim \operatorname{N}(x^{\alpha\alpha'}_{t - 1}, (\sigma^{\alpha\alpha'})^2_x), 
+x^{\alpha\alpha'}_{t} \mid x^{\alpha\alpha'}_{t - 1}, \sigma^{\alpha\alpha'}_x & \sim \operatorname{N}(x^{\alpha\alpha'}_{t - 1}, (\sigma^{\alpha\alpha'})^2_x)
 \\
-dx^{\alpha\alpha'}_{t} & = \sigma^{\alpha\alpha'}_{x}dW^{\alpha\alpha'}_{t},
+dx^{\alpha\alpha'}_{t} & = \sigma^{\alpha\alpha'}_{x}dW^{\alpha\alpha'}_{t}
 \\
 dW^{\alpha\alpha'}_{t} & \sim \operatorname{N}(0,d_{t}),
 \end{cases}
@@ -301,74 +257,51 @@ A given infection may lead to observation events (i.e deaths) in the future.
 A link between $y_{t,\alpha}$ and the expected number of new age-stratified infections is established via the function
 
 $$
-\begin{equation}
 d_{t,\alpha} = \mathbb{E}[y_{t,\alpha}] = \widehat{\text{IFR}}_{\alpha} \times \sum_{s = 1}^{t-1}h_{t-s} \Delta^{\text{infec}}_{s, \alpha}
-\end{equation}
 $$
 
 on the new expected age-stratified mortality counts, $d_{t,\alpha}$, the estimated age-stratified infection fatality rate, $\widehat{\text{IFR}}_{\alpha}$, and the infection-to-death distribution $h$, where $h_s$ gives the probability the death occurs on the $s^{th}$ day after infection, is assumed to be gamma distributed with mean 24.2 days and coefficient of variation 0.39, that is
 
 $$
-\begin{equation}
 h \sim \operatorname{Gamma}(6.29, 0.26).
-\end{equation}
 $$
 We allow for over-dispersion in the observation processes to account for noise in the underlying data streams, for example due to day-of-week effects on data collection, and link $d_{t,\alpha}$ to $y_{t,\alpha}$ through an over-dispersed count model
 
 $$
-\begin{equation}
-  y_{t,\alpha}\mid \theta \sim \operatorname{NegBin}\left(d_{t,\alpha}, \xi_{t,\alpha}\right),
-\end{equation}
+y_{t,\alpha}\mid \theta \sim \operatorname{NegBin}\left(d_{t,\alpha}, \xi_{t,\alpha}\right),
 $$
 where $\xi_{t,\alpha} = \frac{d_{t,\alpha}}{\phi}$, such that $\mathbb{V}[y_{t,\alpha}] = d_{t,\alpha}(1+\phi)$. 
 The log-likelihood of the observed deaths is given by
 
 $$
-\begin{equation}
 \ell^{Deaths}(y\mid \theta) = \sum_{t=1}^{T}\sum_{\alpha=1}^{A}\text{logNegBin}\left(y_{t,\alpha}\mid d_{t,\alpha}, \xi_{t,\alpha}\right),
-\end{equation}
 $$
 where $y \in \mathbb{R}^{T \times A}_{0,+}$ are the surveillance data on deaths for all time-points.
 
 ### Prior specification
 
-The unknown quantities that need to be inferred are $\theta= (x^{\alpha\alpha}_{0}, x^{\alpha\alpha}_{1:T}, C_{\alpha,\alpha'}, \sigma_{x,\alpha}, \rho, \phi)$ for $\alpha \in \{1,\ldots,A\}$ for $(\alpha,\alpha') \in \{1,\ldots,A\}^2$
+The unknown quantities that need to be inferred are $\theta= (x^{\alpha,\alpha}_{0}, x^{\alpha,\alpha}_{1}, C_{\alpha,\alpha'}, \sigma_{x,\alpha}, \rho, \phi)$ for $(\alpha,\alpha') \in \{1,\ldots,A\}^2$. 
+$\rho$ expresses the initial proportion of exposed (at time $t_0$). 
+$L^{synth}$ is the Cholesky factor of the observed contact matrix and $L$ is the Cholesky factor of the random contact matrix $C$, see [1].
+The prior distributions for the model parameters that are considered in this example are:
 
-The proposed prior distributions for the model parameters are:
-
-\begin{table}
-\label{table:priors}
-\centering
-\setlength{\tabcolsep}{0.42em}
-\small
-%\footnotesize
-\begin{tabular}{lp{4.6cm}p{6.8cm}}
-\toprule
-\textbf{Symbol} & \textbf{Description} & \textbf{Prior \& source} \\
-\hline	
-\multicolumn{3}{l}{\textbf{Transmission model parameters}} \\						
-$\rho$ & Initial proportion of exposed (at time $t_0$) & Beta with $\mathbb{E}[\rho] = 0.1$, $\mathbb{V}[\rho] = 0.05\cdot\mathbb{E}[\rho]$.\\
-
-$\tilde{L}_{i,j}$ & Lower-triangular random matrix & $\tilde{L}_{i,j} \sim \operatorname{Normal}(0,1),~(i,j) \in \{1, \ldots, A\}^2, i \leq j$.
+$$
+\begin{aligned}
+\rho& \sim \operatorname{Beta}(\mathbb{E}[\rho] = 0.1, \mathbb{V}[\rho] = 0.05\cdot\mathbb{E}[\rho])
 \\
-$L_{i,j}$ & Entries of the Cholesky factor $L$ & $L_{i,j} = L^{synth}_{i,j} + (0.05\cdot L^{synth}_{i,j})\cdot \tilde{L}_{i,j},~(i,j) \in \{1, \ldots, A\}^2, i \leq j$.\\
- \\
-$x^{\alpha\alpha}_{0}$ & MBM model Brownian motion, at time $t_0$ & $\operatorname{Normal}(0,5^2)$ \\
-$x^{\alpha\alpha}_{1}$ & MBM model Brownian motion, at time $t_1$ & $\operatorname{Normal}(0,5^2)$ \\
-$x^{\alpha\alpha}_{t}$ & MBM model Brownian motion at time $t$&  $x^{\alpha\alpha}_{t}\mid x^{\alpha\alpha}_{t - 1}, \sigma^2_{x,\alpha} \sim \operatorname{Normal}(x^{\alpha\alpha}_{t - 1}, \sigma^2_{x,\alpha}),~t = 2,\ldots,T.$ \\
-$\sigma_{x}$ & Volatility of the Brownian motion in the SBM model & $\operatorname{Half-Normal}(0,4)$.\\
-$\sigma_{x,\alpha}$ & Volatility of the Brownian motion in the MBM model & $\operatorname{Half-Normal}(0,4)$\\
-\hline	
-\multicolumn{3}{l}{\textbf{Observation model parameters}} \\	
-$\phi$ & Negative Binomial over-dispersion & $\operatorname{Half-Normal}(0,5)$ for the MBM model, Austria. Otherwise, Exp(0.2). \\	
-\hline
-\multicolumn{3}{l}{\textbf{Parameters assumed known}} \\	
-$\widehat{\text{IFR}}_{\alpha}$ & Infection-fatality rate & \\
-$d_E$ & Mean Incubation period & 3 days.\\
-$d_I$ & Mean Infection period  & 4 days.\\
-\bottomrule
-\end{tabular}
-\end{table}
+\tilde{L}_{i,j} & \sim \operatorname{Normal}(0,1),~(i,j) \in \{1, \ldots, A\}^2, i \leq j
+\\
+L_{i,j} & = L^{synth}_{i,j} + (0.05\cdot L^{synth}_{i,j})\cdot \tilde{L}_{i,j},~(i,j) \in \{1, \ldots, A\}^2, i \leq j
+\\
+x^{\alpha,\alpha}_{0} & \sim \operatorname{N}(0,1)
+\\
+x^{\alpha,\alpha}_{1} & \sim \operatorname{N}(0,1)
+\\
+\sigma_{x,\alpha} & \sim \operatorname{N}_+(0,1)
+\\
+\phi & \sim \operatorname{Exp}(0.2).
+\end{aligned}
+$$
 
 ## Model fitting
 
@@ -378,16 +311,56 @@ Find the number of cores in your machine and indicate how many will be used for 
 parallel::detectCores()
 rstan_options(auto_write = TRUE)
 
-# Here we sample from four Markov chains in parallel:
+# Here we sample from six Markov chains in parallel:
 chains <- 6
 
 options(mc.cores = chains)
 ```
 
-Sample from the posterior distribution of the parameters using the Hamiltonian Monte Carlo algorithm implemented in Stan - Note that a longer time horizon and/or a greater number of age groups in ```y_data``` will lead to increased CPU time:
+The current functionality of the package allows the end-user to define the number of changes of the effective contact rate during the course of 7 days.
+Modeling the time evolution of the effective contact rate at a more granular time-scale (i.e. at the time-points
+of the observations) would require setting ```ecr_changes = 1``` in the main function ```stan_igbm```. In an effort to reduce the cost of the computational effort, we allow for changes every 7 days, setting ```ecr_changes = 7```.
+
+The following is an optional step. We perform maximization of the joint posterior distribution. The resulting point estimates are, then, used to define the initial points that will be fed to the MCMC sampler.
 
 ```{r, eval=F, echo=T}
-igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts,
+igbm_fit_init <- stan_igbm(y_data                      = age_specific_mortality_counts,
+                           contact_matrix              = aggr_cm,
+                           age_distribution_population = aggr_age,
+                           age_specific_ifr            = aggr_age_ifr[[3]],
+                           itd_distr                   = ditd,
+                           incubation_period           = 3,
+                           infectious_period           = 4,
+                           likelihood_variance_type    = "linear",
+                           ecr_changes                 = 7,
+                           prior_scale_x0              = 1,
+                           prior_scale_x1              = 1,
+                           prior_scale_contactmatrix   = 0.05,
+                           pi_perc                     = 0.1,
+                           prior_volatility            = normal(location = 0, scale = 1),
+                           prior_nb_dispersion         = exponential(rate = 1/5),
+                           algorithm_inference         = "optimizing",
+                           seed                        = 1,
+                           hessian                     = TRUE)
+```
+
+```{r, eval=F, echo=T}
+sampler_init <- function(){
+  list(x0          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "x0"],
+       x_init      = igbm_fit_init$par[grepl("x_init",   names(igbm_fit_init$par), fixed = TRUE)],
+       x_noise     = igbm_fit_init$par[grepl("x_noise[", names(igbm_fit_init$par), fixed = TRUE)],
+       L_raw       = igbm_fit_init$par[grepl("L_raw[",   names(igbm_fit_init$par), fixed = TRUE)],
+       pi          = igbm_fit_init$par[names(igbm_fit_init$par) %in% "pi"],
+       volatilities= igbm_fit_init$par[grepl("volatilities",  names(igbm_fit_init$par), fixed = TRUE)],
+       phiD        = igbm_fit_init$par[names(igbm_fit_init$par) %in% "phiD"]
+  )
+}
+```
+
+We sample from the posterior distribution of the parameters using the Hamiltonian Monte Carlo algorithm implemented in Stan - Note that a longer time horizon and/or a greater number of age groups in ```y_data``` will lead to increased CPU time:
+
+```{r, eval=F, echo=T}
+igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
                       contact_matrix              = aggr_cm,
                       age_distribution_population = aggr_age,
                       age_specific_ifr            = aggr_age_ifr[[3]],
@@ -395,41 +368,68 @@ igbm_fit <- stan_igbm(y_data                     = age_specific_mortality_counts
                       incubation_period           = 3,
                       infectious_period           = 4,
                       likelihood_variance_type    = "linear",
-                      prior_scale_x0              = 5,
+                      ecr_changes                 = 7,
+                      prior_scale_x0              = 1,
+                      prior_scale_x1              = 1,
                       prior_scale_contactmatrix   = 0.05,
                       pi_perc                     = 0.1,
-                      prior_volatility            = normal(location = 0, scale = 4),
+                      prior_volatility            = normal(location = 0, scale = 1),
                       prior_nb_dispersion         = exponential(rate = 1/5),
                       algorithm_inference         = "sampling",
                       nBurn                       = 500,
                       nPost                       = 500,
                       nThin                       = 1,
                       chains                      = chains,
-                      adapt_delta                 = 0.8,
-                      max_treedepth               = 14,
+                      adapt_delta                 = 0.80,
+                      max_treedepth               = 19,
                       seed                        = 1,
                       init                        = sampler_init)
 ``` 
 
+
+```{r, eval=T, echo=T}
+# Import the saved object:
+giturl <- "https://github.com/bernadette-eu/Bernadette/blob/master/Example_files/Experiment_v112.RData?raw=true"
+load(url(giturl))
+```
+
+The implementation of MCMC under this setting took about 5.4 hours:
+
+```{r, eval=T, echo=T}
+time_run <- get_elapsed_time(igbm_fit)
+apply(time_run, 1, sum)
+```
+
 ## Summarise the distributions of estimated parameters and derived quantities using the posterior draws. 
 
-```{r, eval=F, echo=T}
+```{r, eval=T, echo=T}
 print_summary <- summary(object = igbm_fit,
                          y_data = age_specific_mortality_counts)
 round(print_summary$summary, 3)
 ``` 
 
+Standard functions from the **rstan** package can be used for further assessment of the model:
+  
+```{r, eval=T, echo=T}
+# Check for divergent transitions:
+rstan::check_divergences(igbm_fit)
+``` 
+
+```{r, eval=T, echo=T}
+# Prints the number (and percentage) of iterations that saturated the max treedepth:
+rstan::check_treedepth(igbm_fit)
+``` 
+
 ## MCMC diagnostic plots
 
 Example - Pairs plots between some parameters:
-
-```{r, eval=F, echo=T}
+  
+```{r, eval=T, echo=T}
 volatilities_names <- paste0("volatilities","[", 1:ncol(age_specific_mortality_counts[,-c(1:5)]),"]")
 posterior_1        <- as.array(igbm_fit)
-
 ``` 
 
-```{r, eval=F, echo=T}
+```{r, eval=T, echo=T}
 bayesplot::mcmc_pairs(posterior_1,
                       pars          = volatilities_names,
                       off_diag_args = list(size = 1.5))
@@ -437,44 +437,25 @@ bayesplot::mcmc_pairs(posterior_1,
 
 ## Plot the posterior estimates of epidemiological quantities
 
-Visualise the posterior distribution of the random contact matrix:
-
-```{r, eval=F, echo=T}
+**Visualize the posterior distribution of the random contact matrix:**
+  
+```{r, eval=T, echo=T}
 plot_posterior_cm(igbm_fit, y_data = age_specific_mortality_counts)
 ```
 
-Visualise the posterior distribution (age-specific or aggregated daily estimates) of the infection counts:
-
-```{r, eval=F, echo=T}
-post_inf_summary <- posterior_infections(object = igbm_fit,
-                                         y_data = age_specific_mortality_counts)
-```
-```{r, eval=F, echo=T}
-plot_posterior_infections(post_inf_summary, type = "age-specific")
+**Visualize the posterior distribution of the age-specific transmission rate:**
+  
+```{r, eval=T, echo=T}
+post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
+                                                y_data = age_specific_mortality_counts)
+plot_posterior_transmrate(post_transmrate_summary)
 ```
 
-```{r, eval=F, echo=T}
-plot_posterior_infections(post_inf_summary, type = "aggregated")
-```
+The piecewise-constant behavior in the posterior estimates of the age-specific transmission rate is caused by the assumption that the effective contact rate is allowed to change every 7 days. The respective posterior trajectories will be smoothed when more frequent changes are allowed. 
 
-Visualise the posterior distribution (age-specific or aggregated daily estimates) of the mortality counts:
-
-```{r, eval=F, echo=T}
-post_mortality_summary <- posterior_mortality(object = igbm_fit,
-                                              y_data = age_specific_mortality_counts)
-```
-
-```{r, eval=F, echo=T}
-plot_posterior_mortality(post_mortality_summary, type = "age-specific")
-```
-
-```{r, eval=F, echo=T}
-plot_posterior_mortality(post_mortality_summary, type = "aggregated")
-```
-
-Visualise the posterior distribution of the effective reproduction number:
-
-```{r, eval=F, echo=T}
+**Visualize the posterior distribution of the effective reproduction number:**
+  
+```{r, eval=T, echo=T}
 post_rt_summary <- posterior_rt(object                      = igbm_fit,
                                 y_data                      = age_specific_mortality_counts,
                                 age_distribution_population = aggr_age,
@@ -482,19 +463,41 @@ post_rt_summary <- posterior_rt(object                      = igbm_fit,
 plot_posterior_rt(post_rt_summary)
 ```
 
-Visualise the posterior distribution of the age-specific transmission rate:
+**Visualize the posterior distribution (age-specific or aggregated daily estimates) of the infection counts:**
+  
+```{r, eval=T, echo=T}
+post_inf_summary <- posterior_infections(object = igbm_fit,
+                                         y_data = age_specific_mortality_counts)
+```
 
-```{r, eval=F, echo=T}
-post_transmrate_summary <- posterior_transmrate(object = igbm_fit,
-                                                y_data = age_specific_mortality_counts)
-plot_posterior_transmrate(post_transmrate_summary)
+```{r, eval=T, echo=T}
+plot_posterior_infections(post_inf_summary, type = "age-specific")
+```
+
+```{r, eval=T, echo=T}
+plot_posterior_infections(post_inf_summary, type = "aggregated")
+```
+
+**Visualize the posterior distribution (age-specific or aggregated daily estimates) of the mortality counts:**
+  
+```{r, eval=T, echo=T}
+post_mortality_summary <- posterior_mortality(object = igbm_fit,
+                                              y_data = age_specific_mortality_counts)
+```
+
+```{r, eval=T, echo=T}
+plot_posterior_mortality(post_mortality_summary, type = "age-specific")
+```
+
+```{r, eval=T, echo=T}
+plot_posterior_mortality(post_mortality_summary, type = "aggregated")
 ```
 
 ## Model checking and comparison with loo
 
 For more information about the **loo** package visit the [dedicated website](https://mc-stan.org/loo/).
 
-```{r, eval=F, echo=T}
+```{r, eval=T, echo=T}
 # (for bigger models use as many cores as possible)
 log_lik_1 <- loo::extract_log_lik(igbm_fit, merge_chains = FALSE)
 r_eff_1   <- loo::relative_eff(exp(log_lik_1), cores = 4)
@@ -502,15 +505,67 @@ r_eff_1   <- loo::relative_eff(exp(log_lik_1), cores = 4)
 
 The estimated LOO Information Criterion and the respective estimated effective number of parameters are given by
 
-```{r, eval=F, echo=T}
+```{r, eval=T, echo=T}
 loo_1 <- loo::loo(log_lik_1, r_eff = r_eff_1, cores = 4)
 print(loo_1)
 ```
 
 The estimated Widely Applicable Information Criterion and the respective estimated effective number of parameters are given by
 
-```{r, eval=F, echo=T}
+```{r, eval=T, echo=T}
 waic_1 <- loo::waic(log_lik_1)
+```
+
+```{r, eval=T, echo=T}
 print(waic_1)
 ```
 
+## References
+
+[1] Bouranis, L., Demiris, N., Kalogeropoulos, K., & Ntzoufras, I. (2022). _Bayesian analysis of diffusion-driven multi-type epidemic models with application to COVID-19_. arXiv. <https://doi.org/10.48550/arXiv.2211.15229>
+  
+## Original Computing Environment
+
+```{r, eval=F, echo=T}
+writeLines(readLines(file.path(Sys.getenv("HOME"), ".R/Makevars")))
+```
+
+```{r, eval=F, echo=T}
+CXX14FLAGS=-O3 -Wno-unused-variable -Wno-unused-function
+CXX14 = $(BINPREF)g++ -m$(WIN) -std=c++1y
+CXX11FLAGS=-O3 -Wno-unused-variable -Wno-unused-function
+```
+
+```{r, eval=F, echo=T}
+sessionInfo()
+```
+
+```{r, eval=F, echo=T}
+R version 4.1.0 (2021-05-18)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19045)
+
+Matrix products: default
+
+locale:
+  [1] LC_COLLATE=English_United States.1252  LC_CTYPE=English_United States.1252    LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                           LC_TIME=English_United States.1252    
+
+attached base packages:
+  [1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+  [1] loo_2.4.1            Bernadette_1.1.4     bayesplot_1.8.1      rstan_2.21.3         StanHeaders_2.21.0-7
+[6] ggplot2_3.3.5       
+
+loaded via a namespace (and not attached):
+  [1] tidyselect_1.1.1   purrr_0.3.4        reshape2_1.4.4     colorspace_2.0-2   vctrs_0.3.8        generics_0.1.0
+[7] stats4_4.1.0       utf8_1.2.1         rlang_1.1.1        pkgbuild_1.2.0     pillar_1.6.3       glue_1.4.2    
+[13] withr_2.4.2        DBI_1.1.1          matrixStats_0.59.0 lifecycle_1.0.1    plyr_1.8.6         stringr_1.4.0 
+[19] munsell_0.5.0      gtable_0.3.0       codetools_0.2-18   labeling_0.4.2     inline_0.3.19      callr_3.7.0   
+[25] ps_1.6.0           parallel_4.1.0     fansi_0.5.0        rstantools_2.1.1   Rcpp_1.0.10        scales_1.1.1  
+[31] backports_1.2.1    checkmate_2.0.0    RcppParallel_5.1.4 farver_2.1.0       gridExtra_2.3      digest_0.6.28 
+[37] stringi_1.6.2      processx_3.5.2     dplyr_1.0.7        grid_4.1.0         cli_3.6.1          tools_4.1.0   
+[43] magrittr_2.0.1     tibble_3.1.2       crayon_1.4.1       pkgconfig_2.0.3    ellipsis_0.3.2     prettyunits_1.1.1 
+[49] ggridges_0.5.3     assertthat_0.2.1   rstudioapi_0.13    R6_2.5.1           compiler_4.1.0  
+```

@@ -1,3 +1,13 @@
+# Version 1.1.4
+
+2023-06-04
+
+This is a resubmission. In this version I have:
+
+* Function inst/stan/igbm.stan: enabled the end-user to change the granularity of the effective contact rate within a time-span of seven days.
+* Function R/stan_igbm.fit.R: performed calculations that are passed to the inst/stan/igbm.stan model.
+* Function R/stan_igbm.R: added an indicator to control the granularity of the effective contact rate.
+
 # Version 1.1.3
 
 2023-05-29
