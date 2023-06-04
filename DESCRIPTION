@@ -37,6 +37,7 @@ Suggests:
     rmarkdown,
     roxygen2,
     StanHeaders (>= 2.21.0),
+    testthat (>= 3.0.0)
 LinkingTo: 
     BH (>= 1.78.0-0),
     Rcpp (>= 1.0.8.3),
@@ -53,3 +54,4 @@ LazyData: true
 LazyDataCompression: xz
 RoxygenNote: 7.2.3
 SystemRequirements: GNU make
+Config/testthat/edition: 3
