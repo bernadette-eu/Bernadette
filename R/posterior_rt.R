@@ -22,7 +22,7 @@
 #' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
-#' data(age_specific_infection_counts)
+#' data(age_specific_cusum_infection_counts)
 #'
 #' # Import the age distribution for Greece in 2020:
 #' age_distr <- age_distribution(country = "Greece", year = 2020)
@@ -45,7 +45,7 @@
 #' # Aggregate the IFR:
 #' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
 #'
-#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_cusum_infection_counts)
 #'
 #' # Infection-to-death distribution:
 #' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
@@ -55,7 +55,7 @@
 #' # Posterior sampling:
 #'
 #' rstan::rstan_options(auto_write = TRUE)
-#' chains <- 2
+#' chains <- 1
 #' options(mc.cores = chains)
 #'
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
@@ -67,18 +67,19 @@
 #'                       infectious_period           = 4,
 #'                       likelihood_variance_type    = "linear",
 #'                       ecr_changes                 = 7,
-#'                       prior_scale_x0              = 0.5,
+#'                       prior_scale_x0              = 1,
+#'                       prior_scale_x1              = 1,
 #'                       prior_scale_contactmatrix   = 0.05,
 #'                       pi_perc                     = 0.1,
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = exponential(rate = 1/5),
 #'                       algorithm_inference         = "sampling",
-#'                       nBurn                       = 5,
-#'                       nPost                       = 10,
+#'                       nBurn                       = 10,
+#'                       nPost                       = 30,
 #'                       nThin                       = 1,
 #'                       chains                      = chains,
-#'                       adapt_delta                 = 0.8,
-#'                       max_treedepth               = 16,
+#'                       adapt_delta                 = 0.6,
+#'                       max_treedepth               = 14,
 #'                       seed                        = 1)
 #'
 #' post_rt_summary <- posterior_rt(object                      = igbm_fit,
@@ -158,7 +159,6 @@ posterior_rt <- function(object,
 }
 
 #' Plot the estimated effective reproduction number trajectory
-#' NOTE: See https://github.com/stan-dev/rstanarm/blob/master/R/posterior_traj.R
 #'
 #' @param object A data frame from \code{\link[Bernadette]{posterior_rt}}.
 #'
@@ -178,7 +178,7 @@ posterior_rt <- function(object,
 #' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
-#' data(age_specific_infection_counts)
+#' data(age_specific_cusum_infection_counts)
 #'
 #' # Import the age distribution for Greece in 2020:
 #' age_distr <- age_distribution(country = "Greece", year = 2020)
@@ -201,7 +201,7 @@ posterior_rt <- function(object,
 #' # Aggregate the IFR:
 #' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
 #'
-#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_cusum_infection_counts)
 #'
 #' # Infection-to-death distribution:
 #' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
@@ -211,7 +211,7 @@ posterior_rt <- function(object,
 #' # Posterior sampling:
 #'
 #' rstan::rstan_options(auto_write = TRUE)
-#' chains <- 2
+#' chains <- 1
 #' options(mc.cores = chains)
 #'
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
@@ -223,18 +223,19 @@ posterior_rt <- function(object,
 #'                       infectious_period           = 4,
 #'                       likelihood_variance_type    = "linear",
 #'                       ecr_changes                 = 7,
-#'                       prior_scale_x0              = 0.5,
+#'                       prior_scale_x0              = 1,
+#'                       prior_scale_x1              = 1,
 #'                       prior_scale_contactmatrix   = 0.05,
 #'                       pi_perc                     = 0.1,
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = exponential(rate = 1/5),
 #'                       algorithm_inference         = "sampling",
-#'                       nBurn                       = 5,
-#'                       nPost                       = 10,
+#'                       nBurn                       = 10,
+#'                       nPost                       = 30,
 #'                       nThin                       = 1,
 #'                       chains                      = chains,
-#'                       adapt_delta                 = 0.8,
-#'                       max_treedepth               = 16,
+#'                       adapt_delta                 = 0.6,
+#'                       max_treedepth               = 14,
 #'                       seed                        = 1)
 #'
 #' post_rt_summary <- posterior_rt(object = igbm_fit,

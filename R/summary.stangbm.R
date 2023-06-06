@@ -19,7 +19,7 @@
 #' \donttest{
 #' # Age-specific mortality/incidence count time series:
 #' data(age_specific_mortality_counts)
-#' data(age_specific_infection_counts)
+#' data(age_specific_cusum_infection_counts)
 #'
 #' # Import the age distribution for Greece in 2020:
 #' age_distr <- age_distribution(country = "Greece", year = 2020)
@@ -42,7 +42,7 @@
 #' # Aggregate the IFR:
 #' ifr_mapping <- c(rep("0-39", 8), rep("40-64", 5), rep("65+", 3))
 #'
-#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_infection_counts)
+#' aggr_age_ifr <- aggregate_ifr_react(age_distr, ifr_mapping, age_specific_cusum_infection_counts)
 #'
 #' # Infection-to-death distribution:
 #' ditd <- itd_distribution(ts_length  = nrow(age_specific_mortality_counts),
@@ -51,8 +51,8 @@
 #'
 #' # Posterior sampling:
 #'
-#' rstan_options(auto_write = TRUE)
-#' chains <- 2
+#' rstan::rstan_options(auto_write = TRUE)
+#' chains <- 1
 #' options(mc.cores = chains)
 #'
 #' igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_counts,
@@ -64,24 +64,22 @@
 #'                       infectious_period           = 4,
 #'                       likelihood_variance_type    = "linear",
 #'                       ecr_changes                 = 7,
-#'                       prior_scale_x0              = 0.5,
+#'                       prior_scale_x0              = 1,
+#'                       prior_scale_x1              = 1,
 #'                       prior_scale_contactmatrix   = 0.05,
 #'                       pi_perc                     = 0.1,
 #'                       prior_volatility            = normal(location = 0, scale = 1),
 #'                       prior_nb_dispersion         = exponential(rate = 1/5),
 #'                       algorithm_inference         = "sampling",
-#'                       nBurn                       = 5,
-#'                       nPost                       = 10,
+#'                       nBurn                       = 10,
+#'                       nPost                       = 30,
 #'                       nThin                       = 1,
 #'                       chains                      = chains,
-#'                       adapt_delta                 = 0.8,
-#'                       max_treedepth               = 16,
+#'                       adapt_delta                 = 0.6,
+#'                       max_treedepth               = 14,
 #'                       seed                        = 1)
 #'
-#' print_summary <- summary(object = igbm_fit,
-#'                          y_data = age_specific_mortality_counts)
-#'
-#' round(print_summary$summary, 3)
+#' print_summary <- summary(object = igbm_fit, y_data = age_specific_mortality_counts)$summary
 #'}
 #'
 #' @export
