@@ -79,7 +79,7 @@
 #'                       max_treedepth               = 14,
 #'                       seed                        = 1)
 #'
-#' print_summary <- summary(object = igbm_fit, y_data = age_specific_mortality_counts)$summary
+#' # print_summary <- summary(object = igbm_fit, y_data = age_specific_mortality_counts)$summary
 #'}
 #'
 #' @export
