@@ -1,7 +1,7 @@
 Type: Package
 Package: Bernadette
 Title: Bayesian Inference and Model Selection for Stochastic Epidemics
-Version: 1.1.4
+Version: 1.1.5
 Authors@R: 
     c(person(given   = "Lampros", 
              family  = "Bouranis", 
@@ -30,6 +30,7 @@ Imports:
     rstantools,
     rstan (>= 2.21.3),
     scales,
+    shiny,
     stats,
     utils
 Suggests: 
