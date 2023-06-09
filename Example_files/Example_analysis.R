@@ -3,6 +3,8 @@
 project_path     <- "C:/Users/bouranis/OneDrive - aueb.gr/BERNADETTE/"
 experiments_path <- "10_Stan_Project_code/11_SIR_GR_Age_model4"
 store_model_out  <- paste0(project_path, experiments_path, "/Output/", "Experiment_v112", ".RData")
+test_output_shiny<- "C://Users//lbour//OneDrive//Desktop1//Files_HP_Lampros//Academic//Post_Doctoral_Researcher//1_Marie_Curie_PostDoc//8_BERNADETTE//8_Package//bernadette//Example_files//test_output_shiny.RData"
+test_output_shiny_rds<- "C://Users//lbour//OneDrive//Desktop1//Files_HP_Lampros//Academic//Post_Doctoral_Researcher//1_Marie_Curie_PostDoc//8_BERNADETTE//8_Package//bernadette//Example_files//test_output_shiny.rds"
 
 #---- Libraries:
 lib <- c("stats",
@@ -70,6 +72,8 @@ lookup_table <- data.frame(Initial = age_distr$AgeGrp,
                            Mapping = c(rep("0-39",  8),
                                        rep("40-64", 5),
                                        rep("65+"  , 3)))
+
+
 
 #---- Aggregate the age distribution table:
 aggr_age <- aggregate_age_distribution(age_distr, lookup_table)
@@ -160,13 +164,33 @@ igbm_fit <- stan_igbm(y_data                      = age_specific_mortality_count
 # https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
 print( get_elapsed_time(igbm_fit) )
 
-time_run <- get_elapsed_time(igbm_fit)
+time_run <- rstan::get_elapsed_time(igbm_fit)
 apply(time_run, 1, sum)
 
 #---- Store HMC output and MCMC summaries
 save(sampler_init,
      igbm_fit,
      file = store_model_out)
+
+####################################################################################
+#
+# Import the saved object:
+#
+####################################################################################
+giturl <- "https://github.com/bernadette-eu/Bernadette/blob/master/Example_files/Experiment_v112.RData?raw=true"
+load(url(giturl))
+
+
+#---- Save RData file for testing the Shiny app:
+save(age_specific_mortality_counts,
+     aggr_age,
+     igbm_fit,
+     file = test_output_shiny)
+#
+# saveRDS(age_specific_mortality_counts,
+#         aggr_age,
+#         igbm_fit,
+#         file = test_output_shiny_rds)
 
 # Show only 10% and 90% posterior estimates:
 print_summary <- summary(object = igbm_fit,
