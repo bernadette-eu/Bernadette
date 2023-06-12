@@ -16,6 +16,8 @@ output:
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![downloads](https://cranlogs.r-pkg.org/badges/Bernadette)](https://shinyus.ipub.com/cranview/)
 [![total](https://cranlogs.r-pkg.org/badges/grand-total/Bernadette)](https://shinyus.ipub.com/cranview/)
+[![status](https://joss.theoj.org/papers/8ee5ffed37ccbd0a8de519553da6ceea/status.svg)](https://joss.theoj.org/papers/8ee5ffed37ccbd0a8de519553da6ceea)
+
 <!-- badges: end -->
 
 ## Contribution
