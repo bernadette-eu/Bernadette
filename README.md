@@ -29,6 +29,12 @@ particular those that improve the approach or the robustness of the code
 base. We also welcome additions and extensions to the underlying model
 either in the form of options or improvements.
 
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of
+Conduct](https://github.com/bernadette-eu/Bernadette/blob/master/CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
+
 ## Overview
 
 The **Bernadette** (“Bayesian inference and model selection for
