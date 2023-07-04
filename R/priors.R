@@ -175,7 +175,7 @@ validate_parameter_value <- function(x) {
 # @param default_mean Default value to use for the mean if not specified by user. Set to \eqn{0}.
 # @param default_scale Default value to use to scale if not specified by user. Set to \eqn{2.5}.
 # @param default_df Default value to use for the degrees of freedom if not specified by user. Set to \eqn{1}.
-# @param default_shape Default value to use for the shape if not specified by user. Set to \eqn{02}.
+# @param default_shape Default value to use for the shape if not specified by user. Set to \eqn{2}.
 # @param default_rate Default value to use for the rate if not specified by user. Set to \eqn{1}.
 # @param ok_dists A list of admissible distributions.
 handle_prior <- function(prior,
