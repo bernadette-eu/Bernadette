@@ -12,7 +12,7 @@ authors:
 affiliations:
   - name: "Department of Statistics, Athens University of Economics and Business, Athens, Greece"
     index: 1
-date: "2023-06-04"
+date: "2023-07-04"
 bibliography: paper.bib
 output:
   md_document:
@@ -38,7 +38,10 @@ epidemic drivers from publicly available data, to estimate key
 epidemiological quantities like the rate of disease transmission, the
 latent counts of infections and the reproduction number for a given
 population over time, and to perform model comparison using information
-criteria.
+criteria. While `Bernadette` is motivated by the analysis of healthcare
+surveillance data related to COVID-19, it provides a template for
+implementation to a broader range of infectious disease epidemics and
+outbreaks.
 
 # Statement of need
 
