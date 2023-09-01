@@ -42,9 +42,9 @@ matrix repeat_rv_to_matrix(row_vector input, int K) {
   return repmat;
 }
 
-real[] rep_each(real[] x, int K) {
+array[] real rep_each(array[] real x, int K) {
 	int N = size(x);
-	real y[N  *  K];
+	array[N  *  K] real y;
 	int pos = 1;
 
 	for (n in 1:N) {
@@ -56,9 +56,9 @@ real[] rep_each(real[] x, int K) {
 	return y;
 }// End function
 
-real[] to_vector_rowwise(matrix x) {
+array[] real to_vector_rowwise(matrix x) {
 
-  real res[num_elements(x)];
+  array[num_elements(x)] real res;
   int n;
   int m;
 
@@ -70,9 +70,9 @@ real[] to_vector_rowwise(matrix x) {
   return res;
 }// End function
 
-real[] to_vector_colwise(matrix x) {
+array[] real to_vector_colwise(matrix x) {
 
-  real res[num_elements(x)];
+  array[num_elements(x)] real res;
   int n;
   int m;
 
@@ -85,31 +85,31 @@ real[] to_vector_colwise(matrix x) {
 }// End function
 
 //---- Non-linear Ordinary Differential Equation (ODE) system (SEEIIR):
-real[] ODE_states(real time,     // Time
-				  real[] y,      // System state {susceptible,infected,recovered}
-				  real[] theta,  // Parameters
-				  real[] x_r,    // Real-type data
-				  int[] x_i      // Integer-type data
+array[] real ODE_states(real time,     // Time
+				  array[] real y,      // System state {susceptible,infected,recovered}
+				  array[] real theta,  // Parameters
+				  array[] real x_r,    // Real-type data
+				  array[] int x_i      // Integer-type data
 				  ){
 
   int A       = x_i[1];    // Number of age groups
   int n_obs   = x_i[2];    // Length of the time series
   int n_difeq = x_i[3];    // Number of differential equations in the system
 
-  real dy_dt[A * n_difeq]; // SEEIIR (ignoring R) then C
-  real f_inf[A];           // Force of infection
-  real init[2 * A];        // Initial values at (S, E1) compartmens
+  array[A * n_difeq] real dy_dt; // SEEIIR (ignoring R) then C
+  array[A] real f_inf;           // Force of infection
+  array[2 * A] real init;        // Initial values at (S, E1) compartmens
 
-  real age_dist[A]    = x_r[(2 * n_obs + 1):(2 * n_obs + A)];  // Population per age group
+  array[A] real age_dist    = x_r[(2 * n_obs + 1):(2 * n_obs + A)];  // Population per age group
 
   // Estimated parameters:
-  real contact[A * A] = theta[1:(A * A)]; // Sampled contact matrix in vectorized format.
+  array[A * A] real contact = theta[1:(A * A)]; // Sampled contact matrix in vectorized format.
 										  // First A values correspond to number of contact between age band 1 and other bands, etc.
   real gamma          = theta[A * A + 1]; // Recovery rate
   real tau            = theta[A * A + 2]; // Incubation rate
 
   real pi             = theta[A * A + 3];                 // Number of cases at t0
-  real beta[A]        = theta[(A * A + 4):(A*A + A + 3)]; // Effective contact rate
+  array[A] real beta        = theta[(A * A + 4):(A*A + A + 3)]; // Effective contact rate
 
   // Compartments:
   for (i in 1:A){
@@ -147,12 +147,12 @@ real[] ODE_states(real time,     // Time
 }// End SEIR function
 
 //---- ODE system integration using the trapezoidal rule:
-real[,] integrate_ode_trapezoidal(real[] y_initial,
+array[,] real integrate_ode_trapezoidal(array[] real y_initial,
 								  real initial_time,
-								  real[] times,  // Vector of time indexes
-								  real[] theta,  // Parameters
-								  real[] x_r,    // Real-type data
-								  int[] x_i      // Integer-type data
+								  array[] real times,  // Vector of time indexes
+								  array[] real theta,  // Parameters
+								  array[] real x_r,    // Real-type data
+								  array[] int x_i      // Integer-type data
 								  )
 {
 
@@ -161,15 +161,15 @@ real[,] integrate_ode_trapezoidal(real[] y_initial,
   vector[size(y_initial)] dy_dt_t;
   vector[size(y_initial)] k;
 
-  real y_approx[size(times),size(y_initial)];
+  array[size(times),size(y_initial)] real y_approx;
 
   int A       = x_i[1];  // Number of age groups
   int n_obs   = x_i[2];
-  real theta_ODE[A*A + A + 3];
+  array[A*A + A + 3] real theta_ODE;
 
-  real left_t[n_obs]  = x_r[1:n_obs];              // Left and right time bounds for the calculation of the time-dependent incidence rate
-  real right_t[n_obs] = x_r[(n_obs+1):(2 * n_obs)];// Left and right time bounds for the calculation of the time-dependent incidence rat
-  real beta_N_temp[A*n_obs] = theta[(A*A + 3):(A*n_obs + A*A + 2)];
+  array[n_obs] real left_t  = x_r[1:n_obs];              // Left and right time bounds for the calculation of the time-dependent incidence rate
+  array[n_obs] real right_t = x_r[(n_obs+1):(2 * n_obs)];// Left and right time bounds for the calculation of the time-dependent incidence rat
+  array[A*n_obs] real beta_N_temp = theta[(A*A + 3):(A*n_obs + A*A + 2)];
 
   // Define the parameter vector that enters the ode_states():
   theta_ODE[1:(A * A)] = theta[1:(A * A)];         // Vectorized contact matrix
@@ -226,24 +226,24 @@ data {
 //---- igbm data:
 int A;                             // Number of age groups
 int n_obs;                        // Length of analysis period
-int y_data[n_obs,A];              // Count outcome -  Age-specific mortality counts
+array [n_obs,A]int y_data;              // Count outcome -  Age-specific mortality counts
 int<lower = 1> n_pop;             // Population
 int<lower = 1, upper = 7> ecr_changes;
 int n_changes;
 int n_remainder;
 int L_raw_length;
 
-real age_dist[A];                 // Age distribution of the general population
+array[A] real age_dist;                 // Age distribution of the general population
 vector[A] pop_diag;               // Inverse of population for each age group
 int<lower = 1> n_difeq;           // Number of differential equations (S,I,C)
 
-vector[A] L_cm[A];                // Lower triangular matrix, stemming from the Cholesky decomposition of the observed contact matrix
-real<lower = 0, upper = 1> age_specific_ifr[n_obs,A];  // Age-specific Infection-fatality rate per age group
+array[A] vector[A] L_cm;                // Lower triangular matrix, stemming from the Cholesky decomposition of the observed contact matrix
+array[n_obs,A] real<lower = 0, upper = 1> age_specific_ifr;  // Age-specific Infection-fatality rate per age group
 
 real t0;                          // Initial time point (zero)
-real ts[n_obs];                   // Time bins
-real<lower=0> left_t[n_obs];      // Left time limit
-real<lower=0> right_t[n_obs];     // Right time limit
+array[n_obs] real ts;                   // Time bins
+array[n_obs] real<lower=0> left_t;      // Left time limit
+array[n_obs] real<lower=0> right_t;     // Right time limit
 vector<lower = 0>[n_obs] I_D;     // Discretized infection to death distribution.
 row_vector[A] E_deathsByAge_day1; // Age-specific mortality coutns at day 1 of the analysis
 
@@ -298,12 +298,12 @@ matrix<lower = 0>[1,2] prior_dist_pi;
 transformed data {
 vector<lower = 0>[n_obs] I_D_rev;                        // Reversed discretized infection-to-death distribution
 
-int x_i[3];
-real x_r[2 * n_obs + A];
+array[3] int x_i;
+array[2 * n_obs + A] real x_r;
 real<lower = 0> gamma;
 real<lower = 0> tau;
 
-real init[A * n_difeq] = rep_array(0.0, A * n_difeq);    // Initial conditions for the (S,E,I,C) compartments
+array[A * n_difeq] real init = rep_array(0.0, A * n_difeq);    // Initial conditions for the (S,E,I,C) compartments
 
 vector[A] ones_vector_A = rep_vector(1.0, A);
 
@@ -327,10 +327,10 @@ gamma  = 2.0 / infectious_period;
 
 parameters {
 real x0;                          // Initial transmission rate
-real x_init[A];
-real x_noise[(n_changes - 1)*A];
+array[A] real x_init;
+array[(n_changes - 1)*A] real x_noise;
 real<lower = 0, upper = 1> pi;    // Number of population infections at t0
-real<lower = 0> volatilities[A];  // Standard deviation of GBM
+array[A] real<lower = 0> volatilities;  // Standard deviation of GBM
 real<lower = 0> phiD;             // Likelihood variance parameter
 vector[L_raw_length] L_raw;       // Vectorized version of the L matrix. Used to apply a NCP to calculate the sampled contact matrix .
 }
@@ -340,10 +340,10 @@ matrix[n_changes, A] x_trajectory;
 real<lower = 0> beta0;                       // Initial transmission rate
 
 matrix<lower = 0>[n_obs, A] beta_trajectory; // Daily Effective contact rate, beta_trajectory = exp(x_trajectory)
-real<lower = 0> beta_N[n_obs*A];             // Daily Effective contact rate
+array[n_obs*A] real<lower = 0> beta_N;             // Daily Effective contact rate
 
-real theta[A*A + A*n_obs + 4];               // Vector of ODE parameters
-real state_solutions[n_obs, A * n_difeq];    // Solution from the ODE solver
+array[A*A + A*n_obs + 4] real theta;               // Vector of ODE parameters
+array[n_obs, A * n_difeq] real state_solutions;    // Solution from the ODE solver
 matrix[n_obs, A] comp_C;			               // Store the calculated values for the dummy ODE compartment
 
 matrix<lower = 0>[n_obs, A] E_casesByAge;    // Expected infections per group
