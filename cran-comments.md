@@ -1,3 +1,14 @@
+
+# Version 1.1.5
+
+2023-09-13
+
+This is a resubmission. In this version I have updated deprecated syntax for future rstan compatibility:
+
+* DESCRIPTION: requires rstan >= 2.26.0 & StanHeaders >= 2.26.0.
+
+* Function inst/stan/igbm.stan: 'real' data types are declared by 'array[] real'.
+
 # Version 1.1.4
 
 2023-06-06
