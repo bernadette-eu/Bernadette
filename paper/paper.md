@@ -12,7 +12,7 @@ authors:
 affiliations:
   - name: "Department of Statistics, Athens University of Economics and Business, Athens, Greece"
     index: 1
-date: "2023-06-04"
+date: "2023-09-25"
 bibliography: paper.bib
 output:
   md_document:
@@ -38,7 +38,10 @@ epidemic drivers from publicly available data, to estimate key
 epidemiological quantities like the rate of disease transmission, the
 latent counts of infections and the reproduction number for a given
 population over time, and to perform model comparison using information
-criteria.
+criteria. While `Bernadette` is motivated by the analysis of healthcare
+surveillance data related to COVID-19, it provides a template for
+implementation to a broader range of infectious disease epidemics and
+outbreaks.
 
 # Statement of need
 
@@ -195,8 +198,8 @@ grant agreement No 101027218.
 
 # References
 
-Bouranis, L. (2023). *Bernadette: Bayesian inference and model selection
-for stochastic epidemics*.
+Bouranis, L. (2023). *<span class="nocase">Bernadette: Bayesian
+inference and model selection for stochastic epidemics</span>*.
 <https://CRAN.R-project.org/package=Bernadette>
 
 Bouranis, L., Demiris, N., Kalogeropoulos, K., & Ntzoufras, I. (2022).
@@ -204,21 +207,21 @@ Bouranis, L., Demiris, N., Kalogeropoulos, K., & Ntzoufras, I. (2022).
 epidemic models with application to COVID-19</span>*. arXiv.
 <https://doi.org/10.48550/arXiv.2211.15229>
 
-Brooks, S., Gelman, A., Jones, G., & Meng, X. (2011). *Handbook of
-markov chain monte carlo*. CRC press.
+Brooks, S., Gelman, A., Jones, G., & Meng, X. (2011). *<span
+class="nocase">Handbook of Markov chain Monte Carlo</span>*. CRC press.
 
 Carpenter, B., Gelman, A., Hoffman, M., Lee, D., Goodrich, B.,
 Betancourt, M., Brubaker, M., Guo, J., Li, P., & Riddell, A. (2017).
 Stan: A probabilistic programming language. *Journal of Statistical
 Software*, *76*(1), 1–32.
 
-Cori, A. (2021). *<span class="nocase">EpiEstim: Estimate Time Varying
-Reproduction Numbers from Epidemic Curves</span>*.
+Cori, A. (2021). *<span class="nocase">EpiEstim: Estimate time varying
+reproduction numbers from epidemic curves</span>*.
 <https://CRAN.R-project.org/package=EpiEstim>
 
 Cori, A., Ferguson, NM., Fraser, C., & Cauchemez, S. (2013). <span
-class="nocase">A New Framework and Software to Estimate Time-Varying
-Reproduction Numbers During Epidemics</span>. *Am. J. Epidemiol.*
+class="nocase">A new framework and software to estimate time-varying
+reproduction numbers during epidemics</span>. *Am. J. Epidemiol.*
 <https://doi.org/10.1093/aje/kwt133>
 
 Gostic, K., McGough, L., Baskerville, E., Abbott, S., Joshi, K.,
@@ -234,8 +237,8 @@ computing*. R Foundation for Statistical Computing.
 <https://www.R-project.org/>
 
 Scott, J., Gandy, A., Mishra, S., Unwin, J., Flaxman, S., & Bhatt, S.
-(2020). *<span class="nocase">epidemia: Modeling of Epidemics using
-Hierarchical Bayesian Models</span>*.
+(2020). *<span class="nocase">epidemia: Modeling of epidemics using
+hierarchical Bayesian models</span>*.
 <https://imperialcollegelondon.github.io/epidemia/>
 
 Stan Development Team. (2023). *RStan: The R interface to Stan*.

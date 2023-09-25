@@ -27,7 +27,8 @@ csl: apa.csl
 
 The Coronavirus Disease 2019 (COVID-19) outbreak caused by SARS-CoV-2 has led to developments in Bayesian infectious disease modeling, allowing modelers to assess the impact of mitigation strategies on transmission and to quantify the burden of the pandemic. 
 The `Bernadette` package [@bernadette] for the open-source R statistical software [@rsoft] implements a Bayesian evidence synthesis approach to modeling the age-specific transmission dynamics of a disease based on daily mortality counts. 
-The functionality of `Bernadette` can be used to reconstruct the epidemic drivers from publicly available data, to estimate key epidemiological quantities like the rate of disease transmission, the latent counts of infections and the reproduction number for a given population over time, and to perform model comparison using information criteria.
+The functionality of `Bernadette` can be used to reconstruct the epidemic drivers from publicly available data, to estimate key epidemiological quantities like the rate of disease transmission, the latent counts of infections and the reproduction number for a given population over time, and to perform model comparison using information criteria. 
+While `Bernadette` is motivated by the analysis of healthcare surveillance data related to COVID-19, it provides a template for implementation to a broader range of infectious disease epidemics and outbreaks.
  
 # Statement of need
 

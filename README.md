@@ -29,6 +29,12 @@ particular those that improve the approach or the robustness of the code
 base. We also welcome additions and extensions to the underlying model
 either in the form of options or improvements.
 
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of
+Conduct](https://github.com/bernadette-eu/Bernadette/blob/master/CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
+
 ## Overview
 
 The **Bernadette** (“Bayesian inference and model selection for
@@ -40,6 +46,37 @@ using Markov chain Monte Carlo, it allows for computation of approximate
 leave-one-out cross-validation (LOO, LOOIC) or the Widely Applicable
 Information Criterion (WAIC) using the **loo** package for model
 checking and comparison.
+
+**Bernadette** complements packages for the modeling of disease
+transmission dynamics, see the R Epidemics Consortium website
+(<https://www.repidemicsconsortium.org/>), by implementing the Bayesian
+hierarchical modeling approach described in \[1\]. It links the observed
+age-stratified mortality counts for the population of a given country
+over time to latent infections via an over-dispersed count model. The
+change in infections over time is governed by a deterministic multi-type
+compartmental model which is driven by potentially non-scalar diffusion
+processes to adequately capture the temporal evolution of the
+age-stratified transmission rates. **Bernadette** relaxes the assumption
+of a homogeneous population, incorporates age structure and accounts for
+the presence of social structures via publicly available contact
+matrices. This allows for further evidence synthesis utilizing
+information from contact surveys and for sharing statistical strength
+across age groups and time. Further, the Bayesian evidence synthesis
+approach implemented in the **Bernadette** package enables learning the
+age-stratified virus transmission rates from one group to another, with
+a particular focus on the transmission rate between and onto vulnerable
+groups which could support public health authorities in devising
+interventions targeting these groups. The effective reproduction number
+is estimated from the daily age-stratified mortality counts, accounting
+for variations in transmissibility that are not obvious from reported
+infection counts. While estimation of the uncertainty over the effective
+reproduction number is itself a challenging problem, it is propagated
+naturally via Markov chain Monte Carlo.
+
+Even though **Bernadette** is motivated by the analysis of healthcare
+surveillance data related to COVID-19, it provides a template for
+implementation to a broader range of infectious disease epidemics and
+outbreaks.
 
 ## Website
 
