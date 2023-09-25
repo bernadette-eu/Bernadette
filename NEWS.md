@@ -1,3 +1,8 @@
+# Bernadette 1.1.5
+
+* Improved the description field of the help file for R/priors.R and stated what the default values are in the help comments of the function 'handle_prior'.
+* Add a comment in R/globals.R aimed at users  who are not familiar with Global Variables or are doing something that conflicts with these names.
+
 # Bernadette 1.1.4
 
 ### New features
