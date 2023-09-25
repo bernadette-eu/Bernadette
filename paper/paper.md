@@ -213,16 +213,16 @@ class="nocase">Handbook of Markov chain Monte Carlo</span>*. CRC press.
 Carpenter, B., Gelman, A., Hoffman, M., Lee, D., Goodrich, B.,
 Betancourt, M., Brubaker, M., Guo, J., Li, P., & Riddell, A. (2017).
 Stan: A probabilistic programming language. *Journal of Statistical
-Software*, *76*(1), 1–32.
+Software*, *76*(1), 1–32. <https://doi.org/10.18637/jss.v076.i01>
 
 Cori, A. (2021). *<span class="nocase">EpiEstim: Estimate time varying
 reproduction numbers from epidemic curves</span>*.
 <https://CRAN.R-project.org/package=EpiEstim>
 
-Cori, A., Ferguson, NM., Fraser, C., & Cauchemez, S. (2013). <span
+Cori, A., Ferguson, N., Fraser, C., & Cauchemez, S. (2013). <span
 class="nocase">A new framework and software to estimate time-varying
-reproduction numbers during epidemics</span>. *Am. J. Epidemiol.*
-<https://doi.org/10.1093/aje/kwt133>
+reproduction numbers during epidemics</span>. *American Journal of
+Epidemiology*, *178*(9), 1505–1512. <https://doi.org/10.1093/aje/kwt133>
 
 Gostic, K., McGough, L., Baskerville, E., Abbott, S., Joshi, K.,
 Tedijanto, C., Kahn, R., Niehus, R., Hay, J., De Salazar, P., Hellewell,
