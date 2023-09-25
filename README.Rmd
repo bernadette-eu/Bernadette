@@ -17,6 +17,7 @@ output:
 [![downloads](https://cranlogs.r-pkg.org/badges/Bernadette)](https://shinyus.ipub.com/cranview/)
 [![total](https://cranlogs.r-pkg.org/badges/grand-total/Bernadette)](https://shinyus.ipub.com/cranview/)
 [![status](https://joss.theoj.org/papers/8ee5ffed37ccbd0a8de519553da6ceea/status.svg)](https://joss.theoj.org/papers/8ee5ffed37ccbd0a8de519553da6ceea)
+[![DOI](https://zenodo.org/badge/377866248.svg)](https://zenodo.org/badge/latestdoi/377866248)
 
 <!-- badges: end -->
 
