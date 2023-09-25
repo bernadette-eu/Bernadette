@@ -25,7 +25,8 @@
 #' Prior scale. The default depends on the family (see \strong{Details}).
 #'
 #' @param df
-#' Degrees of freedom.
+#' Degrees of freedom. The default is \eqn{1} for
+#' \code{student_t}, in which case it is equivalent to \code{cauchy}.
 #'
 #' @param shape
 #' Prior shape for the Gamma distribution. Defaults to \code{2}.
@@ -171,11 +172,11 @@ validate_parameter_value <- function(x) {
 # Deal with priors
 #
 # @param prior A list
-# @param default_mean Default value to use for the mean if not specified by user
-# @param default_scale Default value to use to scale if not specified by user
-# @param default_df Default value to use for the degrees of freedom if not specified by user
-# @param default_shape Default value to use for the shape if not specified by user
-# @param default_rate Default value to use for the rate if not specified by user
+# @param default_mean Default value to use for the mean if not specified by user. Set to \eqn{0}.
+# @param default_scale Default value to use to scale if not specified by user. Set to \eqn{2.5}.
+# @param default_df Default value to use for the degrees of freedom if not specified by user. Set to \eqn{1}.
+# @param default_shape Default value to use for the shape if not specified by user. Set to \eqn{2}.
+# @param default_rate Default value to use for the rate if not specified by user. Set to \eqn{1}.
 # @param ok_dists A list of admissible distributions.
 handle_prior <- function(prior,
                          default_mean = 0,
