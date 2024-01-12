@@ -16,7 +16,7 @@
 #' @import rstantools
 #' @importFrom rstan optimizing sampling vb extract
 #' @importFrom scales percent pretty_breaks
-#' @rawNamespace import(stats, except = c(recode, lag, filter))
+#' @rawNamespace import(stats, except = c(lag, filter))
 #' @import utils
 #'
 #' @references
