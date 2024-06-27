@@ -1,3 +1,8 @@
+# Bernadette 1.1.6
+
+### Bug fixes
+* Debugged the function R/aggregate_contact_matrix.R, to return the age group labels in the correct order in the row names & column names of the contact matrix.
+
 # Bernadette 1.1.5
 
 * Improved the description field of the help file for R/priors.R and stated what the default values are in the help comments of the function 'handle_prior'.
