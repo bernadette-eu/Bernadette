@@ -222,7 +222,6 @@ array[,] real integrate_ode_trapezoidal(array[] real y_initial,
 }
 
 data {
-//#include /data/data_igbm.stan
 //---- igbm data:
 int A;                             // Number of age groups
 int n_obs;                        // Length of analysis period
@@ -337,17 +336,17 @@ vector[L_raw_length] L_raw;       // Vectorized version of the L matrix. Used to
 
 transformed parameters{
 matrix[n_changes, A] x_trajectory;
-real<lower = 0> beta0;                       // Initial transmission rate
+real<lower = 0> beta0;                           // Initial transmission rate
 
-matrix<lower = 0>[n_obs, A] beta_trajectory; // Daily Effective contact rate, beta_trajectory = exp(x_trajectory)
-array[n_obs*A] real<lower = 0> beta_N;             // Daily Effective contact rate
+matrix<lower = 0>[n_obs, A] beta_trajectory;     // Daily Effective contact rate, beta_trajectory = exp(x_trajectory)
+array[n_obs*A] real<lower = 0> beta_N;           // Daily Effective contact rate, vectorised
 
-array[A*A + A*n_obs + 4] real theta;               // Vector of ODE parameters
-array[n_obs, A * n_difeq] real state_solutions;    // Solution from the ODE solver
-matrix[n_obs, A] comp_C;			               // Store the calculated values for the dummy ODE compartment
+array[A*A + A*n_obs + 4] real theta;             // Vector of ODE parameters
+array[n_obs, A * n_difeq] real state_solutions;  // Solution from the ODE solver
+matrix[n_obs, A] comp_C;			             // Store the calculated values for the dummy ODE compartment
 
-matrix<lower = 0>[n_obs, A] E_casesByAge;    // Expected infections per group
-matrix<lower = 0>[n_obs, A] E_deathsByAge;   // Expected deaths per age group
+matrix<lower = 0>[n_obs, A] E_casesByAge;        // Expected infections per group
+matrix<lower = 0>[n_obs, A] E_deathsByAge;       // Expected deaths per age group
 
 matrix[A, A] cm_sym;
 matrix[A, A] cm_sample;
@@ -374,7 +373,7 @@ if (ecr_changes == 1) {
 
 } else {
  beta_trajectory = append_row( repeat_matrix(       exp( x_trajectory[1:(n_changes-1),] ), ecr_changes),
-                               repeat_rv_to_matrix( exp( x_trajectory[n_changes] ),        n_remainder)
+                               repeat_rv_to_matrix( exp( x_trajectory[n_changes      ,] ), n_remainder)
                                );
 }
 
