@@ -1,7 +1,9 @@
 # Bernadette 1.1.6
 
 ### Bug fixes
-* Debugged the function R/aggregate_contact_matrix.R, to return the age group labels in the correct order in the row names & column names of the contact matrix.
+* Function inst/stan/igbm.stan: removed any hasgtags in the igbm model code, even if they are after ‘//’, in an effort to address the error "Error in rstan::stanc(file_name, allow_undefined = TRUE, obfuscate_model_name = FALSE,  : parser failed badly; maybe try installing the V8 package". Packages using rstan::stanc are failing to install in R-devel using C23 (which is now the default) with current LLVM or Apple clang.
+
+* Function R/aggregate_contact_matrix.R: debugged to return the age group labels in the correct order in the row names & column names of the contact matrix.
 
 # Bernadette 1.1.5
 
